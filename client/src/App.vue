@@ -4,27 +4,21 @@
     <v-app-bar app color="white" elevate-on-scroll fixed height="70">
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
-      <v-toolbar-title
-        ><img src="@/assets/logo.png" class="mt-3" height="50"
-      /></v-toolbar-title>
+      <v-toolbar-title>
+        <router-link to="/"
+          ><img src="@/assets/logo.png" class="mt-3 mb-2" height="50"
+        /></router-link>
+      </v-toolbar-title>
       <v-spacer></v-spacer>
 
-      <v-btn icon>
-        <v-icon>mdi-heart</v-icon>
+      <v-btn
+        text
+        class="mr-10"
+        href="https://www.htlwienwest.at/ueberuns/impressum.html"
+        target="_blank"
+      >
+        Impressum
       </v-btn>
-
-      <v-btn icon>
-        <v-icon @click="search = !search">mdi-magnify</v-icon>
-      </v-btn>
-      <v-col cols="3" sm="3" v-if="search">
-        <v-text-field
-          width="10"
-          hint
-          label="Search"
-          single-line
-          hide-details
-        ></v-text-field>
-      </v-col>
 
       <v-menu left bottom>
         <template v-slot:activator="{ on, attrs }">
@@ -48,6 +42,7 @@
             <v-list-item-title class="text-h6">
               Max Mustermann
             </v-list-item-title>
+
             <v-list-item-subtitle>Siemens@gmail.com</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
@@ -58,7 +53,7 @@
           v-for="item in items"
           :key="item.title"
           link
-          class-linked="white--text"
+          active-class="black white--text"
           :to="item.route"
         >
           <v-list-item-icon>
@@ -76,6 +71,7 @@
           v-for="item in accountItems"
           :key="item.title"
           link
+          active-class="black white--text"
           :to="item.route"
         >
           <v-list-item-icon>

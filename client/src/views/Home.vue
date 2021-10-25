@@ -2,19 +2,23 @@
   <v-container fluid class="mx-0 p-0 ">
     <header class="masthead" id="home">
       <v-container fluid lighten-2 class="white--text ">
-        <v-row class="align-items-start mt-16">
-          <div class="text-center mt-16">
-            <h1 class="display-2 font-weight-light text-uppercase text-white">
-              Karrieretag - HTL Wien West
-            </h1>
+        <div class="blackContainer">
+          <v-row class="align-items-start mt-16">
+            <div class="text-center my-16 ">
+              <h1 class="display-2 font-weight-light text-uppercase text-white">
+                Karrieretag - HTL Wien West
+              </h1>
 
-            <h3>
-              <span class=" font-weight-light text-uppercase" style="color:red;"
-                >Entscheide deine Zukunft</span
-              >
-            </h3>
-          </div>
-        </v-row>
+              <h3>
+                <span
+                  class=" font-weight-light text-uppercase"
+                  style="color:red;"
+                  >Entscheide deine Zukunft</span
+                >
+              </h3>
+            </div>
+          </v-row>
+        </div>
 
         <v-row class="align-items-start mt-16">
           <div class="d-block text-center">
@@ -26,7 +30,7 @@
               color="transparent"
               href="#arrowFirst"
             >
-              <v-icon dark style="font-size: 80px">
+              <v-icon dark style="font-size: 70px">
                 mdi-arrow-down-drop-circle
               </v-icon>
             </v-btn>
@@ -69,12 +73,13 @@
       <v-divider dark></v-divider>
       <v-row class=" display-2 text-center" style="font-size: 100px">
         <!-- <flip-countdown deadline="2022-03-22 00:00:00" :showSeconds="false"></flip-countdown> -->
-        <Countdown deadline="March 22, 2022" ></Countdown>
+        <Countdown deadline="March 22, 2022"></Countdown>
         <!-- <Countdown date="August 15, 2016"></Countdown> -->
       </v-row>
     </v-container>
 
-    <div class="contaner section mt-10" id="arrowFirst">
+  
+    <div class="contaner section mt-10" id="arrowFirst" >
       <div class="row d-flex flex-wrap">
         <div class="col-md-6">
           <h3>
@@ -113,7 +118,7 @@
         </div>
       </div>
       <div class="row mt-16">
-        <div class="col-md-6">
+        <div class="col-md-6" >
           <v-carousel
             hide-delimiters
             next-icon
@@ -185,25 +190,14 @@
         </div>
       </div>
     </div>
-    <v-container class="text-center mb-4" justify-center text-center>
-      <span style="font-size: 13px">
-        Höhere Technische Lehranstalt Wien West | Thaliastraße 125 | 1160 Wien |
-        Tel: +43 (01) 49 111-113 | Fax: +43 (01) 49 111-199 |
-        <a
-          style="color: red; text-decoration:none"
-          href="http://www.htlwienwest.at"
-          target="_blank"
-        >
-          HTL WIEN WEST
-        </a>
-      </span>
-    </v-container>
+    <Footer />
   </v-container>
 </template>
 
 <script>
 // import FlipCountdown from 'vue2-flip-countdown';
 import Countdown from 'vuejs-countdown';
+import Footer from '@/components/Footer.vue';
 // import Countdown from '@/components/Countdown.vue';
 
 export default {
@@ -264,7 +258,7 @@ export default {
     ],
   }),
 
-  components: { Countdown },
+  components: { Countdown, Footer },
 };
 </script>
 
@@ -280,9 +274,9 @@ body {
   margin-bottom: 3%;
 }
 .section .row .col-md-6 {
-  background: #f5f5f5;
   margin-right: -2%;
   padding: 5%;
+  /* style="background: #f5f5f5;" */
 }
 .section h3 {
   color: #004085;
@@ -301,5 +295,8 @@ body {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+}
+.blackContainer {
+  background: rgba(0, 0, 0, 0.555);
 }
 </style>

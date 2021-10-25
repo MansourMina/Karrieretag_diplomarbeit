@@ -2,7 +2,10 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Home from '../views/Home.vue';
 import Informationen from '../views/Informationen.vue';
-import About from '../views/About.vue';
+import Contact from '../views/Contact.vue';
+import Login from '../views/Login.vue';
+import Daten from '../views/Daten.vue';
+import NProgress from 'nprogress';
 
 Vue.use(VueRouter);
 
@@ -18,9 +21,19 @@ const routes = [
     component: Informationen,
   },
   {
-    path: '/about',
-    name: 'About',
-    component: About,
+    path: '/contact',
+    name: 'Contact',
+    component: Contact,
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: Login,
+  },
+  {
+    path: '/daten',
+    name: 'Daten',
+    component: Daten,
   },
 ];
 
@@ -29,5 +42,17 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes,
 });
+router.beforeResolve((to, from, next) => {
+  // If this isn't an initial page load.
+  if (to.name) {
+    // Start the route progress bar.
+    NProgress.start();
+  }
+  next();
+});
 
+router.afterEach((to, from) => {
+  // Complete the animation of the route progress bar.
+  NProgress.done();
+});
 export default router;

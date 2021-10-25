@@ -1,44 +1,91 @@
 <template>
   <v-container>
-    <v-carousel :show-arrows="false" hide-delimiters cycle interval="3000">
-      <v-carousel-item
-        v-for="(item, i) in items"
-        :key="i"
-        :src="item.src"
-        class="m-10"
-      ></v-carousel-item>
-    </v-carousel>
-    <header class="text-center m-4">
-      <h1 class="display-4 py-4 font-weight-bold">INFORMATIONEN</h1>
-      <p class="font-italic text-muted mb-0">
-        Die <b>HTL Wien West</b> veranstaltet einmal im Jahr einen Karrieretag
-        für die Schülerinnen und Schüler der Ausbildungsrichtungen <br /><b
-          >Elektrotechnik, Elektronik, Informationstechnologie, Maschinenbau und
-          Mechatronik.</b
-        >
-        <br /><br />
-        Zentrales Element ist eine Ausstellung von Unternehmen und
-        Ausbildungsinstituten, die sich für unsere <b>Absolventinnen</b> und
-        <b>Absolventen</b> interessieren.
-        <br />
+    <v-row>
+      <v-col cols="8">
+        <v-card class="mx-auto" max-width="750" elevation="0">
+          <v-img
+            class="white--text align-end"
+            height="300px"
+            src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
+          >
+            <v-card-title>Top 10 Australian beaches</v-card-title>
+          </v-img>
 
-        Unser nächster Karrieretag findet am
-        <b>Mittwoch, dem 9. März 2022</b> statt. Wir laden Sie also herzlich
-        ein, aktiv mit einem Stand an unserem Karrieretag teilzunehmen.
-        <br />
+          <v-card-title class="pb-0">
+            Number 10
+          </v-card-title>
 
-        Bitte beachten Sie, dass unser Platz aufgrund der räumlichen
-        Gegebenheiten beschränkt ist und wir daher letztes Mal mit
-        <b>52 Teilnehmern</b> das Maximum erreicht haben. <br />Wir gehen nach
-        der Reihenfolge der Anmeldungen vor.
-        <br />
-        <br />
+          <v-card-text class="text--primary">
+            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ducimus ea
+            tempora quisquam aut sed in possimus quas molestias reprehenderit
+            reiciendis enim, ullam, iste consequatur eum assumenda dolore ipsum,
+            error facere?Lorem ipsum, dolor sit amet consectetur adipisicing
+            elit. Ducimus ea tempora quisquam aut sed in possimus quas molestias
+            reprehenderit reiciendis enim, ullam, iste consequatur eum assumenda
+            dolore ipsum, error facere?Lorem ipsum, dolor sit amet consectetur
+            adipisicing elit. Ducimus ea tempora quisquam aut sed in possimus
+            quas molestias reprehenderit reiciendis enim, ullam, iste
+            consequatur eum assumenda dolore ipsum, error facere?
+          </v-card-text>
 
-        Sollten Sie Fragen zur Teilnahme haben, kontaktieren Sie bitte
-        <b><span style="color:blue">karrieretag@htlwienwest.at</span></b
-        >.
-      </p>
-    </header>
+          <v-card-actions>
+            <v-btn color="red" text>
+              Antrag stellen
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+      <v-col cols="4">
+        <v-col cols="12">
+          <v-card elevation="0">
+            <v-card-title>
+              <v-text-field
+                v-model="search"
+                append-icon="mdi-magnify"
+                label="Search"
+                single-line
+                hide-details
+              ></v-text-field>
+            </v-card-title>
+          </v-card>
+        </v-col>
+        <v-col cols="12">
+          <v-card elevation="0">
+            <v-card-title>
+              Kategorien
+            </v-card-title>
+            <v-container class="d-flex flex-column">
+              <v-btn v-for="k of kategorien" :key="k.name" text class="ma-3">{{
+                k.name
+              }}</v-btn>
+            </v-container>
+          </v-card>
+        </v-col>
+      </v-col>
+    </v-row>
+    <v-card elevation="0">
+      <v-card-title
+        >Unternehmen und Bildungseinrichtungen die 2018 - 2020 am Karrieretag
+        teilgenommen haben:</v-card-title
+      >
+      <v-row>
+        <v-col cols="4">
+          <v-card-text v-for="k of firmenList1" :key="k.name" class=" pa-0">{{
+            k.name
+          }}</v-card-text>
+        </v-col>
+        <v-col cols="4">
+          <v-card-text v-for="k of firmenList2" :key="k.name" class=" pa-0">{{
+            k.name
+          }}</v-card-text>
+        </v-col>
+        <v-col cols="4">
+          <v-card-text v-for="k of firmenList3" :key="k.name" class=" pa-0">{{
+            k.name
+          }}</v-card-text>
+        </v-col>
+      </v-row>
+    </v-card>
   </v-container>
 </template>
 
@@ -46,21 +93,105 @@
 export default {
   data() {
     return {
-      items: [
+      search: '',
+      kategorien: [
         {
-          src: 'https://cdn.vuetifyjs.com/images/carousel/squirrel.jpg',
+          name: 'Diesjähriger',
         },
         {
-          src: 'https://cdn.vuetifyjs.com/images/carousel/sky.jpg',
+          name: 'Bilder und Videos',
         },
         {
-          src: 'https://cdn.vuetifyjs.com/images/carousel/bird.jpg',
+          name: 'Wann und Wo',
         },
         {
-          src: 'https://cdn.vuetifyjs.com/images/carousel/planet.jpg',
+          name: 'Wohin',
         },
+        {
+          name: 'Kontakrieren',
+        },
+      ],
+      firmenList1: [
+        {
+          name: 'A1 Telekom Austria AG',
+        },
+        { name: 'ABB AG' },
+        { name: 'Absolventenverband' },
+        { name: 'Accenture' },
+        { name: 'ACTIVE SOLUTION Ingenieurbüro AG' },
+        { name: 'ARZ Allgemeines Rechenzentrum GmbH' },
+        { name: 'Atos IT Solutions an Services GmbH' },
+        { name: 'Banet GmbH' },
+        { name: 'Bechtle IT-Systemhaus Österreich' },
+        { name: 'BEKO' },
+        { name: 'Bitmovin' },
+        { name: 'BMD Systemhaus GesmbH' },
+        { name: 'Braintrust GesmbH' },
+        { name: 'Bundesheer Cyberdefence Unit' },
+        { name: 'Bundesrechenzentrum' },
+        { name: 'cargo-partner GmbH' },
+        { name: 'Catalysts' },
+        { name: 'Coca Cola HBC Austria GmbH' },
+        { name: 'DBConcepts' },
+        { name: 'Diamir Holding – Tailored Apps' },
+        { name: 'Docolution GmbH' },
+        { name: 'Elin' },
+        { name: 'epunkt GmbH' },
+        { name: 'Faktor Zehn' },
+      ],
+      firmenList2: [
+        { name: 'FERCHAU Austria GmbH' },
+        { name: 'FH Burgenland' },
+        { name: 'FH Campus Wien' },
+        { name: 'FH St. Pölten' },
+        { name: 'FH Technikum Wien' },
+        { name: 'FH Wien der WKW' },
+        { name: 'FH Wiener Neustadt' },
+        { name: 'Flughafen Wien AG' },
+        { name: 'Gebauer & Griller Kabelwerke GesmbH' },
+        { name: 'Herold Business Data' },
+        { name: 'Hokify' },
+        { name: 'HR Consulting Alexander Wozak' },
+        { name: 'it-tects' },
+        { name: 'IVM Technical Consultants Wien GmbH' },
+        { name: 'Jaggaer Austria' },
+        { name: 'Johannes Kepler Universität' },
+        { name: 'KSV1870 Holding AG' },
+        { name: 'maihiro GmbH' },
+        { name: 'Montanuniversität Leoben' },
+        { name: 'New Design University' },
+        { name: 'NOUS Wissensmanagement GmbH' },
+        { name: 'ÖBB' },
+        { name: 'Österreichische Hochschülerschaft' },
+        { name: 'Otto Bock Health Care Product' },
+      ],
+      firmenList3: [
+        { name: 'paysafecard Wertkarten GmbH' },
+        { name: 'Personal Zellner' },
+        { name: 'PORR AG' },
+        { name: 'ppedv AG' },
+        { name: 'Raiffeisen Software' },
+        { name: 'Robert Bosch AG' },
+        { name: 'Rubicon IT GmbH' },
+        { name: 'Schindler Aufzüge und Fahrtreppen GmbH' },
+        { name: 'Schulmeister Management Consulting GmbH' },
+        { name: 'SEC Consult' },
+        { name: 'SEQIS GmbH' },
+        { name: 'Siemens Personaldienstleistungen GmbH' },
+        { name: 'softwareXperts' },
+        { name: 'STEINER-HITECH GmbH' },
+        { name: 'StepStone Österreich GmbH' },
+        { name: 'TECHSEARCH' },
+        { name: 'TODAY' },
+        { name: 'Trenkwalder Personaldienste GmbH' },
+        { name: 'Werbeakademie des WIFI Wien' },
+        { name: 'Westsächsische Hochschule Zwickau' },
+        { name: 'Wien Energie GmbH' },
+        { name: 'Wirtschaftsuniversität Wien' },
       ],
     };
   },
 };
 </script>
+
+<style lang="scss" scoped></style>

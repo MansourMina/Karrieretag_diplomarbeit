@@ -1,41 +1,46 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="8">
+      <v-col cols="12" md="8">
         <v-card class="mx-auto" max-width="750" elevation="0">
-          <v-img
-            class="white--text align-end"
-            height="300px"
-            src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
+          <v-carousel
+            hide-delimiters
+            next-icon
+            prev-icon
+            cycle
+            interval="4000"
+            width="300"
           >
-            <v-card-title>Top 10 Australian beaches</v-card-title>
-          </v-img>
+            <v-carousel-item
+              v-for="i of images"
+              :key="i.image"
+              :src="i.image"
+            ></v-carousel-item>
+          </v-carousel>
 
-          <v-card-title class="pb-0">
-            Number 10
+          <v-card-title>
+            Karrieretag 2022
           </v-card-title>
 
-          <v-card-text class="text--primary">
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ducimus ea
-            tempora quisquam aut sed in possimus quas molestias reprehenderit
-            reiciendis enim, ullam, iste consequatur eum assumenda dolore ipsum,
-            error facere?Lorem ipsum, dolor sit amet consectetur adipisicing
-            elit. Ducimus ea tempora quisquam aut sed in possimus quas molestias
-            reprehenderit reiciendis enim, ullam, iste consequatur eum assumenda
-            dolore ipsum, error facere?Lorem ipsum, dolor sit amet consectetur
-            adipisicing elit. Ducimus ea tempora quisquam aut sed in possimus
-            quas molestias reprehenderit reiciendis enim, ullam, iste
-            consequatur eum assumenda dolore ipsum, error facere?
+          <v-card-text class="text--primary" style="font-size:15px">
+            Die HTL Wien West veranstaltet einmal im Jahr einen
+            <b>Karrieretag</b> für die Schülerinnen und Schüler der
+            Ausbildungsrichtungen
+            <b
+              >Elektrotechnik, Elektronik, Informationstechnologie, Maschinenbau
+              und Mechatronik</b
+            >. Zentrales Element ist eine Ausstellung von Unternehmen und
+            Ausbildungsinstituten, die sich für unsere Absolventinnen und
+            Absolventen interessieren. Wir laden Sie herzlich ein, aktiv mit
+            einem Stand an unserem Karrieretag teilzunehmen.<br /><br />
+            Der nächste Karrieretag findet Mittwoch, den <b>9.3.2022</b> von
+            <b>8:00 bis 14:00</b> in der HTL Wien West statt.<br /><br />
+            <b>Bei Interesse stellen Sie einen </b>
+            <router-link to="/antrag" class="red--text">Antrag</router-link>.
           </v-card-text>
-
-          <v-card-actions>
-            <v-btn color="red" text>
-              Antrag stellen
-            </v-btn>
-          </v-card-actions>
         </v-card>
       </v-col>
-      <v-col cols="4">
+      <v-col cols="12" md="4">
         <v-col cols="12">
           <v-card elevation="0">
             <v-card-title>
@@ -55,143 +60,393 @@
               Kategorien
             </v-card-title>
             <v-container class="d-flex flex-column">
-              <v-btn v-for="k of kategorien" :key="k.name" text class="ma-3">{{
-                k.name
-              }}</v-btn>
+              <v-btn
+                v-for="k of kategorien"
+                :key="k.name"
+                text
+                outlined
+                class="ma-3"
+                :href="`#${k.id}`"
+                @click="changeColor(k.id)"
+                >{{ k.name }}</v-btn
+              >
             </v-container>
           </v-card>
         </v-col>
       </v-col>
     </v-row>
+    <v-row>
+      <v-col cols="12" md="8">
+        <v-card class="mx-auto" max-width="750" elevation="0">
+          <v-img
+            class="white--text align-end"
+            height="300px"
+            src="@/assets/information.jpg"
+          >
+          </v-img>
+
+          <v-card-title>
+            <span id="ueberuns">
+              Technik · Umwelt · Digitalisierung
+            </span>
+          </v-card-title>
+
+          <v-card-text class="text--primary">
+            Um die Schülerinnen und Schüler für die Herausforderungen unserer
+            Zeit gut vorzubereiten, widmet sich die HTL Wien West in allen ihren
+            <b>technischen Ausbildungsrichtungen</b> noch stärker als bisher den
+            Themen <b>Digitalisierung</b> und <b>Umwelt</b>. Wir sind überzeugt,
+            dass die technischen Lösungen von morgen noch stärker als bisher an
+            den Auswirkungen auf die Umwelt gemessen werden.
+            <v-divider dark></v-divider>
+
+            <b>Technik</b>, <b>Digitalisierung</b> und <b>Umweltschutz</b> gehen
+            Hand in Hand und müssen vernetzt gedacht werden. Die vielzitierte
+            Digitalisierung ist bereits angekommen und findet sich in allen
+            Disziplinen der Technik, wie beispielsweise 3D-Modellierung,
+            Simulationen und modernen Entwurfsmethoden, in allen Phasen moderner
+            Produktentwicklung ist die Unterstützung von modernen
+            Computernetzwerken state of the art.
+            <v-divider dark></v-divider>
+
+            Wir möchten, dass sich unsere Absolvent*innen gut am Arbeitsmarkt
+            etablieren und neben technischer Expertise und digitalem Fachwissen
+            auch wesentliche Umweltaspekte mit in die neue Arbeitswelt bringen.
+            <v-divider dark></v-divider>
+
+            Um die Kombination aus Technik, Umwelt und Digitalisierung zu
+            ermöglichen, werden folgende Schwerpunkte gesetzt:<br /><br />
+            <b>Maschinenbau</b>: Einführung der neuen Vertiefungsrichtungen
+            Green Engineering und Smart and Digital Engineering<br /><br />
+            <b>Elektrotechnik sowie Elektronik mit Technischer Informatik</b>:
+            Vertiefende Ausbildung in den Bereichen erneuerbare Energien und
+            ressourcenschonende Hardwareentwicklung<br /><br />
+            <b>Informationstechnologie</b>: Vertiefende Ausbildung im Bereich
+            Green IT. Dies beinhaltet die Optimierung des Ressourcenverbrauchs
+            während der Herstellung, des Betriebs und der Entsorgung der Geräte.
+            Die Schulleitung und die Lehrer*innen der HTL Wien West sind
+            überzeugt, damit eine zukunftsorientierte und moderne Ausbildung zu
+            ermöglichen und wünschen allen Schüler*innen mit diesen
+            Ausbildungsrichtungen viel Freude und Erfolg.
+          </v-card-text>
+        </v-card>
+      </v-col>
+      <v-col cols="12" md="4">
+        <v-col cols="12">
+          <v-card elevation="0">
+            <v-card-title class="pl-0">
+              <span id="record">Rückblick Karrieretag 2020</span>
+            </v-card-title>
+            <p>
+              Großes Interesse an unseren Schülerinnen und Schülern gab es am
+              alljährlichen <b>Karrieretag</b> an der HTL Wien West!
+              <br /><br />
+              <b>55 Unternehmen/Ausbildungseinrichtungen</b> nutzten die
+              Gelegenheit und kamen an unsere Schule, um sich zu präsentieren.
+              Das ist neuer Rekord! Einige reisten dabei extra aus Deutschland
+              an. Parallel zur Messe fanden über 20 Vorträge statt.
+            </p>
+            <v-img
+              class="white--text align-end"
+              height="500px"
+              src="@/assets/record.jpg"
+            >
+            </v-img>
+          </v-card>
+        </v-col>
+      </v-col>
+    </v-row>
     <v-card elevation="0">
-      <v-card-title
-        >Unternehmen und Bildungseinrichtungen die 2018 - 2020 am Karrieretag
-        teilgenommen haben:</v-card-title
+      <v-card-title class="pl-0 pb-0"
+        ><span id="unternehmen">
+          Unternehmen und Bildungseinrichtungen die 2018 - 2020 am Karrieretag
+          teilgenommen haben:</span
+        ></v-card-title
       >
-      <v-row>
-        <v-col cols="4">
-          <v-card-text v-for="k of firmenList1" :key="k.name" class=" pa-0">{{
-            k.name
-          }}</v-card-text>
-        </v-col>
-        <v-col cols="4">
-          <v-card-text v-for="k of firmenList2" :key="k.name" class=" pa-0">{{
-            k.name
-          }}</v-card-text>
-        </v-col>
-        <v-col cols="4">
-          <v-card-text v-for="k of firmenList3" :key="k.name" class=" pa-0">{{
-            k.name
-          }}</v-card-text>
-        </v-col>
-      </v-row>
+      <v-container class="red--text">
+        <v-row>
+          <v-col cols="4">
+            <v-card-text v-for="k of firmenList1" :key="k.name" class=" pa-0"
+              ><a
+                :href="k.url"
+                target="_blank"
+                style="text-decoration: none"
+                class="red--text text--darken-4 "
+                >{{ k.name }}</a
+              ></v-card-text
+            >
+          </v-col>
+          <v-col cols="4">
+            <v-card-text v-for="k of firmenList2" :key="k.name" class=" pa-0"
+              ><a
+                :href="k.url"
+                target="_blank"
+                style="text-decoration: none"
+                class="red--text text--darken-4 "
+                >{{ k.name }}</a
+              ></v-card-text
+            >
+          </v-col>
+          <v-col cols="4">
+            <v-card-text v-for="k of firmenList3" :key="k.name" class=" pa-0"
+              ><a
+                :href="k.url"
+                target="_blank"
+                style="text-decoration: none"
+                class="red--text text--darken-4 "
+                >{{ k.name }}</a
+              ></v-card-text
+            >
+          </v-col>
+        </v-row>
+      </v-container>
     </v-card>
+    <Footer></Footer>
   </v-container>
 </template>
 
 <script>
+import Footer from '@/components/Footer.vue';
 export default {
+  components: {
+    Footer,
+  },
   data() {
     return {
       search: '',
+
+      images: [
+        {
+          image: 'images/KT2020-0.jpg',
+        },
+        {
+          image: 'images/KT2020-1.jpg',
+        },
+        {
+          image: 'images/KT2020-2.jpg',
+        },
+        {
+          image: 'images/KT2020-3.jpg',
+        },
+
+        {
+          image: 'images/KT2020-4.jpg',
+        },
+        {
+          image: 'images/KT2020-5.jpg',
+        },
+        {
+          image: 'images/KT2020-6.jpg',
+        },
+        {
+          image: 'images/KT2020-7.jpg',
+        },
+
+        {
+          image: 'images/KT2020-8.jpg',
+        },
+        {
+          image: 'images/KT2020-9.jpg',
+        },
+        {
+          image: 'images/KT2020-10.jpg',
+        },
+        {
+          image: 'images/KT2020-11.jpg',
+        },
+      ],
       kategorien: [
         {
-          name: 'Diesjähriger',
+          name: 'Über uns',
+          id: 'ueberuns',
         },
         {
-          name: 'Bilder und Videos',
+          name: 'Rekord',
+          id: 'record',
         },
+
         {
-          name: 'Wann und Wo',
-        },
-        {
-          name: 'Wohin',
-        },
-        {
-          name: 'Kontakrieren',
+          name: 'Unternehmen 2018-2020',
+          id: 'unternehmen',
         },
       ],
       firmenList1: [
         {
           name: 'A1 Telekom Austria AG',
+          url: 'https://www.a1.net/ueber-a1',
         },
-        { name: 'ABB AG' },
-        { name: 'Absolventenverband' },
-        { name: 'Accenture' },
-        { name: 'ACTIVE SOLUTION Ingenieurbüro AG' },
-        { name: 'ARZ Allgemeines Rechenzentrum GmbH' },
-        { name: 'Atos IT Solutions an Services GmbH' },
-        { name: 'Banet GmbH' },
-        { name: 'Bechtle IT-Systemhaus Österreich' },
-        { name: 'BEKO' },
-        { name: 'Bitmovin' },
-        { name: 'BMD Systemhaus GesmbH' },
-        { name: 'Braintrust GesmbH' },
-        { name: 'Bundesheer Cyberdefence Unit' },
-        { name: 'Bundesrechenzentrum' },
-        { name: 'cargo-partner GmbH' },
-        { name: 'Catalysts' },
-        { name: 'Coca Cola HBC Austria GmbH' },
-        { name: 'DBConcepts' },
-        { name: 'Diamir Holding – Tailored Apps' },
-        { name: 'Docolution GmbH' },
-        { name: 'Elin' },
-        { name: 'epunkt GmbH' },
-        { name: 'Faktor Zehn' },
+        { name: 'ABB AG', url: 'https://new.abb.com/at' },
+        { name: 'Absolventenverband', url: 'https://www.htl-news.at/' },
+        { name: 'Accenture', url: 'https://www.accenture.com/at-de' },
+        {
+          name: 'ACTIVE SOLUTION Ingenieurbüro AG',
+          url: 'https://www.dasingenieurbuero.at/',
+        },
+        {
+          name: 'ARZ Allgemeines Rechenzentrum GmbH',
+          url: 'https://www.arz.at/m086/homepage/',
+        },
+        {
+          name: 'Atos IT Solutions an Services GmbH',
+          url: 'https://atos.net/en/',
+        },
+        { name: 'Banet GmbH', url: 'https://www.banet.at/' },
+        {
+          name: 'Bechtle IT-Systemhaus Österreich',
+          url: 'https://www.bechtle.com/at/',
+        },
+        { name: 'BEKO', url: 'https://www.beko.at/' },
+        { name: 'Bitmovin', url: 'https://bitmovin.com/' },
+        {
+          name: 'BMD Systemhaus GesmbH',
+          url: 'https://www.bmd.com/startseite.html',
+        },
+        { name: 'Braintrust GesmbH', url: 'https://braintrust.at/' },
+        {
+          name: 'Bundesheer Cyberdefence Unit',
+          url: 'https://www.bundesheer.at/',
+        },
+        { name: 'Bundesrechenzentrum', url: 'https://www.brz.gv.at/' },
+        {
+          name: 'cargo-partner GmbH',
+          url: 'https://www.cargo-partner.com/de/int.html',
+        },
+        {
+          name: 'Catalysts',
+          url:
+            'https://de.cloudflight.io/pressemitteilungen/catalysts-wird-cloudflight-42479/',
+        },
+        {
+          name: 'Coca Cola HBC Austria GmbH',
+          url: 'https://at.coca-colahellenic.com/',
+        },
+        { name: 'DBConcepts', url: 'https://www.dbconcepts.com/' },
+        {
+          name: 'Diamir Holding – Tailored Apps',
+          url: 'https://www.tailored-apps.com/',
+        },
+        { name: 'Docolution GmbH', url: 'https://www.docolution.com/' },
+        { name: 'Elin', url: 'https://www.elin.com/' },
+        { name: 'epunkt GmbH', url: 'https://www.epunkt.com/' },
+        { name: 'Faktor Zehn', url: 'https://www.faktorzehn.com/de/' },
       ],
       firmenList2: [
-        { name: 'FERCHAU Austria GmbH' },
-        { name: 'FH Burgenland' },
-        { name: 'FH Campus Wien' },
-        { name: 'FH St. Pölten' },
-        { name: 'FH Technikum Wien' },
-        { name: 'FH Wien der WKW' },
-        { name: 'FH Wiener Neustadt' },
-        { name: 'Flughafen Wien AG' },
-        { name: 'Gebauer & Griller Kabelwerke GesmbH' },
-        { name: 'Herold Business Data' },
-        { name: 'Hokify' },
-        { name: 'HR Consulting Alexander Wozak' },
-        { name: 'it-tects' },
-        { name: 'IVM Technical Consultants Wien GmbH' },
-        { name: 'Jaggaer Austria' },
-        { name: 'Johannes Kepler Universität' },
-        { name: 'KSV1870 Holding AG' },
-        { name: 'maihiro GmbH' },
-        { name: 'Montanuniversität Leoben' },
-        { name: 'New Design University' },
-        { name: 'NOUS Wissensmanagement GmbH' },
-        { name: 'ÖBB' },
-        { name: 'Österreichische Hochschülerschaft' },
-        { name: 'Otto Bock Health Care Product' },
+        { name: 'FERCHAU Austria GmbH', url: 'https://www.ferchau.com/at/de' },
+        { name: 'FH Burgenland', url: 'https://www.fh-burgenland.at/' },
+        { name: 'FH Campus Wien', url: 'https://www.fh-campuswien.ac.at/' },
+        { name: 'FH St. Pölten', url: 'https://www.fhstp.ac.at/de' },
+        { name: 'FH Technikum Wien', url: 'https://www.technikum-wien.at/' },
+        { name: 'FH Wien der WKW', url: 'https://www.fh-wien.ac.at/' },
+        { name: 'FH Wiener Neustadt', url: 'https://www.fhwn.ac.at/' },
+        {
+          name: 'Flughafen Wien AG',
+          url: 'https://www.viennaairport.com/unternehmen/flughafen_wien_ag',
+        },
+        {
+          name: 'Gebauer & Griller Kabelwerke GesmbH',
+          url: 'https://www.gg-group.com/de',
+        },
+        { name: 'Herold Business Data', url: 'https://www.herold.at/' },
+        { name: 'Hokify', url: 'https://hokify.at/' },
+        {
+          name: 'HR Consulting Alexander Wozak',
+          url: 'https://www.hrconsulting.at/startseite.html',
+        },
+        { name: 'it-tects', url: 'https://www.it-tects.at/' },
+        {
+          name: 'IVM Technical Consultants Wien GmbH',
+          url: 'https://www.ivm.at/',
+        },
+        { name: 'Jaggaer Austria', url: 'https://www.jaggaer.com/de' },
+        { name: 'Johannes Kepler Universität', url: 'https://www.jku.at/' },
+        { name: 'KSV1870 Holding AG', url: 'https://www.ksv.at/' },
+        { name: 'maihiro GmbH', url: 'https://www.maihiro.com/' },
+        {
+          name: 'Montanuniversität Leoben',
+          url: 'https://www.unileoben.ac.at/',
+        },
+        {
+          name: 'New Design University',
+          url: 'https://www.ndu.ac.at/new-design-university/',
+        },
+        {
+          name: 'NOUS Wissensmanagement GmbH',
+          url: 'https://www.nousdigital.net/de/',
+        },
+        { name: 'ÖBB', url: 'https://www.oebb.at/de/' },
+        {
+          name: 'Österreichische Hochschülerschaft',
+          url: 'https://www.oeh.ac.at/',
+        },
+        {
+          name: 'Otto Bock Health Care Product',
+          url: 'https://www.ottobock.com/en/',
+        },
       ],
       firmenList3: [
-        { name: 'paysafecard Wertkarten GmbH' },
-        { name: 'Personal Zellner' },
-        { name: 'PORR AG' },
-        { name: 'ppedv AG' },
-        { name: 'Raiffeisen Software' },
-        { name: 'Robert Bosch AG' },
-        { name: 'Rubicon IT GmbH' },
-        { name: 'Schindler Aufzüge und Fahrtreppen GmbH' },
-        { name: 'Schulmeister Management Consulting GmbH' },
-        { name: 'SEC Consult' },
-        { name: 'SEQIS GmbH' },
-        { name: 'Siemens Personaldienstleistungen GmbH' },
-        { name: 'softwareXperts' },
-        { name: 'STEINER-HITECH GmbH' },
-        { name: 'StepStone Österreich GmbH' },
-        { name: 'TECHSEARCH' },
-        { name: 'TODAY' },
-        { name: 'Trenkwalder Personaldienste GmbH' },
-        { name: 'Werbeakademie des WIFI Wien' },
-        { name: 'Westsächsische Hochschule Zwickau' },
-        { name: 'Wien Energie GmbH' },
-        { name: 'Wirtschaftsuniversität Wien' },
+        {
+          name: 'paysafecard Wertkarten GmbH',
+          url: 'https://www.paysafecard.com/de/',
+        },
+        { name: 'Personal Zellner', url: 'https://www.personal-zellner.at/' },
+        { name: 'PORR AG', url: 'https://porr.at/' },
+        { name: 'ppedv AG', url: 'https://www.ppedv.de/' },
+        { name: 'Raiffeisen Software', url: 'https://www.r-software.at/' },
+        { name: 'Robert Bosch AG', url: 'https://www.bosch.at/' },
+        { name: 'Rubicon IT GmbH', url: 'https://www.rubicon.eu/' },
+        {
+          name: 'Schindler Aufzüge und Fahrtreppen GmbH',
+          url: 'https://www.schindler.com/at/internet/de/home.html',
+        },
+        {
+          name: 'Schulmeister Management Consulting GmbH',
+          url: 'https://www.schulmeister-consulting.com/',
+        },
+        { name: 'SEC Consult', url: 'https://sec-consult.com/de/' },
+        { name: 'SEQIS GmbH', url: 'https://www.seqis.com/de/' },
+        {
+          name: 'Siemens Personaldienstleistungen GmbH',
+          url:
+            'https://new.siemens.com/at/de/unternehmen/ueber-uns/verbundene-unternehmen/spdl.html',
+        },
+        { name: 'softwareXperts', url: 'https://www.sw-xperts.com/' },
+        { name: 'STEINER-HITECH GmbH', url: 'https://www.steiner-hitech.at/' },
+        { name: 'StepStone Österreich GmbH', url: 'https://www.stepstone.at/' },
+        { name: 'TECHSEARCH', url: 'https://www.techsearch.at/' },
+        { name: 'TODAY', url: 'https://www.today-experts.com/de/' },
+        {
+          name: 'Trenkwalder Personaldienste GmbH',
+          url: 'https://de.trenkwalder.com/',
+        },
+        {
+          name: 'Werbeakademie des WIFI Wien',
+          url: 'https://www.werbeakademie.at/',
+        },
+        {
+          name: 'Westsächsische Hochschule Zwickau',
+          url: 'https://www.fh-zwickau.de/',
+        },
+        { name: 'Wien Energie GmbH', url: 'https://www.wienenergie.at/' },
+        { name: 'Wirtschaftsuniversität Wien', url: 'https://www.wu.ac.at/' },
       ],
     };
+  },
+  methods: {
+    changeColor(id) {
+     
+      this.kategorien
+        .filter((el) => el.id != id)
+        .forEach(
+          (el) => (document.getElementById(`${el.id}`).style.background = 'none'),
+        );
+      document.getElementById(`${id}`).style.background = 'yellow';
+    },
   },
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+#record:after {
+  background-color: yellow;
+}
+</style>

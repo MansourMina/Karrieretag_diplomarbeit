@@ -200,7 +200,7 @@ export default {
 
     items: [
       { title: 'Home', icon: 'mdi-view-dashboard', route: '/' },
-      { title: 'Information', icon: 'mdi-information', route: '/infos' },
+      { title: 'Informationen', icon: 'mdi-information', route: '/infos' },
       { title: 'Contact', icon: 'mdi-account-supervisor', route: '/contact' },
     ],
     right: null,

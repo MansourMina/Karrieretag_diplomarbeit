@@ -78,8 +78,7 @@
       </v-row>
     </v-container>
 
-  
-    <div class="contaner section mt-10" id="arrowFirst" >
+    <div class="contaner section mt-10" id="arrowFirst">
       <div class="row d-flex flex-wrap">
         <div class="col-md-6">
           <h3>
@@ -118,7 +117,7 @@
         </div>
       </div>
       <div class="row mt-16">
-        <div class="col-md-6" >
+        <div class="col-md-6">
           <v-carousel
             hide-delimiters
             next-icon
@@ -189,8 +188,8 @@
           </v-carousel>
         </div>
       </div>
+      <Footer />
     </div>
-    <Footer />
   </v-container>
 </template>
 

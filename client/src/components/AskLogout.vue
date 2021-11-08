@@ -2,7 +2,7 @@
   <v-row justify="center">
     <v-dialog v-model="showDialog" max-width="290" persistent>
       <v-card color="blue-grey darken-3" dark>
-        <v-card-title class="grey--text text--lighten-1 text-body-2 mb-4">
+        <v-card-title class="white--text text--lighten-1 text-body-2 mb-4">
           <div>
             Abmelden
           </div>

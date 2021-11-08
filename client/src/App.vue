@@ -2,7 +2,10 @@
   <v-app>
     <!-- Navbar -->
     <v-app-bar app color="white" elevate-on-scroll fixed height="70">
-      <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon
+        v-if="$router.history.current['path'] != '/admin'"
+        @click="drawer = !drawer"
+      ></v-app-bar-nav-icon>
 
       <v-toolbar-title>
         <router-link to="/"
@@ -30,7 +33,13 @@
       </v-btn>
     </v-app-bar>
 
-    <v-navigation-drawer color="white" v-model="drawer" statless app>
+    <v-navigation-drawer
+      color="white"
+      v-model="drawer"
+      statless
+      app
+      v-if="$router.history.current['path'] != '/admin'"
+    >
       <v-list nav>
         <v-list-item>
           <v-list-item-content v-if="logged">
@@ -142,7 +151,7 @@
       </v-dialog>
     </div>
     <v-main hide-overlay>
-      <router-view />
+      <router-view :logged="logged" @changeColor="changeColor" />
     </v-main>
   </v-app>
 </template>
@@ -203,9 +212,34 @@ export default {
       { title: 'Informationen', icon: 'mdi-information', route: '/infos' },
       { title: 'Contact', icon: 'mdi-account-supervisor', route: '/contact' },
     ],
+    idOfkategorien: [
+      {
+        id: 'ueberuns',
+      },
+      {
+        id: 'record',
+      },
+
+      {
+        id: 'unternehmen',
+      },
+      {
+        id: 'karrieretag',
+      },
+    ],
     right: null,
   }),
   methods: {
+    changeColor(id) {
+      console.log(id);
+      // this.kategorien
+      //   .filter((el) => el.id != id)
+      //   .forEach(
+      //     (el) =>
+      //       (document.getElementById(`${el.id}`).style.background = 'none'),
+      //   );
+      // document.getElementById(`${id}`).style.background = 'yellow';
+    },
     logout() {
       this.logged = false;
     },

@@ -19,7 +19,7 @@
           </v-carousel>
 
           <v-card-title>
-            Karrieretag 2022
+            <span id="karrieretag">Karrieretag 2022</span>
           </v-card-title>
 
           <v-card-text class="text--primary" style="font-size:15px">
@@ -37,6 +37,14 @@
             <b>8:00 bis 14:00</b> in der HTL Wien West statt.<br /><br />
             <b>Bei Interesse stellen Sie einen </b>
             <router-link to="/antrag" class="red--text">Antrag</router-link>.
+            <br />
+            <br />
+            Bitte beachten Sie, dass unser Platz aufgrund der räumlichen
+            Gegebenheiten beschränkt ist und wir daher letztes Mal mit
+            <b>52 Teilnehmern</b> das Maximum erreicht haben. <br />Wir gehen
+            nach der Reihenfolge der Anmeldungen vor.
+            <br />
+            <br />
           </v-card-text>
         </v-card>
       </v-col>
@@ -69,6 +77,30 @@
                 :href="`#${k.id}`"
                 @click="changeColor(k.id)"
                 >{{ k.name }}</v-btn
+              >
+            </v-container>
+          </v-card>
+        </v-col>
+        <v-col cols="12" class="mt-10">
+          <v-card elevation="0">
+            <v-card-title>
+              Seiten
+            </v-card-title>
+            <v-container class="d-flex flex-column">
+              <v-btn
+                v-for="e of extras"
+                :key="e.name"
+                rounded
+                class="ma-3 red darken-4 white--text"
+                :to="e.url"
+                >{{ e.name }}</v-btn
+              >
+              <v-btn
+                rounded
+                v-if="!logged"
+                class="ma-3 red darken-4 white--text"
+                to="/antrag"
+                >Antrag stellen</v-btn
               >
             </v-container>
           </v-card>
@@ -135,7 +167,7 @@
         <v-col cols="12">
           <v-card elevation="0">
             <v-card-title class="pl-0">
-              <span id="record">Rückblick Karrieretag 2020</span>
+              <span id="rekord">Rückblick Karrieretag 2020</span>
             </v-card-title>
             <p>
               Großes Interesse an unseren Schülerinnen und Schülern gab es am
@@ -157,7 +189,7 @@
       </v-col>
     </v-row>
     <v-card elevation="0">
-      <v-card-title class="pl-0 pb-0"
+      <v-card-title class="pl-0 pb-0 pt-16"
         ><span id="unternehmen">
           Unternehmen und Bildungseinrichtungen die 2018 - 2020 am Karrieretag
           teilgenommen haben:</span
@@ -211,6 +243,11 @@ export default {
   components: {
     Footer,
   },
+  props: {
+    logged: {
+      type: Boolean,
+    },
+  },
   data() {
     return {
       search: '',
@@ -262,12 +299,23 @@ export default {
         },
         {
           name: 'Rekord',
-          id: 'record',
+          id: 'rekord',
         },
 
         {
           name: 'Unternehmen 2018-2020',
           id: 'unternehmen',
+        },
+      ],
+      extras: [
+        {
+          name: 'Startseite',
+          url: '/',
+        },
+
+        {
+          name: 'Kontakt',
+          url: '/contact',
         },
       ],
       firmenList1: [
@@ -433,11 +481,11 @@ export default {
   },
   methods: {
     changeColor(id) {
-     
       this.kategorien
         .filter((el) => el.id != id)
         .forEach(
-          (el) => (document.getElementById(`${el.id}`).style.background = 'none'),
+          (el) =>
+            (document.getElementById(`${el.id}`).style.background = 'none'),
         );
       document.getElementById(`${id}`).style.background = 'yellow';
     },
@@ -446,7 +494,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-#record:after {
+#rekord:after {
   background-color: yellow;
 }
 </style>

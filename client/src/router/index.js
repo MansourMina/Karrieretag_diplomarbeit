@@ -5,7 +5,8 @@ import Informationen from '../views/Informationen.vue';
 import Contact from '../views/Contact.vue';
 import Login from '../views/Login.vue';
 import Daten from '../views/Daten.vue';
-import NProgress from 'nprogress';
+import Admin from '../views/Admin.vue';
+import Antrag from '../views/Antrag.vue';
 
 Vue.use(VueRouter);
 
@@ -16,7 +17,13 @@ const routes = [
     component: Home,
   },
   {
+    path: '/admin',
+    name: 'Admin',
+    component: Admin,
+  },
+  {
     path: '/infos',
+    props: true,
     name: 'Informationen',
     component: Informationen,
   },
@@ -35,6 +42,11 @@ const routes = [
     name: 'Daten',
     component: Daten,
   },
+  {
+    path: '/antrag',
+    name: 'Antrag',
+    component: Antrag,
+  },
 ];
 
 const router = new VueRouter({
@@ -42,17 +54,5 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes,
 });
-router.beforeResolve((to, from, next) => {
-  // If this isn't an initial page load.
-  if (to.name) {
-    // Start the route progress bar.
-    NProgress.start();
-  }
-  next();
-});
 
-router.afterEach((to, from) => {
-  // Complete the animation of the route progress bar.
-  NProgress.done();
-});
 export default router;

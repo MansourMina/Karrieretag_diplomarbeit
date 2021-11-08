@@ -82,19 +82,21 @@
       <div class="row d-flex flex-wrap">
         <div class="col-md-6">
           <h3>
-            Lorem Ipsum lo
+            Karrieretag 2022
           </h3>
           <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae
-            minus, maxime pariatur nesciunt nam laborum molestias earum non
-            culpa ducimus, ex deserunt repellat corrupti illo et, necessitatibus
-            voluptatum aliquid ea?Lorem ipsum dolor sit amet consectetur
-            adipisicing elit. Vitae minus, maxime pariatur nesciunt nam laborum
-            molestias earum non culpa ducimus, ex deserunt repellat corrupti
-            illo et, necessitatibus voluptatum aliquid ea?
+            Die HTL Wien West veranstaltet einmal im Jahr einen Karrieretag für
+            die Schülerinnen und Schüler der Ausbildungsrichtungen
+            Elektrotechnik, Elektronik, Informationstechnologie, Maschinenbau
+            und Mechatronik.
           </p>
           <div class="my-10">
-            <v-btn x-large color="red" dark>
+            <v-btn
+              x-large
+              color="red"
+              dark
+              @click="tellParentChangeColor('karrieretag')"
+            >
               More
             </v-btn>
           </div>
@@ -106,7 +108,7 @@
             prev-icon
             cycle
             interval="4000"
-            height="350px"
+            height="300"
           >
             <v-carousel-item
               v-for="i of c1"
@@ -124,7 +126,7 @@
             prev-icon
             cycle
             interval="4000"
-            height="350px"
+            height="300"
           >
             <v-carousel-item
               v-for="i of c2"
@@ -135,17 +137,16 @@
         </div>
         <div class="col-md-6">
           <h3>
-            Lorem Ipsum lo
+            Über uns
           </h3>
           <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia,
-            expedita eos id qui fuga sequi ab labore reprehenderit suscipit
-            ratione hic quae rerum est error adipisci accusantium debitis,
-            inventore consequatur.porro adipisci natus officia doloribus
-            temporibus voluptatum iusto libero distinctio error.
+            Um die Schülerinnen und Schüler für die Herausforderungen unserer
+            Zeit gut vorzubereiten, widmet sich die HTL Wien West in allen ihren
+            technischen Ausbildungsrichtungen noch stärker als bisher den Themen
+            Digitalisierung und Umwelt.
           </p>
           <div class="my-10">
-            <v-btn x-large color="black" dark>
+            <v-btn x-large color="black" dark @click="tellParentChangeColor('karrieretag')">
               More
             </v-btn>
           </div>
@@ -155,18 +156,15 @@
       <div class="row mt-16">
         <div class="col-md-6">
           <h3>
-            Lorem Ipsum lo
+            2020 Rekord
           </h3>
           <p>
-            porro adipisci natus officia doloribus temporibus voluptatum iusto
-            libero distinctio error.porro adipisci natus officia doloribus
-            temporibus voluptatum iusto libero distinctio error.porro adipisci
-            natus officia doloribus temporibus voluptatum iusto libero
-            distinctio error.porro adipisci natus officia doloribus temporibus
-            voluptatum iusto libero distinctio error.
+            55 Unternehmen/Ausbildungseinrichtungen nutzten die Gelegenheit und
+            kamen an unsere Schule, um sich zu präsentieren. Das ist neuer
+            Rekord!
           </p>
           <div class="my-10">
-            <v-btn x-large color="red" dark>
+            <v-btn x-large color="red" dark @click="tellParentChangeColor('karrieretag')">
               More
             </v-btn>
           </div>
@@ -178,7 +176,7 @@
             prev-icon
             cycle
             interval="4000"
-            height="350px"
+            height="300"
           >
             <v-carousel-item
               v-for="i of c3"
@@ -200,6 +198,11 @@ import Footer from '@/components/Footer.vue';
 // import Countdown from '@/components/Countdown.vue';
 
 export default {
+  props: {
+    changeColor: {
+      type: Function,
+    },
+  },
   data: () => ({
     c1: [
       {
@@ -256,6 +259,11 @@ export default {
       },
     ],
   }),
+  methods: {
+    tellParentChangeColor(id) {
+      this.$emit('changeColor', id);
+    },
+  },
 
   components: { Countdown, Footer },
 };

@@ -1,58 +1,173 @@
 <template>
   <v-app>
     <!-- Navbar -->
-    <v-app-bar app color="white" elevate-on-scroll fixed height="70">
-      <v-app-bar-nav-icon
+    <div v-if="this.$route.name != 'Not Found'">
+      <v-app-bar app color="white" hide-on-scroll height="70">
+        <v-app-bar-nav-icon
+          @click="drawer = !drawer"
+          name="Navbar-Icon"
+          title="Navigieren"
+        ></v-app-bar-nav-icon>
+
+        <v-toolbar-title>
+          <router-link to="/" name="Back to Home"
+            ><img
+              src="@/assets/logo.jpg"
+              class="mt-3 mb-2 hidden-xs-only"
+              height="50"
+              name="Logo HTL Wien West"
+              alt="Logo"
+              title="HTL Wien West Logo"
+          /></router-link>
+        </v-toolbar-title>
+        <v-spacer></v-spacer>
+
+        <v-btn
+          text
+          class="mr-10"
+          active-class="red darken-4 white--text"
+          to="/login"
+          plain
+          v-if="!logged"
+        >
+          Login
+        </v-btn>
+        <v-btn
+          text
+          class="mr-10"
+          to="/impress"
+          active-class="red darken-4 white--text"
+          plain
+        >
+          Impressum
+        </v-btn>
+      </v-app-bar>
+
+      <v-navigation-drawer
+        color="white"
+        v-model="drawer"
+        statless
+        app
         v-if="$router.history.current['path'] != '/admin'"
-        @click="drawer = !drawer"
-      ></v-app-bar-nav-icon>
-
-      <v-toolbar-title>
-        <router-link to="/"
-          ><img src="@/assets/logo.png" class="mt-3 mb-2" height="50"
-        /></router-link>
-      </v-toolbar-title>
-      <v-spacer></v-spacer>
-
-      <v-btn
-        text
-        class="mr-10"
-        active-class="red darken-4 white--text"
-        to="/login"
-        v-if="!logged"
       >
-        Login
-      </v-btn>
-      <v-btn
-        text
-        class="mr-10"
-        href="https://www.htlwienwest.at/ueberuns/impressum.html"
-        target="_blank"
-      >
-        Impressum
-      </v-btn>
-    </v-app-bar>
+        <v-list nav>
+          <v-list-item>
+            <v-list-item-content v-if="logged">
+              <v-list-item-title class="text-h6">
+                Max Mustermann
+              </v-list-item-title>
+              <v-list-item-subtitle
+                >maxmustermann@gmail.com</v-list-item-subtitle
+              >
+            </v-list-item-content>
+            <v-list-item-content v-else class="text-center">
+              <v-list-item-title class="text-h6">
+                Startseite
+              </v-list-item-title>
+              <v-list-item-subtitle
+                >Karrieretag HTL Wien West
+              </v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
 
+        <div>
+          <v-divider dark></v-divider>
+          <v-list dense nav>
+            <v-list-item
+              v-for="item in items"
+              :key="item.title"
+              link
+              active-class="red darken-4 white--text"
+              :to="item.route"
+            >
+              <v-list-item-icon>
+                <v-icon>{{ item.icon }}</v-icon>
+              </v-list-item-icon>
+
+              <v-list-item-content>
+                <v-list-item-title>{{ item.title }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item
+              link
+              active-class="red darken-4 white--text"
+              to="/antrag"
+              v-if="!logged"
+            >
+              <v-list-item-icon>
+                <v-icon>mdi-newspaper-variant-outline</v-icon>
+              </v-list-item-icon>
+
+              <v-list-item-content>
+                <v-list-item-title>Antrag stellen</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </div>
+        <div v-if="logged">
+          <v-row class="my-0">
+            <v-col cols="4">
+              <p class="ml-2 mt-1">Extras</p>
+            </v-col>
+            <v-col cols="8">
+              <v-divider dark></v-divider>
+            </v-col>
+          </v-row>
+          <v-list dense nav>
+            <v-list-item link :loading="dialog" @click.stop="showDialog = true">
+              <v-list-item-icon>
+                <v-icon>mdi-account-multiple-remove</v-icon>
+              </v-list-item-icon>
+
+              <v-list-item-content>
+                <v-list-item-title>Abmelden</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item
+              link
+              active-class="red darken-4 white--text"
+              :to="l.route"
+              v-for="l of extraItems"
+              :key="l.title"
+            >
+              <v-list-item-icon>
+                <v-icon>{{ l.icon }}</v-icon>
+              </v-list-item-icon>
+
+              <v-list-item-content>
+                <v-list-item-title>{{ l.name }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </div>
+        <AskLogout :showDialog="showDialog" @Askdialog="showLoading" />
+      </v-navigation-drawer>
+    </div>
+
+    <!-- Admin Navigation -->
     <v-navigation-drawer
       color="white"
       v-model="drawer"
       statless
       app
-      v-if="$router.history.current['path'] != '/admin'"
+      v-if="$router.history.current['path'].includes('/admin')"
     >
       <v-list nav>
         <v-list-item>
           <v-list-item-content v-if="logged">
             <v-list-item-title class="text-h6">
-              Max Mustermann
+              Admin XY
             </v-list-item-title>
-            <v-list-item-subtitle>Siemens@gmail.com</v-list-item-subtitle>
+            <v-list-item-subtitle>admin@gmail.com</v-list-item-subtitle>
           </v-list-item-content>
           <v-list-item-content v-else>
             <v-list-item-title class="text-h6">
               Startseite
             </v-list-item-title>
-            <v-list-item-subtitle>HTL Wien West</v-list-item-subtitle>
+            <v-list-item-subtitle
+              >Karrieretag HTL Wien West
+            </v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -61,11 +176,12 @@
         <v-divider dark></v-divider>
         <v-list dense nav>
           <v-list-item
-            v-for="item in items"
+            v-for="item in adminitems"
             :key="item.title"
             link
-            active-class="black white--text"
+            active-class="red darken-4 white--text"
             :to="item.route"
+            exact
           >
             <v-list-item-icon>
               <v-icon>{{ item.icon }}</v-icon>
@@ -75,64 +191,8 @@
               <v-list-item-title>{{ item.title }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-list-item
-            link
-            active-class="black white--text"
-            to="/antrag"
-            v-if="!logged"
-          >
-            <v-list-item-icon>
-              <v-icon>mdi-newspaper-variant-outline</v-icon>
-            </v-list-item-icon>
-
-            <v-list-item-content>
-              <v-list-item-title>Antrag stellen</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
         </v-list>
       </div>
-      <div v-if="logged">
-        <v-row class="my-0">
-          <v-col cols="4">
-            <p class="ml-2 mt-1">Extras</p>
-          </v-col>
-          <v-col cols="8">
-            <v-divider dark></v-divider>
-          </v-col>
-        </v-row>
-        <v-list dense nav>
-          <v-list-item
-            link
-            active-class="black white--text"
-            :loading="dialog"
-            @click.stop="showDialog = true"
-          >
-            <v-list-item-icon>
-              <v-icon>mdi-account-multiple-remove</v-icon>
-            </v-list-item-icon>
-
-            <v-list-item-content>
-              <v-list-item-title>Abmelden</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item
-            link
-            active-class="black white--text"
-            :to="l.route"
-            v-for="l of extraItems"
-            :key="l.title"
-          >
-            <v-list-item-icon>
-              <v-icon>{{ l.icon }}</v-icon>
-            </v-list-item-icon>
-
-            <v-list-item-content>
-              <v-list-item-title>{{ l.name }}</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list>
-      </div>
-      <AskLogout :showDialog="showDialog" @Askdialog="showLoading" />
     </v-navigation-drawer>
     <!-- Navbar -->
 
@@ -151,7 +211,15 @@
       </v-dialog>
     </div>
     <v-main hide-overlay>
-      <router-view :logged="logged" @changeColor="changeColor" />
+      <loading v-if="$root.loading"></loading>
+      <router-view
+        v-else
+        :logged="logged"
+        @changeColor="changeColor"
+        @focusId="passId"
+        :impressId="impressId"
+        :infoId="infoId"
+      />
     </v-main>
   </v-app>
 </template>
@@ -163,13 +231,19 @@ export default {
   components: {
     AskLogout,
   },
+  created() {
+    console.log();
+  },
   watch: {
     dialog(val) {
       if (!val) return;
 
       setTimeout(
         () => (
-          (this.dialog = false), (this.logged = false), this.$router.push('/')
+          (this.dialog = false),
+          (this.logged = false),
+          this.$router.push('/'),
+          (this.drawer = false)
         ),
         2000,
       );
@@ -177,11 +251,17 @@ export default {
   },
 
   data: () => ({
+    languages: [
+      { flag: 'us', language: 'en', title: 'English' },
+      { flag: 'de', language: 'de', title: 'Deutsch' },
+    ],
+
     value: 0,
     query: false,
     show: true,
     interval: 0,
-
+    infoId: '',
+    impressId: '',
     drawer: false,
     logged: true,
     dialog: false,
@@ -206,7 +286,19 @@ export default {
         route: '/vortrag',
       },
     ],
-
+    adminitems: [
+      { title: 'Home', icon: 'mdi-view-dashboard', route: '/admin' },
+      {
+        title: 'Aktivitäten',
+        icon: 'mdi-information',
+        route: '/admin/aktivitäten',
+      },
+      {
+        title: 'Anträge',
+        icon: 'mdi-account-supervisor',
+        route: '/admin/anträge',
+      },
+    ],
     items: [
       { title: 'Home', icon: 'mdi-view-dashboard', route: '/' },
       { title: 'Informationen', icon: 'mdi-information', route: '/infos' },
@@ -230,8 +322,13 @@ export default {
     right: null,
   }),
   methods: {
+    passId(id) {
+      this.impressId = id;
+      this.$router.push('/impress');
+    },
     changeColor(id) {
-      console.log(id);
+      this.infoId = id;
+      this.$router.push('/infos');
       // this.kategorien
       //   .filter((el) => el.id != id)
       //   .forEach(
@@ -268,3 +365,11 @@ export default {
   },
 };
 </script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;800&display=swap');
+
+html * {
+  font-family: 'Titillium Web', sans-serif;
+}
+</style>

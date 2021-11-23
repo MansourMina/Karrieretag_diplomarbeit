@@ -1,12 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Home from '../views/Home.vue';
-import Informationen from '../views/Informationen.vue';
-import Contact from '../views/Contact.vue';
-import Login from '../views/Login.vue';
-import Daten from '../views/Daten.vue';
-import Admin from '../views/Admin.vue';
-import Antrag from '../views/Antrag.vue';
+import NProgress from 'nprogress';
 
 Vue.use(VueRouter);
 
@@ -14,38 +8,67 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home,
+    component: () =>
+      import(/* webpackChunkName: "group-foo" */ '../views/Home.vue'),
   },
   {
     path: '/admin',
     name: 'Admin',
-    component: Admin,
+    component: () =>
+      import(/* webpackChunkName: "group-foo" */ '../views/Admin.vue'),
+    children: [
+      {
+        path: '/anträge',
+        component: () =>
+          import(
+            /* webpackChunkName: "group-foo" */ '../viewsAdmin/Anträge.vue'
+          ),
+      },
+    ],
   },
+
   {
     path: '/infos',
     props: true,
     name: 'Informationen',
-    component: Informationen,
+    component: () =>
+      import(/* webpackChunkName: "group-foo" */ '../views/Informationen.vue'),
   },
   {
     path: '/contact',
     name: 'Contact',
-    component: Contact,
+    component: () =>
+      import(/* webpackChunkName: "group-foo" */ '../views/Contact.vue'),
   },
   {
     path: '/login',
     name: 'Login',
-    component: Login,
+    component: () =>
+      import(/* webpackChunkName: "group-foo" */ '../views/Login.vue'),
   },
   {
     path: '/daten',
     name: 'Daten',
-    component: Daten,
+    component: () =>
+      import(/* webpackChunkName: "group-foo" */ '../views/Daten.vue'),
   },
   {
     path: '/antrag',
     name: 'Antrag',
-    component: Antrag,
+    component: () =>
+      import(/* webpackChunkName: "group-foo" */ '../views/Antrag.vue'),
+  },
+  {
+    path: '/impress',
+    name: 'Impressum',
+    component: () =>
+      import(/* webpackChunkName: "group-foo" */ '../views/Impressum.vue'),
+  },
+  {
+    path: '*',
+    name: 'Not Found',
+    component: () =>
+      import(/* webpackChunkName: "group-foo" */ '../views/NotFound.vue'),
   },
 ];
 
@@ -53,6 +76,16 @@ const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  NProgress.start();
+  // console.log(NProgress.start());
+  NProgress.set(0.1);
+  next();
+});
+router.afterEach(() => {
+  setTimeout(() => NProgress.done(), 500);
 });
 
 export default router;

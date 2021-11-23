@@ -1,24 +1,22 @@
 <template>
   <v-container class="mt-2 py-5">
-    <h1 class=" text-center text-uppercase display-1 font-weight-light">Möchten Sie uns kontaktieren ?</h1>
+    <h1 class=" text-center text-uppercase display-1 font-weight-light">
+      Möchten Sie uns kontaktieren ?
+    </h1>
     <v-row>
-      <v-col cols="6">
+      <v-col cols="12" md="6">
         <v-col>
-          <h6 class="font-weight-light " style="font-size: 20px">
-            Die HTL Wien West (ehem. HTL Ottakring) ist eine berufsbildende
-            höhere Schule (Höhere Technische Lehranstalt) im 16. Wiener
-            Gemeindebezirk Ottakring.
-          </h6>
+          <h2 class="mb-4 display-6 font-weight-light">DATEN</h2>
         </v-col>
 
         <v-row>
           <v-col cols="3">
-            <v-icon x-large color="red" style="font-size: 70px" > 
+            <v-icon x-large color="red" style="font-size: 70px">
               mdi-map-marker
             </v-icon>
           </v-col>
-          <v-col cols="3">
-            <h6>Adresse</h6>
+          <v-col cols="8" md="3">
+            <p style="font-size: 16px"><b>Adresse</b></p>
             <p>Thaliastraße 125, 1160 Wien</p>
           </v-col>
         </v-row>
@@ -29,9 +27,9 @@
               mdi-phone-classic
             </v-icon>
           </v-col>
-          <v-col cols="3">
-            <h6>Tel.</h6>
-            <p>01 49111 113</p>
+          <v-col cols="8" md="3">
+            <p style="font-size: 16px"><b>Tel.</b></p>
+            <p><a href="tel:01 49111 113">01 49111 113</a></p>
           </v-col>
         </v-row>
         <v-row>
@@ -40,17 +38,22 @@
               mdi-email
             </v-icon>
           </v-col>
-          <v-col cols="3">
-            <h6>Email</h6>
-            <p>direktion@htlwienwest.at</p>
+          <v-col cols="8" md="3">
+            <p style="font-size: 16px"><b>Email</b></p>
+            <p>
+              <a href="mailto:direktion@htlwienwest.at"
+                >direktion@htlwienwest.at</a
+              >
+            </p>
           </v-col>
         </v-row>
       </v-col>
 
-      <v-col cols="6">
+      <v-col cols="12" md="6">
         <h2 class="mb-4 display-6 font-weight-light">MAP</h2>
         <div style="width: 100%">
           <iframe
+          name="HTL Wien West Map"
             width="100%"
             height="450"
             frameborder="0"

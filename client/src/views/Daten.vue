@@ -1,17 +1,17 @@
 <template>
   <v-container>
-    <v-card-text
-      ><span >Ihre URL:</span>
-      <v-chip
-        disabled
-        href="http://www.htlwienwest.at"
-        class="ml-10"
-        color="blue"
-        pill
-        width="100"
-        >https://github.com/MansourMina/Karrieretag_diplomarbeit</v-chip
-      >
-    </v-card-text>
+    <v-row>
+      <v-col cols="12" md="1" >Ihre URL:</v-col>
+      <v-col cols="12" md="11">
+        <v-chip
+          disabled
+          href="http://www.htlwienwest.at"
+          color="blue"
+          pill
+          >https://github.com/MansourMina/Karrieretag_diplomarbeit</v-chip
+        >
+      </v-col>
+    </v-row>
     <v-row>
       <v-col cols="1">
         <v-icon large color="black">

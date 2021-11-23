@@ -2,10 +2,10 @@
   <div class="container-fluid px-3 px-md-5 px-lg-3 px-xl-5 py-5 mx-auto">
     <div>
       <!-- @submit.prevent="login" -->
-      <form >
+      <form>
         <div class="card card0 mt-5 border-0">
-          <div class="row d-flex">
-            <div class="col-lg-6">
+          <v-row>
+            <v-col cols="12" md="6">
               <div class=" d-block text-center  border-line">
                 <img
                   src="@/assets/Anmeldung_Logo.svg"
@@ -13,8 +13,8 @@
                   style="height:60vh; width:60vh; margin:-30px; "
                 />
               </div>
-            </div>
-            <div class="col-lg-6">
+            </v-col>
+            <v-col cols="12" md="6">
               <div class="card2 border-0 px-4 py-5">
                 <div class="row px-3"></div>
                 <div class="row px-3">
@@ -35,7 +35,7 @@
                     </h6>
                   </label>
                 </div>
-                <div class="row px-3 mb-4 mt-4">
+                <v-row class="px-3 mb-4 mt-4">
                   <label class="mb-1">
                     <h6 class="spacing mb-0 text-sm">Password</h6>
                   </label>
@@ -51,23 +51,22 @@
                       {{ message }}
                     </h6>
                   </label>
-                </div>
+                </v-row>
                 <!-- <div class="row px-3 mb-4">
               <a href="#" class="ml-auto mb-0 text-sm">Forgot Password?</a>
             </div> -->
-                <div class="row mb-3 px-3">
+                <v-row class=" mb-3 px-3">
                   <button
                     type="submit"
                     style="background-color: #B61212;"
                     class="btn btn-blue text-center"
-                    
                   >
                     Login
                   </button>
-                </div>
+                </v-row>
               </div>
-            </div>
-          </div>
+            </v-col>
+          </v-row>
         </div>
       </form>
     </div>
@@ -88,9 +87,7 @@ export default {
       message: '',
     };
   },
-  components: {
-    
-  },
+  components: {},
   // created() {
   //   let user = JSON.parse(localStorage.getItem('user'));
   //   if (user != null) {
@@ -180,8 +177,7 @@ export default {
   font-weight: 300;
 }
 
-.logininput,
-textarea {
+.logininput {
   padding: 10px 12px 10px 12px;
   border: 1px solid lightgrey;
   border-radius: 2px;
@@ -194,8 +190,7 @@ textarea {
   letter-spacing: 1px;
 }
 
-.logininput:focus,
-textarea:focus {
+.logininput:focus {
   -moz-box-shadow: none !important;
   -webkit-box-shadow: none !important;
   box-shadow: none !important;

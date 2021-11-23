@@ -1,6 +1,18 @@
 <template>
   <v-container fluid class="mx-0 p-0 ">
-    <header class="masthead" id="home">
+    <v-container fluid lighten-2 class="black--text mt-16" text-center>
+      <h1 class="display-1 font-weight-light text-uppercase ">
+        BIS ZUM KARRIERETAG <b>2022</b> der
+        <span class="red--text text--darken-4 font-weight-bold">
+          HTL Wien West
+        </span>
+      </h1>
+      <v-divider dark></v-divider>
+      <!-- <flip-countdown deadline="2022-03-22 " :showSeconds="false"></flip-countdown> -->
+      <v-row class="display-1" style="font-size: 100px"><Countdown deadline="March 9, 2022" class="p-0 m-0"></Countdown></v-row>
+      <!-- <Countdown date="August 15, 2016"></Countdown> -->
+    </v-container>
+    <!-- <header class="masthead" id="home">
       <v-container fluid lighten-2 class="white--text ">
         <div class="blackContainer">
           <v-row class="align-items-start mt-16">
@@ -19,96 +31,102 @@
             </div>
           </v-row>
         </div>
-
-        <v-row class="align-items-start mt-16">
-          <div class="d-block text-center">
-            <v-btn
-              class=" text-center"
-              fab
-              dark
-              x-large
-              color="transparent"
-              href="#arrowFirst"
-            >
-              <v-icon dark style="font-size: 70px">
-                mdi-arrow-down-drop-circle
-              </v-icon>
-            </v-btn>
-          </div>
-        </v-row>
       </v-container>
-    </header>
+    </header> -->
     <v-container justify-center text-center>
       <v-row>
         <v-col cols="4">
-          <v-btn class="mx-2" fab dark x-large color="black" to="/infos">
+          <v-btn
+            class="mx-2"
+            fab
+            dark
+            x-large
+            color="black"
+            to="/infos"
+            name="Informationen"
+            alt="Informationen"
+            title="Informationen"
+          >
             <v-icon dark>
               mdi-information
             </v-icon>
           </v-btn>
-          <h5 class="mt-4">Informationen entnehmen</h5>
+          <p class=" mt-4" style="font-size:20px">Informationen</p>
         </v-col>
         <v-col cols="4">
-          <v-btn class="mx-2" fab dark x-large color="red" to="/antrag">
+          <v-btn
+            class="mx-2"
+            fab
+            dark
+            x-large
+            color="red"
+            to="/antrag"
+            name="Antrag stellen"
+            alt="Antrag"
+            title="Antrag stellen"
+          >
             <v-icon dark>
               mdi-android-messages
             </v-icon>
           </v-btn>
-          <h5 class="mt-4">Antrag stellen</h5>
+          <p class=" mt-4" style="font-size:20px">Antrag</p>
         </v-col>
         <v-col cols="4">
-          <v-btn class="mx-2" fab dark x-large color="black" to="/login">
+          <v-btn
+            class="mx-2"
+            fab
+            dark
+            x-large
+            color="black"
+            to="/login"
+            name="Login"
+            alt="Login"
+            title="Login"
+          >
             <v-icon dark>
               mdi-login
             </v-icon>
           </v-btn>
-          <h5 class="mt-4">Anmelden</h5>
+          <p class="mt-4" style="font-size:20px">Anmelden</p>
         </v-col>
       </v-row>
     </v-container>
-    <v-container fluid lighten-2 class="black--text mt-16">
-      <h1 class="display-1 font-weight-light text-uppercase text-center">
-        BIS ZUM KARRIERETAG <b>2022</b>
-      </h1>
-      <v-divider dark></v-divider>
-      <v-row class=" display-2 text-center" style="font-size: 100px">
-        <!-- <flip-countdown deadline="2022-03-22 00:00:00" :showSeconds="false"></flip-countdown> -->
-        <Countdown deadline="March 22, 2022"></Countdown>
-        <!-- <Countdown date="August 15, 2016"></Countdown> -->
-      </v-row>
-    </v-container>
 
-    <div class="contaner section mt-10" id="arrowFirst">
-      <div class="row d-flex flex-wrap">
-        <div class="col-md-6">
-          <h3>
-            Karrieretag 2022
-          </h3>
-          <p>
-            Die HTL Wien West veranstaltet einmal im Jahr einen Karrieretag für
-            die Schülerinnen und Schüler der Ausbildungsrichtungen
-            Elektrotechnik, Elektronik, Informationstechnologie, Maschinenbau
-            und Mechatronik.
-          </p>
+    <v-container class=" mt-10" id="arrowFirst">
+      <v-row class="mb-16 pb-5">
+        <v-col cols="12" md="6" class="pr-10">
+          <div>
+            <p style="font-size:26px">
+              Karrieretag 2022
+            </p>
+            <p>
+              Die HTL Wien West veranstaltet einmal im Jahr einen Karrieretag
+              für die Schülerinnen und Schüler der Ausbildungsrichtungen
+              Elektrotechnik, Elektronik, Informationstechnologie, Maschinenbau
+              und Mechatronik.
+            </p>
+          </div>
           <div class="my-10">
             <v-btn
               x-large
-              color="red"
+              color="red darken-4"
               dark
               @click="tellParentChangeColor('karrieretag')"
+              name="Mehr über den Karrieretag"
+              title="Mehr über den Karrieretag"
             >
               More
             </v-btn>
           </div>
-        </div>
-        <div class="col-md-6">
+        </v-col>
+        <v-col cols="12" md="6">
           <v-carousel
             hide-delimiters
             next-icon
             prev-icon
             cycle
             interval="4000"
-            height="300"
+            height="350"
           >
             <v-carousel-item
               v-for="i of c1"
@@ -116,17 +134,18 @@
               :src="i.image"
             ></v-carousel-item>
           </v-carousel>
-        </div>
-      </div>
-      <div class="row mt-16">
-        <div class="col-md-6">
+        </v-col>
+      </v-row>
+      <v-divider dark class="hidden-lg-and-up"></v-divider>
+      <v-row class="my-16 py-16">
+        <v-col cols="12" md="6">
           <v-carousel
             hide-delimiters
             next-icon
             prev-icon
             cycle
             interval="4000"
-            height="300"
+            height="350"
           >
             <v-carousel-item
               v-for="i of c2"
@@ -134,49 +153,68 @@
               :src="i.image"
             ></v-carousel-item>
           </v-carousel>
-        </div>
-        <div class="col-md-6">
-          <h3>
-            Über uns
-          </h3>
-          <p>
-            Um die Schülerinnen und Schüler für die Herausforderungen unserer
-            Zeit gut vorzubereiten, widmet sich die HTL Wien West in allen ihren
-            technischen Ausbildungsrichtungen noch stärker als bisher den Themen
-            Digitalisierung und Umwelt.
-          </p>
-          <div class="my-10">
-            <v-btn x-large color="black" dark @click="tellParentChangeColor('karrieretag')">
+        </v-col>
+        <v-col cols="12" md="6">
+          <div class="mb-10">
+            <p style="font-size:26px">
+              Über uns
+            </p>
+            <p>
+              Um die Schülerinnen und Schüler für die Herausforderungen unserer
+              Zeit gut vorzubereiten, widmet sich die HTL Wien West in allen
+              ihren technischen Ausbildungsrichtungen noch stärker als bisher
+              den Themen Digitalisierung und Umwelt.
+            </p>
+          </div>
+          <div>
+            <v-btn
+              x-large
+              color="red darken-4"
+              dark
+              @click="tellParentChangeColor('ueberuns')"
+              name="Mehr über uns"
+              title="Mehr über uns"
+            >
               More
             </v-btn>
           </div>
-        </div>
-      </div>
+        </v-col>
+      </v-row>
+      <v-divider dark class="hidden-md-and-up"></v-divider>
 
-      <div class="row mt-16">
-        <div class="col-md-6">
-          <h3>
-            2020 Rekord
-          </h3>
-          <p>
-            55 Unternehmen/Ausbildungseinrichtungen nutzten die Gelegenheit und
-            kamen an unsere Schule, um sich zu präsentieren. Das ist neuer
-            Rekord!
-          </p>
+      <v-row class="my-16 pb-5">
+        <v-col cols="12" md="6" class="pr-10">
+          <div>
+            <p style="font-size:26px">
+              2020 Rekord
+            </p>
+            <p>
+              55 Unternehmen/Ausbildungseinrichtungen nutzten die Gelegenheit
+              und kamen an unsere Schule, um sich zu präsentieren. Das ist neuer
+              Rekord!
+            </p>
+          </div>
           <div class="my-10">
-            <v-btn x-large color="red" dark @click="tellParentChangeColor('karrieretag')">
+            <v-btn
+              x-large
+              color="red darken-4"
+              dark
+              @click="tellParentChangeColor('rekord')"
+              name="Mehr über Rekord"
+              title="Mehr über Rekord"
+            >
               More
             </v-btn>
           </div>
-        </div>
-        <div class="col-md-6">
+        </v-col>
+        <v-col cols="12" md="6">
           <v-carousel
             hide-delimiters
             next-icon
             prev-icon
             cycle
             interval="4000"
-            height="300"
+            height="350"
           >
             <v-carousel-item
               v-for="i of c3"
@@ -184,10 +222,10 @@
               :src="i.image"
             ></v-carousel-item>
           </v-carousel>
-        </div>
-      </div>
+        </v-col>
+      </v-row>
       <Footer />
-    </div>
+    </v-container>
   </v-container>
 </template>
 
@@ -270,40 +308,20 @@ export default {
 </script>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;900&display=swap');
-
-body {
-  font-family: 'Titillium Web', sans-serif;
-}
-
 .row {
   margin-top: 3%;
   margin-bottom: 3%;
 }
-.section .row .col-md-6 {
-  margin-right: -2%;
-  padding: 5%;
-  /* style="background: #f5f5f5;" */
-}
-.section h3 {
-  color: #004085;
-}
-.section p {
-  color: #545b62;
-}
-.section img {
-  width: 100%;
-}
 
-.masthead {
+/* .masthead {
   height: 60vh;
   min-height: 500px;
   background-image: url('../assets/HTL.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-}
-.blackContainer {
+} */
+/* .blackContainer {
   background: rgba(0, 0, 0, 0.555);
-}
+} */
 </style>

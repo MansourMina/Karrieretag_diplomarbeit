@@ -9,7 +9,7 @@
             prev-icon
             cycle
             interval="4000"
-            width="300"
+            height="300"
           >
             <v-carousel-item
               v-for="i of images"
@@ -35,9 +35,12 @@
             einem Stand an unserem Karrieretag teilzunehmen.<br /><br />
             Der nächste Karrieretag findet Mittwoch, den <b>9.3.2022</b> von
             <b>8:00 bis 14:00</b> in der HTL Wien West statt.<br /><br />
-            <b>Bei Interesse stellen Sie einen </b>
-            <router-link to="/antrag" class="red--text">Antrag</router-link>.
-            <br />
+            <div v-if="!logged">
+              <b>Bei Interesse stellen Sie einen </b>
+              <router-link to="/antrag" class="red--text">Antrag</router-link>.
+              <br />
+            </div>
+
             <br />
             Bitte beachten Sie, dass unser Platz aufgrund der räumlichen
             Gegebenheiten beschränkt ist und wir daher letztes Mal mit
@@ -58,6 +61,7 @@
                 label="Search"
                 single-line
                 hide-details
+                @keyup.enter="wrapWord('span', search)"
               ></v-text-field>
             </v-card-title>
           </v-card>
@@ -74,26 +78,25 @@
                 text
                 outlined
                 class="ma-3"
-                :href="`#${k.id}`"
-                @click="changeColor(k.id)"
+                @click="getFocus(k.id)"
                 >{{ k.name }}</v-btn
               >
             </v-container>
           </v-card>
         </v-col>
-        <v-col cols="12" class="mt-10">
+        <v-col cols="12">
           <v-card elevation="0">
             <v-card-title>
               Seiten
             </v-card-title>
             <v-container class="d-flex flex-column">
               <v-btn
-                v-for="e of extras"
-                :key="e.name"
+                v-for="s of seiten"
+                :key="s.name"
                 rounded
                 class="ma-3 red darken-4 white--text"
-                :to="e.url"
-                >{{ e.name }}</v-btn
+                :to="s.url"
+                >{{ s.name }}</v-btn
               >
               <v-btn
                 rounded
@@ -109,11 +112,12 @@
     </v-row>
     <v-row>
       <v-col cols="12" md="8">
-        <v-card class="mx-auto" max-width="750" elevation="0">
+        <v-card class="mx-auto " max-width="750" elevation="0">
           <v-img
             class="white--text align-end"
             height="300px"
-            src="@/assets/information.jpg"
+            src="@/assets/HTL.jpg"
+            alt="HTL Wien West Abteilungen"
           >
           </v-img>
 
@@ -180,8 +184,9 @@
             </p>
             <v-img
               class="white--text align-end"
-              height="500px"
-              src="@/assets/record.jpg"
+              height="400"
+              src="@/assets/rekord.jpg"
+              alt="HTL Wien West Karrieretag Rekord"
             >
             </v-img>
           </v-card>
@@ -189,12 +194,16 @@
       </v-col>
     </v-row>
     <v-card elevation="0">
-      <v-card-title class="pl-0 pb-0 pt-16"
-        ><span id="unternehmen">
+      <p
+        class="pl-2 pb-0 pt-16"
+        style="font-size: 1.25rem;font-weight: 500;letter-spacing: 0.0125em;
+    "
+      >
+        <span id="unternehmen">
           Unternehmen und Bildungseinrichtungen die 2018 - 2020 am Karrieretag
           teilgenommen haben:</span
-        ></v-card-title
-      >
+        >
+      </p>
       <v-container class="red--text">
         <v-row>
           <v-col cols="4">
@@ -247,7 +256,14 @@ export default {
     logged: {
       type: Boolean,
     },
+    infoId: {
+      type: String,
+    },
   },
+  mounted() {
+    this.getFocus(this.infoId);
+  },
+
   data() {
     return {
       search: '',
@@ -298,6 +314,10 @@ export default {
           id: 'ueberuns',
         },
         {
+          name: 'Karrieretag',
+          id: 'karrieretag',
+        },
+        {
           name: 'Rekord',
           id: 'rekord',
         },
@@ -307,7 +327,7 @@ export default {
           id: 'unternehmen',
         },
       ],
-      extras: [
+      seiten: [
         {
           name: 'Startseite',
           url: '/',
@@ -316,6 +336,10 @@ export default {
         {
           name: 'Kontakt',
           url: '/contact',
+        },
+        {
+          name: 'Impressum',
+          url: '/impress',
         },
       ],
       firmenList1: [
@@ -480,7 +504,8 @@ export default {
     };
   },
   methods: {
-    changeColor(id) {
+    getFocus(id) {
+      const impid = document.getElementById(id);
       this.kategorien
         .filter((el) => el.id != id)
         .forEach(
@@ -488,13 +513,40 @@ export default {
             (document.getElementById(`${el.id}`).style.background = 'none'),
         );
       document.getElementById(`${id}`).style.background = 'yellow';
+      impid.focus();
+      impid.scrollIntoView();
+    },
+    wrapWord(el, word) {
+      var expr = new RegExp(word, 'i');
+      var nodes = [].slice.call(el.childNodes, 0);
+      for (var i = 0; i < nodes.length; i++) {
+        var node = nodes[i];
+        if (node.nodeType == 3) {
+          // textNode
+          var matches = node.nodeValue.match(expr);
+          if (matches) {
+            var parts = node.nodeValue.split(expr);
+            for (var n = 0; n < parts.length; n++) {
+              if (n) {
+                var span = el.insertBefore(
+                  document.createElement('span'),
+                  node,
+                );
+                span.appendChild(document.createTextNode(matches[n - 1]));
+              }
+              if (parts[n]) {
+                el.insertBefore(document.createTextNode(parts[n]), node);
+              }
+            }
+            el.removeChild(node);
+          }
+        } else {
+          this.wrapWord(node, word);
+        }
+      }
     },
   },
 };
 </script>
 
-<style lang="scss" scoped>
-#rekord:after {
-  background-color: yellow;
-}
-</style>
+<style lang="scss" scoped></style>

@@ -74,8 +74,12 @@
             <template v-slot:label>
               <div>
                 Ich bestätige und bin damit einverstanden, dass meine
-                <span class="red--text">persönlichen Daten</span> verarbeitet
-                werden
+                <span
+                  ><span class="red--text" @click="goToImpressum('datenschutz')"
+                    >persönlichen Daten</span
+                  ></span
+                >
+                verarbeitet werden
               </div>
             </template>
           </v-checkbox>
@@ -114,8 +118,7 @@ export default {
   data: () => ({
     snackbar: false,
     checkbox: false,
-    text: 'My timeout is set to 2000.',
-    timeout: 2000,
+    timeout: 5000,
     valid: false,
     firstname: '',
     lastname: '',
@@ -146,6 +149,9 @@ export default {
         this.snackbar = true;
         this.$refs.form.reset();
       }
+    },
+    goToImpressum(id) {
+      this.$emit('focusId', id);
     },
   },
 };

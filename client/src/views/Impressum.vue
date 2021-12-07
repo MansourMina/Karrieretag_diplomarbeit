@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <div style="font-size: 15px">
-      <h1 class="adsimple-121879084" id="Impressum">Impressum</h1>
+      <h1 class="adsimple-121879084" id="Impressum">mpressum</h1>
       <p class="adsimple-121879084">
         Informationspflicht laut §5 E-Commerce Gesetz, §14
         Unternehmensgesetzbuch, §63 Gewerbeordnung und Offenlegungspflicht laut

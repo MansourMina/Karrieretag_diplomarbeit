@@ -28,7 +28,7 @@
           active-class="red darken-4 white--text"
           to="/login"
           plain
-          v-if="!logged"
+          v-if="user.user == null"
         >
           Login
         </v-btn>
@@ -52,13 +52,13 @@
       >
         <v-list nav>
           <v-list-item>
-            <v-list-item-content v-if="logged">
+            <v-list-item-content v-if="user.user != null">
               <v-list-item-title class="text-h6">
-                Max Mustermann
+                {{ user.user.firmen_name }}
               </v-list-item-title>
-              <v-list-item-subtitle
-                >maxmustermann@gmail.com</v-list-item-subtitle
-              >
+              <v-list-item-subtitle>{{
+                user.user.firmen_mail
+              }}</v-list-item-subtitle>
             </v-list-item-content>
             <v-list-item-content v-else class="text-center">
               <v-list-item-title class="text-h6">
@@ -93,7 +93,7 @@
               link
               active-class="red darken-4 white--text"
               to="/antrag"
-              v-if="!logged"
+              v-if="user == null"
             >
               <v-list-item-icon>
                 <v-icon>mdi-newspaper-variant-outline</v-icon>
@@ -105,7 +105,7 @@
             </v-list-item>
           </v-list>
         </div>
-        <div v-if="logged">
+        <div v-if="user.user != null">
           <v-row class="my-0">
             <v-col cols="4">
               <p class="ml-2 mt-1">Extras</p>
@@ -155,7 +155,7 @@
     >
       <v-list nav>
         <v-list-item>
-          <v-list-item-content v-if="logged">
+          <v-list-item-content v-if="user.user != null && user.admin == true">
             <v-list-item-title class="text-h6">
               Admin XY
             </v-list-item-title>
@@ -214,7 +214,6 @@
       <loading v-if="$root.loading"></loading>
       <router-view
         v-else
-        :logged="logged"
         @changeColor="changeColor"
         @focusId="passId"
         :impressId="impressId"
@@ -226,25 +225,21 @@
 
 <script>
 import AskLogout from '@/components/AskLogout.vue';
+import axios from 'axios';
 export default {
   name: 'App',
   components: {
     AskLogout,
   },
   created() {
-    console.log();
+    this.getUser();
   },
   watch: {
     dialog(val) {
       if (!val) return;
 
       setTimeout(
-        () => (
-          (this.dialog = false),
-          (this.logged = false),
-          this.$router.push('/'),
-          (this.drawer = false)
-        ),
+        () => ((this.dialog = false), this.logout(), (this.drawer = false)),
         2000,
       );
     },
@@ -255,7 +250,7 @@ export default {
       { flag: 'us', language: 'en', title: 'English' },
       { flag: 'de', language: 'de', title: 'Deutsch' },
     ],
-
+    user: {},
     value: 0,
     query: false,
     show: true,
@@ -263,7 +258,6 @@ export default {
     infoId: '',
     impressId: '',
     drawer: false,
-    logged: true,
     dialog: false,
     showDialog: false,
     mounted() {
@@ -322,6 +316,20 @@ export default {
     right: null,
   }),
   methods: {
+    getUser() {
+      let user = JSON.parse(localStorage.getItem('user'));
+      if (user != null) {
+        this.user = user;
+      }
+    },
+    async logout() {
+      await axios({
+        url: '/logout',
+        method: 'GET',
+      });
+      localStorage.clear();
+      this.$router.go();
+    },
     passId(id) {
       this.impressId = id;
       this.$router.push('/impress');
@@ -337,9 +345,7 @@ export default {
       //   );
       // document.getElementById(`${id}`).style.background = 'yellow';
     },
-    logout() {
-      this.logged = false;
-    },
+
     showLoading(dialog) {
       this.showDialog = false;
       this.dialog = dialog;

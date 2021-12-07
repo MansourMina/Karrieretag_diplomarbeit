@@ -35,7 +35,7 @@
             einem Stand an unserem Karrieretag teilzunehmen.<br /><br />
             Der nächste Karrieretag findet Mittwoch, den <b>9.3.2022</b> von
             <b>8:00 bis 14:00</b> in der HTL Wien West statt.<br /><br />
-            <div v-if="!logged">
+            <div v-if="user.user == null">
               <b>Bei Interesse stellen Sie einen </b>
               <router-link to="/antrag" class="red--text">Antrag</router-link>.
               <br />
@@ -100,7 +100,7 @@
               >
               <v-btn
                 rounded
-                v-if="!logged"
+                v-if="user.user == null"
                 class="ma-3 red darken-4 white--text"
                 to="/antrag"
                 >Antrag stellen</v-btn
@@ -249,6 +249,9 @@
 <script>
 import Footer from '@/components/Footer.vue';
 export default {
+  created() {
+    this.getUser();
+  },
   components: {
     Footer,
   },
@@ -266,6 +269,7 @@ export default {
 
   data() {
     return {
+      user: {},
       search: '',
 
       images: [
@@ -504,6 +508,12 @@ export default {
     };
   },
   methods: {
+    getUser() {
+      let user = JSON.parse(localStorage.getItem('user'));
+      if (user != null) {
+        this.user = user;
+      }
+    },
     getFocus(id) {
       const impid = document.getElementById(id);
       this.kategorien

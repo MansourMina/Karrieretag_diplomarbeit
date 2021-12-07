@@ -2,122 +2,114 @@
   <div class="container-fluid px-3 px-md-5 px-lg-3 px-xl-5 py-5 mx-auto">
     <div>
       <!-- @submit.prevent="login" -->
-      <form>
-        <div class="card card0 mt-5 border-0">
-          <v-row>
-            <v-col cols="12" md="6">
-              <div class=" d-block text-center  border-line">
-                <img
-                  src="@/assets/Anmeldung_Logo.svg"
-                  class="logo"
-                  style="height:60vh; width:60vh; margin:-30px; "
+      <div class="card card0 mt-5 border-0">
+        <v-row>
+          <v-col cols="12" md="6">
+            <div class=" d-block text-center  border-line">
+              <img
+                src="@/assets/Anmeldung_Logo.svg"
+                class="logo"
+                style="height:60vh; width:60vh; margin:-30px; "
+              />
+            </div>
+          </v-col>
+          <v-col cols="12" md="6">
+            <div class="card2 border-0 px-4 py-5">
+              <div class="row px-3"></div>
+              <div class="row px-3">
+                <label class="mb-1">
+                  <h6 class="mb-0 spacing text-sm">User-ID</h6>
+                </label>
+                <input
+                  class="logininput"
+                  style="margin-left: 0"
+                  type="text"
+                  name="email"
+                  v-model="userId"
+                  placeholder="Enter a valid email address"
                 />
+                <label class="mb-1">
+                  <h6 class="spacing mb-0 text-sm" style="color:red">
+                    {{ message }}
+                  </h6>
+                </label>
               </div>
-            </v-col>
-            <v-col cols="12" md="6">
-              <div class="card2 border-0 px-4 py-5">
-                <div class="row px-3"></div>
-                <div class="row px-3">
-                  <label class="mb-1">
-                    <h6 class="mb-0 spacing text-sm">User-ID</h6>
-                  </label>
-                  <input
-                    class="logininput"
-                    style="margin-left: 0"
-                    type="text"
-                    name="email"
-                    v-model="userId"
-                    placeholder="Enter a valid email address"
-                  />
-                  <label class="mb-1">
-                    <h6 class="spacing mb-0 text-sm" style="color:red">
-                      {{ message }}
-                    </h6>
-                  </label>
-                </div>
-                <v-row class="px-3 mb-4 mt-4">
-                  <label class="mb-1">
-                    <h6 class="spacing mb-0 text-sm">Password</h6>
-                  </label>
-                  <input
-                    class="logininput"
-                    type="password"
-                    name="password"
-                    v-model="password"
-                    placeholder="Enter password"
-                  />
-                  <label class="mb-1">
-                    <h6 class="spacing mb-0 text-sm" style="color:red">
-                      {{ message }}
-                    </h6>
-                  </label>
-                </v-row>
-                <!-- <div class="row px-3 mb-4">
+              <v-row class="px-3 mb-4 mt-4">
+                <label class="mb-1">
+                  <h6 class="spacing mb-0 text-sm">Password</h6>
+                </label>
+                <input
+                  class="logininput"
+                  type="password"
+                  name="password"
+                  v-model="passwort"
+                  placeholder="Enter password"
+                />
+                <label class="mb-1">
+                  <h6 class="spacing mb-0 text-sm" style="color:red">
+                    {{ message }}
+                  </h6>
+                </label>
+              </v-row>
+              <!-- <div class="row px-3 mb-4">
               <a href="#" class="ml-auto mb-0 text-sm">Forgot Password?</a>
             </div> -->
-                <v-row class=" mb-3 px-3">
-                  <button
-                    type="submit"
-                    style="background-color: #B61212;"
-                    class="btn btn-blue text-center"
-                  >
-                    Login
-                  </button>
-                </v-row>
-              </div>
-            </v-col>
-          </v-row>
-        </div>
-      </form>
+              <v-row class=" mb-3 px-3">
+                <button
+                  @click="login()"
+                  style="background-color: #B61212;"
+                  class="btn btn-blue text-center"
+                >
+                  Login
+                </button>
+              </v-row>
+            </div>
+          </v-col>
+        </v-row>
+      </div>
     </div>
   </div>
 </template>
 <script>
-// import axios from 'axios';
+import axios from 'axios';
 export default {
   name: 'app',
   data() {
     return {
       userId: '',
-      password: '',
-      user: {
-        id: '',
-        name: '',
-      },
+      passwort: '',
+      user: {},
       message: '',
     };
   },
   components: {},
-  // created() {
-  //   let user = JSON.parse(localStorage.getItem('user'));
-  //   if (user != null) {
-  //     this.user.id = user.id;
-  //     this.user.name = user.name;
-  //   }
-  // },
-  // methods: {
-  //   async login() {
-  //     try {
-  //       let { data } = await axios({
-  //         url: '/login',
-  //         method: 'POST',
-  //         contentType: 'application/json',
-  //         data: {
-  //           userId: this.userId,
-  //           password: this.password,
-  //         },
-  //       });
-  //       if (data.erfolgreich) {
-  //         localStorage.setItem('user', JSON.stringify(data));
-  //         this.$router.push('/');
-  //       } else {
-  //         this.message = 'Wrong User ID or password';
-  //       }
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   },
-  // },
+  created() {
+    let user = JSON.parse(localStorage.getItem('user'));
+    if (user != null) {
+      this.user = user;
+    }
+  },
+  methods: {
+    async login() {
+      try {
+        let { data } = await axios({
+          url: '/login',
+          method: 'POST',
+          contentType: 'application/json',
+          data: {
+            userId: this.userId,
+            passwort: this.passwort,
+          },
+        });
+
+        localStorage.setItem('user', JSON.stringify(data));
+        this.$router.push('/');
+        this.$router.go();
+      } catch (err) {
+        this.message = 'Wrong User ID or password';
+      }
+    },
+  },
 };
 </script>
 <style>

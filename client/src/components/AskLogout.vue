@@ -1,7 +1,7 @@
 <template>
   <v-row justify="center">
     <v-dialog v-model="showDialog" max-width="290" persistent>
-      <v-card color="blue-grey darken-3" dark>
+      <v-card color="red darken-4" dark>
         <v-card-title class="white--text text--lighten-1 text-body-2 mb-4">
           <div>
             Abmelden
@@ -10,12 +10,12 @@
         <v-card-actions>
           <v-spacer></v-spacer>
 
-          <v-btn color="red darken-1" text @click="Askdialog()">
+          <v-btn  text @click="Askdialog()">
             Nein
           </v-btn>
 
           <v-btn
-            color="green darken-1"
+            
             text
             @click="
               dialog = true;

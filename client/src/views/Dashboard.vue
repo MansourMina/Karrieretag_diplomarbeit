@@ -106,11 +106,108 @@
         </v-card>
       </v-col>
     </v-row>
+    <v-row>
+      <v-col>
+        <v-card class="mt-16 mx-auto" max-width="1000">
+          <v-sheet
+            class="v-sheet--offset mx-auto"
+            color="cyan"
+            elevation="12"
+            max-width="calc(100% - 32px)"
+          >
+            <v-sparkline
+              :labels="labels"
+              :value="values"
+              color="white"
+              line-width="2"
+              padding="16"
+              class="pa-10"
+            ></v-sparkline>
+          </v-sheet>
+
+          <v-card-text class="pt-0">
+            <div class="text-h6 font-weight-light mb-2">
+              User Registrations
+            </div>
+            <div class="subheading font-weight-light grey--text">
+              Last Campaign Performance
+            </div>
+            <v-divider class="my-2"></v-divider>
+            <v-icon class="mr-2" small>
+              mdi-clock
+            </v-icon>
+            <span class="text-caption grey--text font-weight-light"
+              >last registration 26 minutes ago</span
+            >
+          </v-card-text>
+        </v-card>
+      </v-col>
+      <v-col>
+        <v-card class="mt-16 mx-auto" max-width="1000">
+          <v-sheet
+            class="v-sheet--offset mx-auto"
+            color="cyan"
+            elevation="12"
+            max-width="calc(100% - 32px)"
+          >
+            <v-sparkline
+              :labels="labels"
+              :value="values"
+              color="red darken-4"
+              line-width="2"
+              padding="16"
+              class="pa-10"
+            ></v-sparkline>
+          </v-sheet>
+
+          <v-card-text class="pt-0">
+            <div class="text-h6 font-weight-light mb-2">
+              User Registrations
+            </div>
+            <div class="subheading font-weight-light grey--text">
+              Last Campaign Performance
+            </div>
+            <v-divider class="my-2"></v-divider>
+            <v-icon class="mr-2" small>
+              mdi-clock
+            </v-icon>
+            <span class="text-caption grey--text font-weight-light"
+              >last registration 26 minutes ago</span
+            >
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
 <script>
-export default {};
+import axios from 'axios';
+export default {
+  data: () => ({
+    values: [],
+    labels: [],
+  }),
+  created() {
+    this.getAnfragen();
+  },
+  methods: {
+    async getAnfragen() {
+      const { data } = await axios({
+        url: 'http://127.0.0.1:3000/anzahlbydatum',
+        method: 'GET',
+      });
+
+      this.values = data.map((el) => Number(el.anzahl));
+      this.labels = data.map((el) => el.datum.substring(5, 10));
+    },
+  },
+};
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.v-sheet--offset {
+  top: -24px;
+  position: relative;
+}
+</style>

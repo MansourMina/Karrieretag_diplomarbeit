@@ -86,7 +86,7 @@
         </v-col>
       </v-row>
       <v-container class=" my-0 py-0" text-center justify-center>
-        <h5 class="font-weight-light mb-7">Datenschutz</h5>
+        <h5 class="text--secondary mb-7"><span @click="goToImpressum('datenschutz')">Datenschutz</span></h5>
         <v-btn
           rounded
           class="ma-5 pa-6 red darken-4 white--text"
@@ -95,7 +95,6 @@
         >
       </v-container>
     </v-form>
-    <Footer />
     <v-snackbar v-model="snackbar" :timeout="timeout">
       Antrag erfolgreich eingereicht!
 
@@ -109,12 +108,9 @@
 </template>
 
 <script>
-import Footer from '@/components/Footer.vue';
 
 export default {
-  components: {
-    Footer,
-  },
+
   data: () => ({
     snackbar: false,
     checkbox: false,

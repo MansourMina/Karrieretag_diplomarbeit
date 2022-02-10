@@ -1,74 +1,69 @@
 <template>
-  <div class="container-fluid px-3 px-md-5 px-lg-3 px-xl-5 py-5 mx-auto">
-    <div>
-      <!-- @submit.prevent="login" -->
-      <div class="card card0 mt-5 border-0">
-        <v-row>
-          <v-col cols="12" md="6">
-            <div class=" d-block text-center  border-line">
-              <img
-                src="@/assets/Anmeldung_Logo.svg"
-                class="logo"
-                style="height:60vh; width:60vh; margin:-30px; "
-              />
-            </div>
-          </v-col>
-          <v-col cols="12" md="6">
-            <div class="card2 border-0 px-4 py-5">
-              <div class="row px-3"></div>
-              <div class="row px-3">
-                <label class="mb-1">
-                  <h6 class="mb-0 spacing text-sm">User-ID</h6>
-                </label>
-                <input
-                  class="logininput"
-                  style="margin-left: 0"
-                  type="text"
-                  name="email"
-                  v-model="userId"
-                  placeholder="Enter a valid email address"
-                />
-                <label class="mb-1">
-                  <h6 class="spacing mb-0 text-sm" style="color:red">
-                    {{ message }}
-                  </h6>
-                </label>
-              </div>
-              <v-row class="px-3 mb-4 mt-4">
-                <label class="mb-1">
-                  <h6 class="spacing mb-0 text-sm">Password</h6>
-                </label>
-                <input
-                  class="logininput"
-                  type="password"
-                  name="password"
-                  v-model="passwort"
-                  placeholder="Enter password"
-                />
-                <label class="mb-1">
-                  <h6 class="spacing mb-0 text-sm" style="color:red">
-                    {{ message }}
-                  </h6>
-                </label>
-              </v-row>
-              <!-- <div class="row px-3 mb-4">
-              <a href="#" class="ml-auto mb-0 text-sm">Forgot Password?</a>
-            </div> -->
-              <v-row class=" mb-3 px-3">
-                <button
-                  @click="login()"
-                  style="background-color: #B61212;"
-                  class="btn btn-blue text-center"
-                >
-                  Login
-                </button>
-              </v-row>
-            </div>
-          </v-col>
+  <v-container style="height: 100%" class="mb-10">
+    <!-- @submit.prevent="login" -->
+    <v-row align="center" justify="center">
+      <v-col cols="12" md="6">
+        <div class=" text-center ">
+          <img src="@/assets/Anmeldung_Logo.jpg" width="70%" />
+        </div>
+      </v-col>
+
+      <v-col cols="12" md="6">
+        <v-row class="px-3">
+          <label class="pl-0 mb-1">
+            <h6 class="mb-0 text-sm">User-ID</h6>
+          </label>
+          <input
+            class="logininput"
+            style="margin-left: 0"
+            type="text"
+            @keyup.enter="login()"
+            name="email"
+            v-model="userId"
+            placeholder="Enter a valid email address"
+          />
+          <label class="pl-0 mb-1">
+            <h6 class="  text-sm" style="color:red">
+              {{ message }}
+            </h6>
+          </label>
         </v-row>
-      </div>
-    </div>
-  </div>
+        <v-row class="px-3 ">
+          <label class="pl-0 mb-1">
+            <h6 class=" mb-0 text-sm">Password</h6>
+          </label>
+          <input
+            class="logininput"
+            type="password"
+            name="password"
+            @keyup.enter="login()"
+            v-model="passwort"
+            placeholder="Enter password"
+          />
+          <label class="pl-0 mb-1">
+            <h6 class=" mb-0 text-sm" style="color:red">
+              {{ message }}
+            </h6>
+          </label>
+        </v-row>
+        <v-checkbox
+          v-model="angemeldetBleiben"
+          label="Angemeldet bleiben"
+          value="true"
+        ></v-checkbox>
+        <!-- <div class="row px-3 mb-4">
+                <a href="#" class="ml-auto mb-0 text-sm">Forgot Password?</a>
+              </div> -->
+        <v-btn
+          @click="login()"
+          class="white--text red darken-4"
+          style="border-radius: 0; width: 5vw"
+        >
+          Login
+        </v-btn>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 <script>
 import axios from 'axios';
@@ -80,6 +75,7 @@ export default {
       passwort: '',
       user: {},
       message: '',
+      angemeldetBleiben: false,
     };
   },
   components: {},
@@ -101,8 +97,23 @@ export default {
             passwort: this.passwort,
           },
         });
+        if (
+          this.angemeldetBleiben == 'false' ||
+          this.angemeldetBleiben == false
+        ) {
+          localStorage.setItem(
+            'loginBleiben',
+            JSON.stringify({ login: false }),
+          );
+        } else if (
+          this.angemeldetBleiben == 'true' ||
+          this.angemeldetBleiben == true
+        ) {
+          localStorage.setItem('loginBleiben', JSON.stringify({ login: true }));
+        }
 
         localStorage.setItem('user', JSON.stringify(data));
+
         this.$router.push('/');
         this.$router.go();
       } catch (err) {
@@ -112,43 +123,7 @@ export default {
   },
 };
 </script>
-<style>
-.card0 {
-  border-radius: 0px;
-}
-
-.card2 {
-  margin: 0px 40px;
-}
-
-.logo {
-  width: 200px;
-  height: 100px;
-  margin-top: 20px;
-  margin-left: 35px;
-}
-
-.image {
-  width: 360px;
-  height: 280px;
-}
-
-.border-line {
-  border-right: 1px solid #eeeeee;
-}
-
-.line {
-  height: 1px;
-  width: 45%;
-  background-color: #e0e0e0;
-  margin-top: 10px;
-}
-
-.or {
-  width: 10%;
-  font-weight: bold;
-}
-
+<style scoped>
 .text-sm {
   font-size: 14px !important;
 }
@@ -188,58 +163,5 @@ export default {
   box-shadow: none !important;
   border: 1px solid #304ffe;
   outline-width: 0;
-}
-
-button:focus {
-  -moz-box-shadow: none !important;
-  -webkit-box-shadow: none !important;
-  box-shadow: none !important;
-  outline-width: 0;
-}
-
-a {
-  color: inherit;
-  cursor: pointer;
-}
-
-.btn-blue {
-  background-color: #1a237e;
-  width: 150px;
-  color: #fff;
-  border-radius: 2px;
-}
-
-.btn-blue:hover {
-  background-color: #000;
-  cursor: pointer;
-}
-
-.bg-blue {
-  color: #fff;
-  background-color: #1a237e;
-}
-
-.spacing {
-  margin-left: -0.75rem;
-}
-
-@media screen and (max-width: 991px) {
-  .logo {
-    margin-left: 0px;
-  }
-
-  .image {
-    width: 300px;
-    height: 220px;
-  }
-
-  .border-line {
-    border-right: none;
-  }
-
-  .card2 {
-    border-top: 1px solid #eeeeee !important;
-    margin: 0px 15px;
-  }
 }
 </style>

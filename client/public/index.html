@@ -16,6 +16,12 @@
     <link rel="icon" href="<%= BASE_URL %>logo.svg" />
 
     <title>Karrieretag HTL Wien West</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script lang="javascript">
+            $('document').ready(function(e){
+      $(".loader").fadeOut("slow");
+            })
+    </script>
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900"
@@ -30,7 +36,6 @@
       integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl"
       crossorigin="anonymous"
     />
-    ;
   </head>
   <body>
     <noscript>
@@ -44,5 +49,26 @@
     <div id="app"></div>
     <!-- built files will be auto injected -->
     <!-- MDB -->
+    <div
+      style="
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+      "
+    >
+      <div class="loader">
+        <img
+        style="margin-top: 10%"
+      src="logo.jpg"
+      contain
+      height="180"
+      name="Logo HTL Wien West"
+      alt="Logo"
+      title="HTL Wien West Logo"
+    ></img>
+        <p style="margin-top: 10%">Please wait, Loading...</p>
+      </div>
+    </div>
   </body>
 </html>

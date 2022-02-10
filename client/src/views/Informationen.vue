@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col cols="12" md="8">
-        <v-card class="mx-auto" max-width="750" elevation="0">
+        <v-card class="mx-auto" max-width="1000" elevation="0">
           <v-carousel
             hide-delimiters
             next-icon
@@ -37,7 +37,7 @@
             <b>8:00 bis 14:00</b> in der HTL Wien West statt.<br /><br />
             <div v-if="user.user == null">
               <b>Bei Interesse stellen Sie einen </b>
-              <router-link to="/antrag" class="red--text">Antrag</router-link>.
+              <router-link to="/antrag" class="red--text text--darken-1">Antrag</router-link>.
               <br />
             </div>
 
@@ -53,7 +53,7 @@
       </v-col>
       <v-col cols="12" md="4">
         <v-col cols="12">
-          <v-card elevation="0">
+          <v-card elevation="0" max-width="1000">
             <v-card-title>
               <v-text-field
                 v-model="search"
@@ -61,13 +61,12 @@
                 label="Search"
                 single-line
                 hide-details
-                @keyup.enter="wrapWord('span', search)"
               ></v-text-field>
             </v-card-title>
           </v-card>
         </v-col>
         <v-col cols="12">
-          <v-card elevation="0">
+          <v-card elevation="0" max-width="1000">
             <v-card-title>
               Kategorien
             </v-card-title>
@@ -85,7 +84,7 @@
           </v-card>
         </v-col>
         <v-col cols="12">
-          <v-card elevation="0">
+          <v-card elevation="0" max-width="1000">
             <v-card-title>
               Seiten
             </v-card-title>
@@ -112,7 +111,7 @@
     </v-row>
     <v-row>
       <v-col cols="12" md="8">
-        <v-card class="mx-auto " max-width="750" elevation="0">
+        <v-card class="mx-auto " max-width="1000" elevation="0">
           <v-img
             class="white--text align-end"
             height="300px"
@@ -193,68 +192,66 @@
         </v-col>
       </v-col>
     </v-row>
-    <v-card elevation="0">
-      <p
-        class="pl-2 pb-0 pt-16"
-        style="font-size: 1.25rem;font-weight: 500;letter-spacing: 0.0125em;
-    "
-      >
-        <span id="unternehmen">
-          Unternehmen und Bildungseinrichtungen die 2018 - 2020 am Karrieretag
-          teilgenommen haben:</span
-        >
-      </p>
-      <v-container class="red--text">
-        <v-row>
-          <v-col cols="4">
-            <v-card-text v-for="k of firmenList1" :key="k.name" class=" pa-0"
-              ><a
-                :href="k.url"
-                target="_blank"
-                style="text-decoration: none"
-                class="red--text text--darken-4 "
-                >{{ k.name }}</a
-              ></v-card-text
+    <v-row>
+      <v-col>
+        <v-card elevation="0" max-width="95%" class="mx-auto">
+          <p
+            class="pl-0 pb-0 pt-16"
+            style="font-size: 1.25rem;font-weight: 500;letter-spacing: 0.0125em;
+          "
+          >
+            <span id="unternehmen">
+              Unternehmen und Bildungseinrichtungen die 2018 - 2020 am
+              Karrieretag teilgenommen haben:</span
             >
-          </v-col>
-          <v-col cols="4">
-            <v-card-text v-for="k of firmenList2" :key="k.name" class=" pa-0"
-              ><a
-                :href="k.url"
-                target="_blank"
-                style="text-decoration: none"
-                class="red--text text--darken-4 "
-                >{{ k.name }}</a
-              ></v-card-text
-            >
-          </v-col>
-          <v-col cols="4">
-            <v-card-text v-for="k of firmenList3" :key="k.name" class=" pa-0"
-              ><a
-                :href="k.url"
-                target="_blank"
-                style="text-decoration: none"
-                class="red--text text--darken-4 "
-                >{{ k.name }}</a
-              ></v-card-text
-            >
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-card>
-    <Footer></Footer>
+          </p>
+          <v-row>
+            <v-col cols="4">
+              <v-card-text v-for="k of firmenList1" :key="k.name" class=" pa-0"
+                ><a
+                  :href="k.url"
+                  target="_blank"
+                  style="text-decoration: none"
+                  class="red--text text--darken-4 "
+                  >{{ k.name }}</a
+                ></v-card-text
+              >
+            </v-col>
+            <v-col cols="4">
+              <v-card-text v-for="k of firmenList2" :key="k.name" class=" pa-0"
+                ><a
+                  :href="k.url"
+                  target="_blank"
+                  style="text-decoration: none"
+                  class="red--text text--darken-4 "
+                  >{{ k.name }}</a
+                ></v-card-text
+              >
+            </v-col>
+            <v-col cols="4">
+              <v-card-text v-for="k of firmenList3" :key="k.name" class=" pa-0"
+                ><a
+                  :href="k.url"
+                  target="_blank"
+                  style="text-decoration: none"
+                  class="red--text text--darken-4 "
+                  >{{ k.name }}</a
+                ></v-card-text
+              >
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
 <script>
-import Footer from '@/components/Footer.vue';
 export default {
   created() {
     this.getUser();
   },
-  components: {
-    Footer,
-  },
+
   props: {
     logged: {
       type: Boolean,
@@ -264,7 +261,9 @@ export default {
     },
   },
   mounted() {
-    this.getFocus(this.infoId);
+    if (this.infoId.length > 0) {
+      this.getFocus(this.infoId);
+    }
   },
 
   data() {
@@ -525,35 +524,6 @@ export default {
       document.getElementById(`${id}`).style.background = 'yellow';
       impid.focus();
       impid.scrollIntoView();
-    },
-    wrapWord(el, word) {
-      var expr = new RegExp(word, 'i');
-      var nodes = [].slice.call(el.childNodes, 0);
-      for (var i = 0; i < nodes.length; i++) {
-        var node = nodes[i];
-        if (node.nodeType == 3) {
-          // textNode
-          var matches = node.nodeValue.match(expr);
-          if (matches) {
-            var parts = node.nodeValue.split(expr);
-            for (var n = 0; n < parts.length; n++) {
-              if (n) {
-                var span = el.insertBefore(
-                  document.createElement('span'),
-                  node,
-                );
-                span.appendChild(document.createTextNode(matches[n - 1]));
-              }
-              if (parts[n]) {
-                el.insertBefore(document.createTextNode(parts[n]), node);
-              }
-            }
-            el.removeChild(node);
-          }
-        } else {
-          this.wrapWord(node, word);
-        }
-      }
     },
   },
 };

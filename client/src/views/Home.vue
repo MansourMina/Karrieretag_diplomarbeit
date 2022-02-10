@@ -1,41 +1,29 @@
 <template>
-  <v-container fluid class="mx-0 p-0 ">
-    <v-container fluid lighten-2 class="black--text mt-16" text-center>
-      <h1 class="display-1 font-weight-light text-uppercase ">
+  <v-container fluid>
+    <v-container fluid class="black--text " text-center>
+      <!-- <h1 class="display-1 font-weight-light text-uppercase ">
         BIS ZUM KARRIERETAG <b>2022</b> der
         <span class="red--text text--darken-4 font-weight-bold">
           HTL Wien West
         </span>
+      </h1> -->
+      <h1 class="display-1 font-weight-light text-uppercase ">
+        KARRIERETAG <b>2022</b> der
+        <span class="red--text text--darken-4 font-weight-bold">
+          HTL Wien West
+        </span>
+        IN
       </h1>
       <v-divider dark></v-divider>
       <!-- <flip-countdown deadline="2022-03-22 " :showSeconds="false"></flip-countdown> -->
-      <v-row class="display-1" style="font-size: 100px"><Countdown deadline="March 9, 2022" class="p-0 m-0"></Countdown></v-row>
+      <v-row class="display-1" style="font-size: 100px"
+        ><Countdown deadline="March 9, 2022" class="p-0 m-0"></Countdown
+      ></v-row>
       <!-- <Countdown date="August 15, 2016"></Countdown> -->
     </v-container>
-    <!-- <header class="masthead" id="home">
-      <v-container fluid lighten-2 class="white--text ">
-        <div class="blackContainer">
-          <v-row class="align-items-start mt-16">
-            <div class="text-center my-16 ">
-              <h1 class="display-2 font-weight-light text-uppercase text-white">
-                Karrieretag - HTL Wien West
-              </h1>
-
-              <h3>
-                <span
-                  class=" font-weight-light text-uppercase"
-                  style="color:red;"
-                  >Entscheide deine Zukunft</span
-                >
-              </h3>
-            </div>
-          </v-row>
-        </div>
-      </v-container>
-    </header> -->
     <v-container justify-center text-center>
       <v-row>
-        <v-col cols="4">
+        <v-col>
           <v-btn
             class="mx-2"
             fab
@@ -53,13 +41,13 @@
           </v-btn>
           <p class=" mt-4" style="font-size:20px">Informationen</p>
         </v-col>
-        <v-col cols="4">
+        <v-col v-if="user.user == null">
           <v-btn
             class="mx-2"
             fab
             dark
             x-large
-            color="red"
+            color="red darken-4"
             to="/antrag"
             name="Antrag stellen"
             alt="Antrag"
@@ -71,7 +59,7 @@
           </v-btn>
           <p class=" mt-4" style="font-size:20px">Antrag</p>
         </v-col>
-        <v-col cols="4">
+        <v-col v-if="user.user == null">
           <v-btn
             class="mx-2"
             fab
@@ -224,7 +212,6 @@
           </v-carousel>
         </v-col>
       </v-row>
-      <Footer />
     </v-container>
   </v-container>
 </template>
@@ -232,7 +219,6 @@
 <script>
 // import FlipCountdown from 'vue2-flip-countdown';
 import Countdown from 'vuejs-countdown';
-import Footer from '@/components/Footer.vue';
 // import Countdown from '@/components/Countdown.vue';
 
 export default {
@@ -240,6 +226,9 @@ export default {
     changeColor: {
       type: Function,
     },
+  },
+  created() {
+    this.getUser();
   },
   data: () => ({
     c1: [
@@ -296,14 +285,21 @@ export default {
         id: 12,
       },
     ],
+    user: {},
   }),
   methods: {
     tellParentChangeColor(id) {
       this.$emit('changeColor', id);
     },
+    getUser() {
+      let user = JSON.parse(localStorage.getItem('user'));
+      if (user != null) {
+        this.user = user;
+      }
+    },
   },
 
-  components: { Countdown, Footer },
+  components: { Countdown },
 };
 </script>
 

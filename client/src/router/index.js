@@ -11,19 +11,31 @@ const routes = [
       import(/* webpackChunkName: "group-foo" */ '../views/Home.vue'),
   },
   {
-    path: '/admin',
-    name: 'Admin',
+    path: '/dashboard',
+    name: 'Dashboard',
     component: () =>
-      import(/* webpackChunkName: "group-foo" */ '../views/Admin.vue'),
-    children: [
-      {
-        path: '/anträge',
-        component: () =>
-          import(
-            /* webpackChunkName: "group-foo" */ '../viewsAdmin/Anträge.vue'
-          ),
-      },
-    ],
+      import(/* webpackChunkName: "group-foo" */ '../views/Dashboard.vue'),
+  },
+  {
+    path: '/antraege',
+    name: 'Anträge',
+
+    component: () =>
+      import(/* webpackChunkName: "group-foo" */ '../viewsAdmin/Anträge.vue'),
+  },
+  {
+    path: '/aktivitaeten',
+    name: 'Aktivitäten',
+    component: () =>
+      import(
+        /* webpackChunkName: "group-foo" */ '../viewsAdmin/Aktivitäten.vue'
+      ),
+  },
+  {
+    path: '/vortrag',
+    name: 'Vortrag',
+    component: () =>
+      import(/* webpackChunkName: "group-foo" */ '../views/Vorträge.vue'),
   },
 
   {
@@ -58,6 +70,12 @@ const routes = [
       import(/* webpackChunkName: "group-foo" */ '../views/Antrag.vue'),
   },
   {
+    path: '/formular',
+    name: 'Formular',
+    component: () =>
+      import(/* webpackChunkName: "group-foo" */ '../views/Formular.vue'),
+  },
+  {
     path: '/impress',
     name: 'Impressum',
     component: () =>
@@ -65,7 +83,12 @@ const routes = [
   },
   {
     path: '*',
-    name: 'Not Found',
+    component: () =>
+      import(/* webpackChunkName: "group-foo" */ '../views/NotFound.vue'),
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
     component: () =>
       import(/* webpackChunkName: "group-foo" */ '../views/NotFound.vue'),
   },
@@ -76,5 +99,56 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes,
 });
+
+router.beforeEach(async (to, from, next) => {
+  const user = JSON.parse(localStorage.getItem('user'));
+  const notFound = {
+    name: 'NotFound',
+    params: { pathMatch: to.path.split('/').slice(1) },
+  };
+  // Besucher
+  if (
+    !isAuthenticated() &&
+    (to.name == 'Dashboard' ||
+      to.name == 'Vortrag' ||
+      to.name == 'Aktivitäten' ||
+      to.name == 'Daten' ||
+      to.name == 'Anträge' ||
+      to.name == 'Formular')
+  ) {
+    next(notFound);
+  }
+  // Admin
+  if (user != null) {
+    if (
+      user.admin == true &&
+      (to.name == 'Daten' ||
+        to.name == 'Antrag' ||
+        to.name == 'Vortrag' ||
+        to.name == 'Login' ||
+        to.name == 'Formular')
+    ) {
+      next(notFound);
+    }
+    // Firma
+    if (
+      user.admin == false &&
+      (to.name == 'Antrag' ||
+        to.name == 'Anträge' ||
+        to.name == 'Dashboard' ||
+        to.name == 'Aktivitäten' ||
+        to.name == 'Login')
+    ) {
+      next(notFound);
+    }
+    next();
+  }
+  next();
+});
+
+function isAuthenticated() {
+  if (Vue.$cookies.get('sid')) return true;
+  else return false;
+}
 
 export default router;

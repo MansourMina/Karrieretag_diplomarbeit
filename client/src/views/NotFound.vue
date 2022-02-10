@@ -10,7 +10,7 @@
     ></v-img>
     <v-divider dark></v-divider>
     <p>
-      Sehr geehrte Damen und Herren, diese Seite existiert nicht. <br />Zurück
+      Sehr geehrte Damen und Herren, diese Seite existiert nicht oder Sie haben keinen Zugriff darauf. <br />Zurück
       zu der
       <router-link to="/" class="red--text">Startseite</router-link>
     </p>

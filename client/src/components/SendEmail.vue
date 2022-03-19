@@ -10,7 +10,7 @@
               <v-chip
                 pill
                 v-on="on"
-                v-for="s of selectedEmails"
+                v-for="s of limitEmail"
                 :key="s.firmen_id"
                 @click="currentMenu = s"
                 close
@@ -19,6 +19,7 @@
               >
                 {{ s.firmen_mail }}
               </v-chip>
+              <span v-if="selectedEmails > 3">//////dasdasdas</span>
             </div>
           </template>
           <v-card width="300">
@@ -72,13 +73,13 @@
     ></v-textarea>
 
     <div class="ml-0 d-flex">
-        <v-btn
-          icon
-          @click="textBold()"
-          color="black"
-          :disabled="selectedText.length == 0 || showBold == false"
-          ><v-icon id="bold">mdi-format-bold</v-icon></v-btn
-        >
+      <v-btn
+        icon
+        @click="textBold()"
+        color="black"
+        :disabled="selectedText.length == 0 || showBold == false"
+        ><v-icon id="bold">mdi-format-bold</v-icon></v-btn
+      >
       <v-spacer></v-spacer>
       <v-btn class="mt-0 my-2 mr-2" icon @click="entwurfLöschen()"
         ><v-icon color="red darken-4">mdi-delete</v-icon></v-btn
@@ -110,6 +111,7 @@ export default {
       diesdas: '',
       text: false,
       showBold: true,
+      limit: 3,
     };
   },
   mounted() {
@@ -183,6 +185,12 @@ export default {
       this.$emit('closeDialog');
     },
   },
-  computed: {},
+  computed: {
+    limitEmail() {
+      return this.selectedEmails
+        ? this.selectedEmails.slice(0, this.limit)
+        : this.selectedEmails;
+    },
+  },
 };
 </script>

@@ -16,10 +16,13 @@
     <link rel="icon" href="<%= BASE_URL %>logo.svg" />
 
     <title>Karrieretag HTL Wien West</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
+    <script src="js/jquery.min.js"></script>
+
     <script lang="javascript">
             $('document').ready(function(e){
-      $(".loader").fadeOut("slow");
+      $(".loader").hide();
             })
     </script>
     <link
@@ -36,6 +39,8 @@
       integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl"
       crossorigin="anonymous"
     />
+    
+  <script src='https://www.google.com/recaptcha/api.js'></script>
   </head>
   <body>
     <noscript>
@@ -45,15 +50,10 @@
         continue.</strong
       >
     </noscript>
-
-    <div id="app"></div>
-    <!-- built files will be auto injected -->
-    <!-- MDB -->
-    <div
+<div
       style="
         display: flex;
         justify-content: center;
-        align-items: center;
         text-align: center;
       "
     >
@@ -70,5 +70,11 @@
         <p style="margin-top: 10%">Please wait, Loading...</p>
       </div>
     </div>
+    <div id="app"></div>
+    <!-- built files will be auto injected -->
+    <!-- MDB -->
+    
+
   </body>
+  
 </html>

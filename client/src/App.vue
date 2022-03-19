@@ -1,14 +1,14 @@
 <template>
   <v-app>
-    <div class="center" style="height: 100%" v-if="!isloaded">
+    <!-- <div class="center" style="height: 100%" v-if="!isloaded">
       <v-progress-circular
         :size="60"
         :width="6"
         color="red darken-4"
         indeterminate
       ></v-progress-circular>
-    </div>
-    <div v-else>
+    </div> -->
+    <div>
       <div id="progress-bar" class="red darken-4"></div>
       <div class="ma-5" id="up-circle" v-if="showUpButton">
         <v-btn color="red darken-4 " fab large dark @click="toTop()">
@@ -117,7 +117,7 @@
                 </v-list-item-icon>
 
                 <v-list-item-content>
-                  <v-list-item-title>Antrag stellen</v-list-item-title>
+                  <v-list-item-title>Formular ausfüllen</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
             </v-list>
@@ -166,6 +166,25 @@
                 </v-list-item-content>
               </v-list-item>
             </v-list>
+            <v-divider dark></v-divider>
+
+            <v-list-item
+              v-if="user.admin"
+              dense
+              link
+              @click="generateReport"
+              :disabled="
+                antraege.filter((el) => el.status == 'Teilnehmer').length == 0
+              "
+            >
+              <v-list-item-icon>
+                <v-icon>mdi-chart-timeline</v-icon>
+              </v-list-item-icon>
+
+              <v-list-item-content>
+                <v-list-item-title>Report erstellen</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
             <v-list-item
               dense
               link
@@ -205,43 +224,75 @@
           @focusId="passId"
           :impressId="impressId"
           :infoId="infoId"
+          @refreshAntraege="getAntraege()"
+          :antraege="antraege"
+          :activities="activities"
+          @sendmail="sendmail"
         />
         <Footer />
       </v-main>
     </div>
+    <VueHtml2pdf
+      :show-layout="false"
+      :float-layout="true"
+      :enable-download="true"
+      :preview-modal="true"
+      :paginate-elements-by-height="1400"
+      filename="Karrieretag 2022 Liste"
+      :pdf-quality="2"
+      :manual-pagination="ztue"
+      pdf-format="a4"
+      pdf-orientation="portrait"
+      pdf-content-width="100%"
+      ref="html2Pdf"
+    >
+      <section slot="pdf-content">
+        <PDFContent
+          style="padding: 100px 80px 100px 80px"
+          :antraege="antraege"
+        />
+      </section>
+    </VueHtml2pdf>
   </v-app>
 </template>
 
 <script>
 import AskLogout from '@/components/AskLogout.vue';
+import PDFContent from '@/components/PDFContent.vue';
 import Footer from '@/components/Footer.vue';
+import VueHtml2pdf from 'vue-html2pdf';
+
 import axios from 'axios';
 export default {
   name: 'App',
   components: {
     AskLogout,
     Footer,
+    VueHtml2pdf,
+    PDFContent,
   },
   created() {
+    this.getAntraege();
+    this.getActivities();
     window.addEventListener('scroll', this.animateProgressBar);
 
     this.getUser();
-    const storageLogin = JSON.parse(localStorage.getItem('loginBleiben'));
+    // const storageLogin = JSON.parse(localStorage.getItem('loginBleiben'));
 
-    if (performance.navigation.type == performance.navigation.TYPE_RELOAD) {
-      console.info('This page is reloaded');
-    } else {
-      if (storageLogin != null) {
-        if (!storageLogin.login) {
-          console.info('didtn wanted to stay');
-          this.logout();
-        } else {
-          console.info('wanted to stay');
-        }
+    // if (performance.navigation.type == performance.navigation.TYPE_RELOAD) {
+    //   console.info('This page is reloaded');
+    // } else {
+    //   if (storageLogin != null) {
+    //     if (!storageLogin.login) {
+    //       console.info('didtn wanted to stay');
+    //       this.logout();
+    //     } else {
+    //       console.info('wanted to stay');
+    //     }
 
-        console.info('This page is not reloaded');
-      }
-    }
+    //     console.info('This page is not reloaded');
+    //   }
+    // }
   },
   watch: {
     dialog(val) {
@@ -260,6 +311,7 @@ export default {
       { flag: 'de', language: 'de', title: 'Deutsch' },
     ],
     user: {},
+    createPdf: false,
     value: 0,
     query: false,
     show: true,
@@ -270,22 +322,18 @@ export default {
     drawer: false,
     dialog: false,
     showDialog: false,
-
+    antraege: [],
+    activities: [],
     extraItems: [
       {
         name: 'Formular',
-        icon: 'mdi-face-man-profile',
-        route: '/formular',
+        icon: 'mdi-note-text',
+        route: '/anmeldeformular',
       },
       {
         name: 'Ihre Daten',
-        icon: 'mdi-face-man-profile',
+        icon: 'mdi-badge-account',
         route: '/daten',
-      },
-      {
-        name: 'Vorträge',
-        icon: 'mdi-human-male-board',
-        route: '/vortrag',
       },
     ],
     adminitems: [
@@ -296,19 +344,28 @@ export default {
       },
       {
         title: 'Aktivitäten',
-        icon: 'mdi-information',
-        route: '/aktivitaeten',
+        icon: 'mdi-history',
+        route: '/activities',
       },
       {
         title: 'Anträge',
         icon: 'mdi-text-box-multiple',
-        route: '/antraege',
+        route: '/requests',
+      },
+      {
+        title: 'Vorträge',
+        icon: 'mdi-human-male-board',
+        route: '/vortrag',
       },
     ],
     items: [
       { title: 'Home', icon: 'mdi-view-dashboard', route: '/' },
       { title: 'Informationen', icon: 'mdi-information', route: '/infos' },
-      { title: 'Contact', icon: 'mdi-book-open-blank-variant', route: '/contact' },
+      {
+        title: 'Contact',
+        icon: 'mdi-book-open-blank-variant',
+        route: '/contact',
+      },
     ],
     idOfkategorien: [
       {
@@ -326,17 +383,44 @@ export default {
       },
     ],
     right: null,
-    isloaded: false,
+    // isloaded: false,
     showUpButton: false,
   }),
   mounted() {
-    document.onreadystatechange = () => {
-      if (document.readyState == 'complete') {
-        this.isloaded = true;
-      }
-    };
+    // document.onreadystatechange = () => {
+    //   if (document.readyState == 'complete') {
+    //     this.isloaded = true;
+    //   }
+    // };
   },
   methods: {
+    generateReport() {
+      this.$refs.html2Pdf.generatePdf();
+    },
+    async sendmail(body) {
+      await axios({
+        url: '/sendmail/bytype',
+        method: 'POST',
+        contentType: 'application/json',
+        data: {
+          emails: [
+            {
+              name: body.firmen_name,
+              email: body.email,
+            },
+          ],
+          type: body.type,
+          fullbody: body,
+        },
+      });
+    },
+    async getAntraege() {
+      const { data } = await axios({
+        url: '/antraege',
+        method: 'GET',
+      });
+      this.antraege = data;
+    },
     animateProgressBar() {
       const progressBar = document.querySelector('#progress-bar');
       const section = document.querySelector('#main');
@@ -363,7 +447,7 @@ export default {
       let user = JSON.parse(localStorage.getItem('user'));
       if (user != null) {
         this.user = user;
-      }
+      } else localStorage.removeItem('user');
     },
     toTop() {
       window.scrollTo(0, 0);
@@ -374,7 +458,7 @@ export default {
         method: 'GET',
       });
       localStorage.clear();
-      this.$router.push('/');
+      await this.$router.push('/');
       this.$router.go();
     },
     passId(id) {
@@ -396,6 +480,13 @@ export default {
     showLoading(dialog) {
       this.showDialog = false;
       this.dialog = dialog;
+    },
+    async getActivities() {
+      const { data } = await axios({
+        url: '/activities',
+        method: 'GET',
+      });
+      this.activities = data;
     },
   },
 };

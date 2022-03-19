@@ -18,7 +18,7 @@
       <p class="adsimple-121879084">
         <strong>Tel.:</strong> +43 (01) 49 111-113<br />
         <strong>Fax:</strong> +43 (01) 49 111-199<br />
-        <strong>E-Mail:</strong>
+        <strong>E-Mail: </strong>
         <a href="mailto:wojtasik.f03@htlwienwest.at"
           >wojtasik.f03@htlwienwest.at</a
         >
@@ -35,14 +35,16 @@
         die Kontaktdaten der verantwortlichen Person bzw. Stelle:<br />Karrieretag
         HTL Wien West<br />
         Thaliastraße 125, 1160 Wien, Österreich<br />Vertretungsberechtigt: Mina
-        Mansour (mansour.m02@htlwienwest.at), Adrian Mysliwiec
-        (mysliwiec.a02@htlwienwest.at)<br />E-Mail-Adresse:
+        Mansour
+        <a href="mailto:mansour.m02@htlwienwest.at"
+          >(mansour.m02@htlwienwest.at)</a
+        ><br />E-Mail-Adresse:
         <a href="mailto:wojtasik.f03@htlwienwest.at"
           >wojtasik.f03@htlwienwest.at</a
         >
         <br />Telefon: +43 (01) 49 111-113<br />Impressum:
         <a
-          href="karrieretag.htlwienwest.at/impressum"
+          href="https://karrieretag.htlwienwest.at/impress"
           target="_self"
           rel="noopener"
           >karrieretag.htlwienwest.at/impressum</a
@@ -357,8 +359,10 @@
         >
         <br />
         <span style="font-weight: 400"
-          >Vertretungsberechtigt: Mina Mansour (mansour.m02@htlwienwest.at),
-          Adrian Mysliwiec (mysliwiec.a02@htlwienwest.at)</span
+          >Vertretungsberechtigt: Mina Mansour
+          <a href="mailto:mansour.m02@htlwienwest.at"
+            >(mansour.m02@htlwienwest.at)</a
+          ></span
         >
         <br />
         E-Mail:

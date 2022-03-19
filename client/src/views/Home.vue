@@ -8,7 +8,7 @@
         </span>
       </h1> -->
       <h1 class="display-1 font-weight-light text-uppercase ">
-        KARRIERETAG <b>2022</b> der
+        KARRIERETAG der
         <span class="red--text text--darken-4 font-weight-bold">
           HTL Wien West
         </span>
@@ -17,12 +17,30 @@
       <v-divider dark></v-divider>
       <!-- <flip-countdown deadline="2022-03-22 " :showSeconds="false"></flip-countdown> -->
       <v-row class="display-1" style="font-size: 100px"
-        ><Countdown deadline="March 9, 2022" class="p-0 m-0"></Countdown
+        ><Countdown deadline="April 21, 2022" class="p-0 m-0"></Countdown
       ></v-row>
       <!-- <Countdown date="August 15, 2016"></Countdown> -->
     </v-container>
     <v-container justify-center text-center>
       <v-row>
+        <v-col v-if="!user.admin && user.user != null">
+          <v-btn
+            class="mx-2"
+            fab
+            dark
+            x-large
+            color="red darken-4"
+            to="/anmeldeformular"
+            name="Informationen"
+            alt="Informationen"
+            title="Informationen"
+          >
+            <v-icon dark>
+              mdi-note-text
+            </v-icon>
+          </v-btn>
+          <p class=" mt-4" style="font-size:20px">Anmeldeformular</p>
+        </v-col>
         <v-col>
           <v-btn
             class="mx-2"
@@ -49,15 +67,15 @@
             x-large
             color="red darken-4"
             to="/antrag"
-            name="Antrag stellen"
-            alt="Antrag"
-            title="Antrag stellen"
+            name="Formular ausfüllen"
+            alt="Formular"
+            title="Formular ausfüllen"
           >
             <v-icon dark>
               mdi-android-messages
             </v-icon>
           </v-btn>
-          <p class=" mt-4" style="font-size:20px">Antrag</p>
+          <p class=" mt-4" style="font-size:20px">Formular</p>
         </v-col>
         <v-col v-if="user.user == null">
           <v-btn

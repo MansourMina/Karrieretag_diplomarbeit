@@ -1,206 +1,125 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="6" md="3">
-        <v-card>
-          <v-row align="center">
-            <v-col cols="3" class="text-center pl-8">
-              <v-icon large>mdi-information</v-icon>
-            </v-col>
-            <v-col cols="8">
-              <v-card-subtitle class=" py-0">
-                Anträge angenommen
-              </v-card-subtitle>
-              <v-row class="py-0 my-0">
-                <v-col cols="12" md="8" class="py-0 my-0">
-                  <v-card-title class=" py-0">
-                    22/50
-                  </v-card-title>
-                </v-col>
-                <v-col cols="12" md="4" class="py-0 pt-1">
-                  <v-icon medium>
-                    mdi-unfold-more-vertical
-                  </v-icon>
-                </v-col>
-              </v-row>
-            </v-col>
-          </v-row>
+      <v-col cols="6" sm="6" md="3" class="pa-0">
+        <v-card class="pa-5 ma-3">
+          <v-list-item-content>
+            <v-list-item-title
+              ><b>Anträge</b
+              ><v-icon class="ml-2" small
+                >mdi-application-import</v-icon
+              ></v-list-item-title
+            >
+            <h4 class="mt-5 mb-2 font-weight-bold">
+              {{ antraege.length }}
+            </h4>
+            <v-list-item-subtitle class="grey--text"
+              ><b>Anzahl</b></v-list-item-subtitle
+            >
+          </v-list-item-content>
         </v-card>
       </v-col>
-      <v-col cols="6" md="3">
-        <v-card>
-          <v-row align="center">
-            <v-col cols="4" class="text-center">
-              <v-icon large>mdi-checkbox-blank-badge</v-icon>
-            </v-col>
-            <v-col cols="8">
-              <v-card-subtitle class=" py-0">
-                Anträge angenommen
-              </v-card-subtitle>
-              <v-row class="py-0 my-0">
-                <v-col cols="8" class="py-0 my-0">
-                  <v-card-title class=" py-0">
-                    22/50
-                  </v-card-title>
-                </v-col>
-                <v-col cols="4" class="py-0 pt-1">
-                  <v-icon medium>
-                    mdi-unfold-more-vertical
-                  </v-icon>
-                </v-col>
-              </v-row>
-            </v-col>
-          </v-row>
+      <v-col cols="6" sm="6" md="3" class="pa-0">
+        <v-card class="pa-5 ma-3">
+          <v-list-item-content>
+            <v-list-item-title
+              ><b>Formular ausgefüllt</b
+              ><v-icon class="ml-2" small color="green darken-4"
+                >mdi-cloud-check</v-icon
+              ></v-list-item-title
+            >
+            <h4 class="mt-5 mb-2  font-weight-bold">
+              {{ antraege.filter((el) => el.status == 'Teilnehmer').length }}/{{
+                antraege.filter(
+                  (el) => el.status == 'Teilnehmer' && el.formular == true,
+                ).length
+              }}
+            </h4>
+            <v-list-item-subtitle class="grey--text"
+              ><b>Anzahl</b></v-list-item-subtitle
+            >
+          </v-list-item-content>
         </v-card>
       </v-col>
-      <v-col cols="6" md="3">
-        <v-card>
-          <v-row align="center">
-            <v-col cols="4" class="text-center">
-              <v-icon large>mdi-login</v-icon>
-            </v-col>
-            <v-col cols="8">
-              <v-card-subtitle class=" py-0">
-                Anträge angenommen
-              </v-card-subtitle>
-              <v-row class="py-0 my-0">
-                <v-col cols="8" class="py-0 my-0">
-                  <v-card-title class=" py-0">
-                    22/50
-                  </v-card-title>
-                </v-col>
-                <v-col cols="4" class="py-0 pt-1">
-                  <v-icon medium>
-                    mdi-unfold-more-vertical
-                  </v-icon>
-                </v-col>
-              </v-row>
-            </v-col>
-          </v-row>
+      <v-col cols="6" sm="6" md="3" class="pa-0">
+        <v-card class="pa-5 ma-3">
+          <v-list-item-content>
+            <v-list-item-title
+              ><b>Antrag offen </b
+              ><v-icon class="ml-2" small color="blue darken-4"
+                >mdi-folder-open-outline</v-icon
+              ></v-list-item-title
+            >
+            <h4 class="mt-5 mb-2 font-weight-bold">
+              {{ antraege.filter((el) => el.status == 'Anfrage').length }}/{{
+                antraege.length
+              }}
+            </h4>
+            <v-list-item-subtitle class="grey--text"
+              ><b>Anzahl</b></v-list-item-subtitle
+            >
+          </v-list-item-content>
         </v-card>
       </v-col>
-      <v-col cols="6" md="3">
-        <v-card>
-          <v-row align="center">
-            <v-col cols="4" class="text-center">
-              <v-icon large>mdi-application</v-icon>
-            </v-col>
-            <v-col cols="8">
-              <v-card-subtitle class=" py-0">
-                Anträge angenommen
-              </v-card-subtitle>
-              <v-row class="py-0 my-0">
-                <v-col cols="8" class="py-0 my-0">
-                  <v-card-title class=" py-0">
-                    22/50
-                  </v-card-title>
-                </v-col>
-                <v-col cols="4" class="py-0 pt-1">
-                  <v-icon medium>
-                    mdi-unfold-more-vertical
-                  </v-icon>
-                </v-col>
-              </v-row>
-            </v-col>
-          </v-row>
+      <v-col cols="6" sm="6" md="3" class="pa-0">
+        <v-card class="pa-5 ma-3">
+          <v-list-item-content>
+            <v-list-item-title
+              ><b>Abgelehnt</b
+              ><v-icon class="ml-2" small color="red darken-4"
+                >mdi-minus-circle</v-icon
+              ></v-list-item-title
+            >
+            <h4 class="mt-5 mb-2 font-weight-bold">
+              {{ antraege.filter((el) => el.status == 'Abgelehnt').length }}/{{
+                antraege.length
+              }}
+            </h4>
+            <v-list-item-subtitle class="grey--text"
+              ><b>Anzahl</b></v-list-item-subtitle
+            >
+          </v-list-item-content>
         </v-card>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row class="mt-5">
       <v-col>
-        <v-card class="mt-16 mx-auto" max-width="1000">
-          <v-sheet
-            class="v-sheet--offset mx-auto"
-            color="cyan"
-            elevation="12"
-            max-width="calc(100% - 32px)"
-          >
-            <v-sparkline
-              :labels="labels"
-              :value="values"
-              color="white"
-              line-width="2"
-              padding="16"
-              class="pa-10"
-            ></v-sparkline>
-          </v-sheet>
-
-          <v-card-text class="pt-0">
-            <div class="text-h6 font-weight-light mb-2">
-              User Registrations
-            </div>
-            <div class="subheading font-weight-light grey--text">
-              Last Campaign Performance
-            </div>
-            <v-divider class="my-2"></v-divider>
-            <v-icon class="mr-2" small>
-              mdi-clock
-            </v-icon>
-            <span class="text-caption grey--text font-weight-light"
-              >last registration 26 minutes ago</span
-            >
-          </v-card-text>
-        </v-card>
+        <UebersichtVerlauf :activities="activities" />
       </v-col>
       <v-col>
-        <v-card class="mt-16 mx-auto" max-width="1000">
-          <v-sheet
-            class="v-sheet--offset mx-auto"
-            color="cyan"
-            elevation="12"
-            max-width="calc(100% - 32px)"
-          >
-            <v-sparkline
-              :labels="labels"
-              :value="values"
-              color="red darken-4"
-              line-width="2"
-              padding="16"
-              class="pa-10"
-            ></v-sparkline>
-          </v-sheet>
-
-          <v-card-text class="pt-0">
-            <div class="text-h6 font-weight-light mb-2">
-              User Registrations
-            </div>
-            <div class="subheading font-weight-light grey--text">
-              Last Campaign Performance
-            </div>
-            <v-divider class="my-2"></v-divider>
-            <v-icon class="mr-2" small>
-              mdi-clock
-            </v-icon>
-            <span class="text-caption grey--text font-weight-light"
-              >last registration 26 minutes ago</span
-            >
-          </v-card-text>
-        </v-card>
+        <UebersichtAntrag :antraege="antraege" />
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
-import axios from 'axios';
+import UebersichtAntrag from '../components/UebersichtAntrag.vue';
+import UebersichtVerlauf from '../components/UebersichtVerlauf.vue';
+// import axios from 'axios';
 export default {
-  data: () => ({
-    values: [],
-    labels: [],
-  }),
+  components: { UebersichtAntrag, UebersichtVerlauf },
+  data: () => ({}),
+  props: {
+    antraege: {
+      type: Array,
+    },
+    activities: {
+      type: Array,
+    },
+  },
   created() {
-    this.getAnfragen();
+    // this.getAnfragen();
   },
   methods: {
-    async getAnfragen() {
-      const { data } = await axios({
-        url: 'http://127.0.0.1:3000/anzahlbydatum',
-        method: 'GET',
-      });
-
-      this.values = data.map((el) => Number(el.anzahl));
-      this.labels = data.map((el) => el.datum.substring(5, 10));
-    },
+    // async getAnfragen() {
+    //   const { data } = await axios({
+    //     url: 'http://127.0.0.1:3000/anzahlbydatum',
+    //     method: 'GET',
+    //   });
+    //   this.values = data.map((el) => Number(el.anzahl));
+    //   this.labels = data.map((el) => el.datum.substring(5, 10));
+    // },
   },
 };
 </script>

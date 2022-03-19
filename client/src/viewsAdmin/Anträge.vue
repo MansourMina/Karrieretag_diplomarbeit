@@ -42,7 +42,7 @@
               </v-btn>
             </template>
             <SendEmail
-              :selectedEmails="selected"
+              :selectedEmails="selectedEmails"
               @closeDialog="closeDialog()"
               @deSelectFirma="deSelectFirma"
             />
@@ -50,138 +50,190 @@
         </v-col>
       </v-row>
     </div>
-    <v-card class="ma-10 center" min-height="500" v-if="getanträge.length == 0">
-      <div>
-        <p><i>No data available</i></p>
-      </div>
-    </v-card>
-    <v-card class="ma-10" min-height="500" v-else>
-      <v-simple-table class="ma-5 ">
-        <template v-slot:default>
-          <thead>
-            <tr>
-              <th class="text-center">
-                <v-checkbox
-                  @click="SelectAll()"
-                  v-model="allSelected"
-                ></v-checkbox>
-              </th>
-              <th class="text-center">
-                Name
-              </th>
-              <th class="text-center">
-                Email
-              </th>
-              <th class="text-center">
-                Datum
-              </th>
-              <th class="text-center">
-                Status
-              </th>
-              <th class="text-center">
-                Action
-              </th>
-            </tr>
-          </thead>
 
-          <tbody class="text-center">
-            <template v-for="item in getanträge">
-              <tr :key="item.firmen_id">
-                <td>
-                  <v-checkbox
-                    v-model="selected"
-                    :value="item"
-                    @click="allSelected = false"
-                  ></v-checkbox>
-                </td>
-                <td>{{ item.firmen_name }}</td>
-                <td>{{ item.firmen_mail }}</td>
-                <td>{{ item.anfrage_zeitpunkt }}</td>
-                <td v-if="item.status == 'Anfrage'">
-                  <v-chip color="primary" dark small>{{ item.status }}</v-chip>
-                </td>
-                <td v-if="item.status == 'Abgelehnt'">
-                  <v-chip color="error" small>{{ item.status }}</v-chip>
-                </td>
-                <td v-if="item.status == 'Teilnehmer'">
-                  <v-chip color="success" small>{{ item.status }}</v-chip>
-                </td>
-                <td class="px-5">
-                  <div v-if="item.status == 'Teilnehmer'">
-                    <v-btn
-                      icon
-                      @click="
-                        showDetails = !showDetails;
-                        toggle(item.firmen_id);
-                      "
-                      :class="{ opened: opened.includes(item.firmen_id) }"
-                    >
-                      <v-icon>{{
-                        showDetails ? 'mdi-chevron-up' : 'mdi-chevron-down'
-                      }}</v-icon>
-                    </v-btn>
-                  </div>
-                  <div
-                    v-if="
-                      item.status != 'Abgelehnt' && item.status != 'Teilnehmer'
-                    "
-                  >
-                    <v-btn icon>
-                      <v-icon color="red darken-4" small
-                        >mdi-archive-remove-outline</v-icon
-                      ></v-btn
-                    >
-                    <v-btn icon
-                      ><v-icon color="primary" dark small
-                        >mdi-email-check-outline</v-icon
-                      ></v-btn
-                    >
-                  </div>
-                </td>
-              </tr>
-              <tr
-                v-if="opened.includes(item.firmen_id)"
-                :key="item.firmen_id"
-                class="pa-10"
-              >
-                <td>Lorem Ipsum</td>
-                <td>Lorem Ipsum!</td>
-                <td>Lorem Ipsum!</td>
-                <td>Lorem Ipsum!</td>
-                <td>Lorem Ipsum!</td>
-                <td>Lorem Ipsum!</td>
-                <v-divider dark></v-divider>
-              </tr>
-            </template>
-          </tbody>
-        </template>
-      </v-simple-table>
+    <v-card class="ma-10 " min-height="500" v-if="!loaded">
+      <v-skeleton-loader
+        class="mx-auto"
+        type="table-tbody"
+        :loading="loading"
+        transition="fade-transition"
+        v-for="i in 2" :key="i"
+      ></v-skeleton-loader>
     </v-card>
+    <div v-else>
+      <v-card
+        class="ma-10 center"
+        min-height="500"
+        v-if="filterAnträge.length == 0"
+      >
+        <div>
+          <p><i>No data available</i></p>
+        </div>
+      </v-card>
+      <v-card class="ma-10" min-height="500" v-else>
+        <v-simple-table class="ma-5 ">
+          <template v-slot:default>
+            <thead>
+              <tr>
+                <th class="text-center">
+                  <v-checkbox
+                    @click="SelectAll()"
+                    v-model="allSelected"
+                  ></v-checkbox>
+                </th>
+                <th class="text-center">
+                  Name
+                </th>
+                <th class="text-center">
+                  Email
+                </th>
+                <th class="text-center">
+                  Datum
+                </th>
+                <th class="text-center">
+                  Status
+                </th>
+                <th class="text-center">
+                  Action
+                </th>
+              </tr>
+            </thead>
+            <tbody class="text-center">
+              <template v-for="item in filterAnträge">
+                <tr :key="item.firmen_id">
+                  <td>
+                    <v-checkbox
+                      v-model="selected"
+                      :value="item.firmen_id"
+                      @click="allSelected = false"
+                    ></v-checkbox>
+                  </td>
+                  <td>{{ item.firmen_name }}</td>
+                  <td>{{ item.firmen_mail }}</td>
+                  <td>{{ item.anfrage_zeitpunkt.substring(0, 10) }}</td>
+                  <td v-if="item.status == 'Anfrage'">
+                    <v-chip color="primary" dark small>{{
+                      item.status
+                    }}</v-chip>
+                  </td>
+                  <td v-if="item.status == 'Abgelehnt'">
+                    <v-chip color="error" small>{{ item.status }}</v-chip>
+                  </td>
+                  <td v-if="item.status == 'Teilnehmer'">
+                    <v-chip color="success" small>{{ item.status }}</v-chip>
+                  </td>
+                  <td v-if="item.status == 'Daten erhalten'">
+                    <v-chip color="blue-grey" class="white--text" small>{{
+                      item.status
+                    }}</v-chip>
+                  </td>
+                  <td class="px-5">
+                    <div v-if="item.status == 'Teilnehmer'">
+                      <v-btn
+                        icon
+                        @click="
+                          dialogData = true;
+                          selectedItem = item;
+                        "
+                      >
+                        <v-icon> mdi-forwardburger</v-icon>
+                      </v-btn>
+                    </div>
+                    <div
+                      v-if="
+                        item.status != 'Abgelehnt' &&
+                          item.status != 'Teilnehmer' &&
+                          item.status != 'Daten erhalten'
+                      "
+                    >
+                      <v-btn icon @click="seen(item)" v-if="!item.gesehen"
+                        ><v-icon color="black" dark small
+                          >mdi-eye</v-icon
+                        ></v-btn
+                      >
+                      <v-btn icon @click="changeStatus('Abgelehnt', item)">
+                        <v-icon color="red darken-4" small
+                          >mdi-archive-remove-outline</v-icon
+                        ></v-btn
+                      >
+                      <v-btn icon @click="changeStatus('Daten erhalten', item)"
+                        ><v-icon color="primary" dark small
+                          >mdi-email-check-outline</v-icon
+                        ></v-btn
+                      >
+                    </div>
+                  </td>
+                </tr>
+                <!-- <tr
+                  v-if="opened.includes(item.firmen_id)"
+                  :key="item.firmen_id"
+                  class="pa-10"
+                >
+                  <td>Lorem Ipsum</td>
+                  <td>Lorem Ipsum!</td>
+                  <td>Lorem Ipsum!</td>
+                  <td>Lorem Ipsum!</td>
+                  <td>Lorem Ipsum!</td>
+                  <td>Lorem Ipsum!</td>
+                  <v-divider dark></v-divider>
+                </tr> -->
+              </template>
+            </tbody>
+          </template>
+        </v-simple-table>
+
+        <v-dialog max-width="600px" v-model="dialogData">
+          <ShowData @close="dialogData = false" :user="selectedItem" />
+        </v-dialog>
+      </v-card>
+    </div>
+    <v-snackbar v-model="snackbar" :timeout="timeout" :color="snackbarcolor">
+      <span :class="`${color}--text`">{{ message }}</span>
+
+      <template v-slot:action="{ attrs }">
+        <v-btn :color="color" text v-bind="attrs" @click="snackbar = false">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-container>
 </template>
 
 <script>
 import axios from 'axios';
 import SendEmail from '@/components/SendEmail.vue';
+import ShowData from '@/components/ShowData.vue';
 export default {
   components: {
     SendEmail,
+    ShowData,
   },
   data() {
     return {
       search: '',
+      message: '',
+      snackbar: false,
+      timeout: 5000,
       selected: [],
       calories: '',
+      color: '',
       status: [],
-      opened: [],
-      anträge: [],
-      statuse: ['Anfrage', 'Abgelehnt', 'Teilnehmer'],
+      snackbarcolor: 'none',
+      statuse: ['Anfrage', 'Abgelehnt', 'Teilnehmer', 'Daten erhalten'],
       dialog: false,
       allSelected: false,
-      showDetails: false,
+      dialogData: false,
+      selectedItem: {},
+      antraege: [],
+      loaded: false,
+      loading: true,
     };
   },
+
   computed: {
+    selectedEmails() {
+      return this.antraege.filter((el) => this.selected.includes(el.firmen_id));
+    },
     headers() {
       return [
         {
@@ -195,36 +247,126 @@ export default {
       ];
     },
 
-    getanträge() {
+    filterAnträge() {
       if (this.status.length > 0) {
-        return this.anträge.filter(
+        return this.antraege.filter(
           (el) =>
             el.firmen_name.toLowerCase().includes(this.search.toLowerCase()) &&
             this.status.includes(el.status),
         );
       } else {
-        return this.anträge.filter((el) =>
+        return this.antraege.filter((el) =>
           el.firmen_name.toLowerCase().includes(this.search.toLowerCase()),
         );
       }
     },
   },
-  created() {
-    this.getAnträge();
+  async created() {
+    await this.getAntraege();
+
+    const readyHandler = () => {
+      if (document.readyState == 'complete') {
+        this.loading = false;
+        this.loaded = true;
+        document.removeEventListener('readystatechange', readyHandler);
+      }
+    };
+
+    document.addEventListener('readystatechange', readyHandler);
+
+    readyHandler();
   },
+
   methods: {
-    toggle(id) {
-      const index = this.opened.indexOf(id);
-      if (index > -1) {
-        this.opened.splice(index, 1);
-      } else {
-        this.opened.push(id);
+    async getAntraege() {
+      const { data } = await axios({
+        url: '/antraege',
+        method: 'GET',
+      });
+      this.antraege = data;
+    },
+    // getVerlauf() {
+    //   let verlauf = JSON.parse(localStorage.getItem('user'));
+    //   if (user != null) {
+    //     this.verlauf = verlauf;
+    //   }
+    // },
+    async seen(item) {
+      await axios({
+        url: '/status/' + item.firmen_id,
+        method: 'PATCH',
+        contentType: 'application/json',
+        data: {
+          status: 'gesehen',
+        },
+      });
+      this.message = 'Anfrage bestätigt!';
+      this.snackbarcolor = 'grey lighten-4';
+      this.color = 'black';
+      this.snackbar = true;
+      this.$emit('refreshAntraege');
+      this.$emit('sendmail', {
+        firmen_name: item.firmen_name,
+        email: item.firmen_mail,
+        type: 'gesehen',
+      });
+    },
+    async changeStatus(status, item) {
+      await axios({
+        url: '/status/' + item.firmen_id,
+        method: 'PATCH',
+        contentType: 'application/json',
+        data: {
+          status: status,
+        },
+      });
+      this.snackbar = true;
+      this.$emit('refreshAntraege');
+
+      switch (status) {
+        case 'Abgelehnt':
+          this.$emit('sendmail', {
+            firmen_name: item.firmen_name,
+            email: item.firmen_mail,
+            type: 'abgelehnt',
+          });
+          this.message = 'Antrag abgelehnt!';
+          this.snackbarcolor = 'red darken-4';
+          this.color = 'white';
+
+          break;
+        case 'Daten erhalten':
+          const { data } = await axios({
+            url: '/setanmeldedaten',
+            method: 'POST',
+            contentType: 'application/json',
+            data: {
+              firmen_id: item.firmen_id,
+            },
+          });
+          this.message = 'Antrag angenommen!';
+          this.snackbarcolor = 'success';
+          this.color = 'white';
+          this.$emit('sendmail', {
+            firmen_name: item.firmen_name,
+            email: item.firmen_mail,
+            type: 'daten',
+            user_id: data.user_id,
+            passwort: data.passwort,
+          });
+
+          break;
+        default:
+          this.message = 'Fehler';
+          this.snackbarcolor = 'red';
+          this.color = 'white';
       }
     },
+
     SelectAll() {
       this.selected = [];
       if (this.allSelected) {
-        for (const item of this.getanträge) {
+        for (const item of this.filterAnträge) {
           if (this.selected.find((el) => el == item) == null) {
             this.selected.push(item);
           }
@@ -238,13 +380,6 @@ export default {
       this.dialog = false;
       this.allSelected = false;
       this.selected = [];
-    },
-    async getAnträge() {
-      const { data } = await axios({
-        url: '/antraege',
-        method: 'GET',
-      });
-      this.anträge = data;
     },
   },
 };

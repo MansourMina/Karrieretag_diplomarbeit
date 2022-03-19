@@ -10,12 +10,11 @@
         <v-card-actions>
           <v-spacer></v-spacer>
 
-          <v-btn  text @click="Askdialog()">
+          <v-btn text @click="Askdialog()">
             Nein
           </v-btn>
 
           <v-btn
-            
             text
             @click="
               dialog = true;

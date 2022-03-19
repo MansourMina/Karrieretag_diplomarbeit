@@ -36,8 +36,10 @@
             Der nächste Karrieretag findet Mittwoch, den <b>9.3.2022</b> von
             <b>8:00 bis 14:00</b> in der HTL Wien West statt.<br /><br />
             <div v-if="user.user == null">
-              <b>Bei Interesse stellen Sie einen </b>
-              <router-link to="/antrag" class="red--text text--darken-1">Antrag</router-link>.
+              <b>Bei Interesse füllen Sie das </b>
+              <router-link to="/antrag" class="red--text text--darken-1"
+                >Formular</router-link>
+              <b> aus</b>.
               <br />
             </div>
 
@@ -102,7 +104,7 @@
                 v-if="user.user == null"
                 class="ma-3 red darken-4 white--text"
                 to="/antrag"
-                >Antrag stellen</v-btn
+                >Formular ausfüllen</v-btn
               >
             </v-container>
           </v-card>

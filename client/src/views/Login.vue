@@ -13,14 +13,19 @@
           <label class="pl-0 mb-1">
             <h6 class="mb-0 text-sm">User-ID</h6>
           </label>
-          <input
-            class="logininput"
-            style="margin-left: 0"
+          <v-text-field
+            flat
+            outlined
+            dense
+            class="mt-2 mb-1 pb-0"
+            hide-details
             type="text"
+            solo
+            color="red darken-4"
             @keyup.enter="login()"
             name="email"
             v-model="userId"
-            placeholder="Enter a valid email address"
+            placeholder="Enter a valid user-id"
           />
           <label class="pl-0 mb-1">
             <h6 class="  text-sm" style="color:red">
@@ -32,31 +37,40 @@
           <label class="pl-0 mb-1">
             <h6 class=" mb-0 text-sm">Password</h6>
           </label>
-          <input
-            class="logininput"
-            type="password"
+          <v-text-field
+            flat
+            outlined
+            dense
+            color="red darken-4"
+            class="mt-2 mb-1 pb-0"
+            hide-details
+            :append-icon="see ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"
+            @click:append="() => (see = !see)"
+            solo
+            :type="see ? 'text' : 'password'"
             name="password"
             @keyup.enter="login()"
             v-model="passwort"
             placeholder="Enter password"
           />
+
           <label class="pl-0 mb-1">
             <h6 class=" mb-0 text-sm" style="color:red">
               {{ message }}
             </h6>
           </label>
         </v-row>
-        <v-checkbox
+        <!-- <v-checkbox
           v-model="angemeldetBleiben"
           label="Angemeldet bleiben"
           value="true"
-        ></v-checkbox>
+        ></v-checkbox> -->
         <!-- <div class="row px-3 mb-4">
                 <a href="#" class="ml-auto mb-0 text-sm">Forgot Password?</a>
               </div> -->
         <v-btn
           @click="login()"
-          class="white--text red darken-4"
+          class="white--text red darken-4 mt-5"
           style="border-radius: 0; width: 5vw"
         >
           Login
@@ -74,11 +88,12 @@ export default {
       userId: '',
       passwort: '',
       user: {},
+      see: false,
       message: '',
       angemeldetBleiben: false,
+      loginData: {},
     };
   },
-  components: {},
   created() {
     let user = JSON.parse(localStorage.getItem('user'));
     if (user != null) {
@@ -97,33 +112,64 @@ export default {
             passwort: this.passwort,
           },
         });
-        if (
-          this.angemeldetBleiben == 'false' ||
-          this.angemeldetBleiben == false
-        ) {
-          localStorage.setItem(
-            'loginBleiben',
-            JSON.stringify({ login: false }),
-          );
-        } else if (
-          this.angemeldetBleiben == 'true' ||
-          this.angemeldetBleiben == true
-        ) {
-          localStorage.setItem('loginBleiben', JSON.stringify({ login: true }));
+        console.log(data);
+        if (data.user.firmen_id != undefined) {
+          await this.pushHistory(data);
         }
-
+        localStorage.clear();
         localStorage.setItem('user', JSON.stringify(data));
-
-        this.$router.push('/');
+        this.loginData = data;
+        await this.$router.push('/');
         this.$router.go();
+
+        // if (
+        //   this.angemeldetBleiben == 'false' ||
+        //   this.angemeldetBleiben == false
+        // ) {
+        //   localStorage.setItem(
+        //     'loginBleiben',
+        //     JSON.stringify({ login: false }),
+        //   );
+        // } else if (
+        //   this.angemeldetBleiben == 'true' ||
+        //   this.angemeldetBleiben == true
+        // ) {
+        //   localStorage.setItem('loginBleiben', JSON.stringify({ login: true }));
+        // }
       } catch (err) {
         this.message = 'Wrong User ID or password';
+      }
+    },
+    async pushHistory(data) {
+      if (
+        data.user.logged_in_first_time == false ||
+        data.user.logged_in_first_time == null
+      ) {
+        await axios({
+          url: '/login/' + data.user.firmen_id,
+          method: 'PATCH',
+          contentType: 'application/json',
+        });
+        await axios({
+          url: '/activities',
+          method: 'POST',
+          contentType: 'application/json',
+          data: {
+            type: 'Login',
+            time: new Date(),
+            firmen_id: data.user.firmen_id,
+          },
+        });
       }
     },
   },
 };
 </script>
 <style scoped>
+.input-icons i {
+  position: absolute;
+}
+
 .text-sm {
   font-size: 14px !important;
 }

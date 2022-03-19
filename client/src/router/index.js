@@ -17,14 +17,20 @@ const routes = [
       import(/* webpackChunkName: "group-foo" */ '../views/Dashboard.vue'),
   },
   {
-    path: '/antraege',
+    path: '/pdf',
+    name: 'PDF',
+    component: () =>
+      import(/* webpackChunkName: "group-foo" */ '../components/PDFContent.vue'),
+  },
+  {
+    path: '/requests',
     name: 'Anträge',
 
     component: () =>
       import(/* webpackChunkName: "group-foo" */ '../viewsAdmin/Anträge.vue'),
   },
   {
-    path: '/aktivitaeten',
+    path: '/activities',
     name: 'Aktivitäten',
     component: () =>
       import(
@@ -70,7 +76,7 @@ const routes = [
       import(/* webpackChunkName: "group-foo" */ '../views/Antrag.vue'),
   },
   {
-    path: '/formular',
+    path: '/anmeldeformular',
     name: 'Formular',
     component: () =>
       import(/* webpackChunkName: "group-foo" */ '../views/Formular.vue'),
@@ -108,7 +114,7 @@ router.beforeEach(async (to, from, next) => {
   };
   // Besucher
   if (
-    !isAuthenticated() &&
+    (!isAuthenticated() || user == null) &&
     (to.name == 'Dashboard' ||
       to.name == 'Vortrag' ||
       to.name == 'Aktivitäten' ||
@@ -119,12 +125,11 @@ router.beforeEach(async (to, from, next) => {
     next(notFound);
   }
   // Admin
-  if (user != null) {
+  if (user != null && isAuthenticated()) {
     if (
       user.admin == true &&
       (to.name == 'Daten' ||
         to.name == 'Antrag' ||
-        to.name == 'Vortrag' ||
         to.name == 'Login' ||
         to.name == 'Formular')
     ) {
@@ -136,6 +141,7 @@ router.beforeEach(async (to, from, next) => {
       (to.name == 'Antrag' ||
         to.name == 'Anträge' ||
         to.name == 'Dashboard' ||
+        to.name == 'Vortrag' ||
         to.name == 'Aktivitäten' ||
         to.name == 'Login')
     ) {

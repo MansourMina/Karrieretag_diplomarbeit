@@ -31,99 +31,201 @@
         </v-col>
       </v-row>
     </div>
-    <v-card class="ma-10">
-      <v-list v-for="(file, index) in files" :key="file.title" class="pa-0">
-        <v-list-item>
-          <v-list-item-avatar>
-            <v-icon :class="file.color" dark v-text="file.icon"></v-icon>
-          </v-list-item-avatar>
-
-          <v-list-item-content>
-            <v-list-item-title v-text="file.title"></v-list-item-title>
-
-            <v-list-item-subtitle v-text="file.subtitle"></v-list-item-subtitle>
-          </v-list-item-content>
-
-          <v-list-item-action>
-            <v-list-item-subtitle v-text="file.date"></v-list-item-subtitle>
-            <v-btn class="mt-1 mr-0 pr-0 " text>Details</v-btn>
-          </v-list-item-action>
-        </v-list-item>
-        <v-divider
-          v-if="index < files.length - 1"
-          inset
-          class="my-0"
-        ></v-divider>
-      </v-list>
+    <v-card class="ma-10 " min-height="500" v-if="!loaded">
+      <v-skeleton-loader
+        width="40%"
+        type="list-item-avatar-two-line"
+        :loading="loading"
+        transition="fade-transition"
+        v-for="i in 10"
+        :key="i"
+      ></v-skeleton-loader>
     </v-card>
+    <div v-else>
+      <v-card
+        class="ma-10 center"
+        min-height="500"
+        v-if="filterActivities.length == 0"
+      >
+        <div>
+          <p><i>No data available</i></p>
+        </div>
+      </v-card>
+
+      <v-card class="ma-10" v-else min-height="500">
+        <v-list
+          v-for="(h, index) in filterActivities"
+          :key="h.history_id"
+          class="pa-0"
+        >
+          <v-list-item>
+            <v-list-item-avatar>
+              <v-icon
+                v-if="h.type == 'formular' || h.type == 'Formular'"
+                class="red darken-4"
+                dark
+                >mdi-clipboard-text</v-icon
+              >
+              <v-icon v-else class="blue" dark>mdi-gesture-tap-button</v-icon>
+            </v-list-item-avatar>
+
+            <v-list-item-content>
+              <v-list-item-title v-text="h.firmen_name"></v-list-item-title>
+
+              <v-list-item-subtitle
+                v-if="h.type == 'login' || h.type == 'Login'"
+                >das erste Mal angemeldet
+              </v-list-item-subtitle>
+              <v-list-item-subtitle v-else
+                >Formualar ausgefüllt</v-list-item-subtitle
+              >
+            </v-list-item-content>
+
+            <v-list-item-action>
+              <v-list-item-subtitle
+                v-text="h.time.substring(0, 10)"
+              ></v-list-item-subtitle>
+              <v-btn
+                class="mt-1 plain "
+                text
+                @click="
+                  dialogData = true;
+                  selectedItem = h;
+                "
+                v-if="h.type == 'formular' || h.type == 'Formular'"
+                >Details</v-btn
+              >
+            </v-list-item-action>
+          </v-list-item>
+          <v-divider
+            v-if="index < activities.length - 1"
+            inset
+            class="my-0"
+          ></v-divider>
+        </v-list>
+      </v-card>
+    </div>
+    <v-dialog max-width="600px" v-model="dialogData">
+      <ShowData @close="dialogData = false" :user="selectedItem" />
+    </v-dialog>
   </v-container>
 </template>
 
 <script>
+import axios from 'axios';
+import ShowData from '@/components/ShowData.vue';
+
 export default {
+  components: {
+    ShowData,
+  },
+
+  methods: {
+    async getActivities() {
+      const { data } = await axios({
+        url: '/activities',
+        method: 'GET',
+      });
+      this.activities = data;
+    },
+  },
+  async created() {
+    await this.getActivities();
+
+    const readyHandler = () => {
+      if (document.readyState == 'complete') {
+        this.loading = false;
+        this.loaded = true;
+        document.removeEventListener('readystatechange', readyHandler);
+      }
+    };
+
+    document.addEventListener('readystatechange', readyHandler);
+
+    readyHandler();
+  },
   data: () => ({
-    files: [
-      {
-        color: 'blue',
-        icon: 'mdi-clipboard-text',
-        subtitle: 'Formualar ausgefüllt',
-        date: '12 hr',
-        title: 'HTL GmbH',
-      },
-      {
-        color: 'red darken-4',
-        icon: 'mdi-gesture-tap-button',
-        subtitle: 'Angemeldet',
-        date: '6 hr',
-        title: 'Wojtasik GmbH',
-      },
-      {
-        color: 'red darken-4',
-        icon: 'mdi-gesture-tap-button',
-        subtitle: 'Angemeldet',
-        date: '6 hr',
-        title: 'Wojtasik GmbH',
-      },
-      {
-        color: 'blue',
-        icon: 'mdi-clipboard-text',
-        subtitle: 'Formualar ausgefüllt',
-        date: '12 hr',
-        title: 'HTL GmbH',
-      },
-      {
-        color: 'blue',
-        icon: 'mdi-clipboard-text',
-        subtitle: 'Formualar ausgefüllt',
-        date: '12 hr',
-        title: 'HTL GmbH',
-      },
-      {
-        color: 'blue',
-        icon: 'mdi-clipboard-text',
-        subtitle: 'Formualar ausgefüllt',
-        date: '12 hr',
-        title: 'HTL GmbH',
-      },
-      {
-        color: 'red darken-4',
-        icon: 'mdi-gesture-tap-button',
-        subtitle: 'Angemeldet',
-        date: '6 hr',
-        title: 'Wojtasik GmbH',
-      },
-      {
-        color: 'red darken-4',
-        icon: 'mdi-gesture-tap-button',
-        subtitle: 'Angemeldet',
-        date: '6 hr',
-        title: 'Wojtasik GmbH',
-      },
-    ],
+    // files: [
+    //   {
+    //     color: 'blue',
+    //     icon: 'mdi-clipboard-text',
+    //     subtitle: 'Formualar ausgefüllt',
+    //     date: '12 hr',
+    //     title: 'HTL GmbH',
+    //   },
+    //   {
+    //     color: 'red darken-4',
+    //     icon: 'mdi-gesture-tap-button',
+    //     subtitle: 'Angemeldet',
+    //     date: '6 hr',
+    //     title: 'Wojtasik GmbH',
+    //   },
+    //   {
+    //     color: 'red darken-4',
+    //     icon: 'mdi-gesture-tap-button',
+    //     subtitle: 'Angemeldet',
+    //     date: '6 hr',
+    //     title: 'Wojtasik GmbH',
+    //   },
+    //   {
+    //     color: 'blue',
+    //     icon: 'mdi-clipboard-text',
+    //     subtitle: 'Formualar ausgefüllt',
+    //     date: '12 hr',
+    //     title: 'HTL GmbH',
+    //   },
+    //   {
+    //     color: 'blue',
+    //     icon: 'mdi-clipboard-text',
+    //     subtitle: 'Formualar ausgefüllt',
+    //     date: '12 hr',
+    //     title: 'HTL GmbH',
+    //   },
+    //   {
+    //     color: 'blue',
+    //     icon: 'mdi-clipboard-text',
+    //     subtitle: 'Formualar ausgefüllt',
+    //     date: '12 hr',
+    //     title: 'HTL GmbH',
+    //   },
+    //   {
+    //     color: 'red darken-4',
+    //     icon: 'mdi-gesture-tap-button',
+    //     subtitle: 'Angemeldet',
+    //     date: '6 hr',
+    //     title: 'Wojtasik GmbH',
+    //   },
+    //   {
+    //     color: 'red darken-4',
+    //     icon: 'mdi-gesture-tap-button',
+    //     subtitle: 'Angemeldet',
+    //     date: '6 hr',
+    //     title: 'Wojtasik GmbH',
+    //   },
+    // ],
     search: '',
-    statuse: ['Formular ausgefüllt', 'Angemeldet'],
+    statuse: ['Formular', 'Login'],
     status: '',
+    dialogData: false,
+    loading: true,
+    loaded: false,
+    selectedItem: {},
   }),
+  computed: {
+    filterActivities() {
+      if (this.status.length > 0) {
+        return this.activities.filter(
+          (el) =>
+            el.firmen_name.toLowerCase().includes(this.search.toLowerCase()) &&
+            this.status.includes(el.type),
+        );
+      } else {
+        return this.activities.filter((el) =>
+          el.firmen_name.toLowerCase().includes(this.search.toLowerCase()),
+        );
+      }
+    },
+  },
 };
 </script>
 

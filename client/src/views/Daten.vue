@@ -1,15 +1,29 @@
 <template>
-  <v-container>
+  <v-container
+    v-if="!data.formular"
+    style="height: 80vh; "
+    class="center text-center"
+  >
+    <v-banner two-lines align="center" outlined>
+      <v-icon slot="icon" color="red darken-4" size="36">
+        mdi-wifi-strength-alert-outline
+      </v-icon>
+      Daten noch nicht vorhanden. Bitte Anmeldeformular ausfüllen
+
+      <template v-slot:actions>
+        <v-btn color="primary" text to="/anmeldeformular" class="mx-auto mb-2">
+          Zum Formular
+        </v-btn>
+      </template>
+    </v-banner>
+  </v-container>
+  <v-container v-else>
     <v-row>
-      <v-col cols="12" md="1" >Ihre URL:</v-col>
+      <v-col cols="12" md="1">Ihre URL:</v-col>
       <v-col cols="12" md="11">
-        <v-chip
-          disabled
-          href="http://www.htlwienwest.at"
-          color="blue"
-          pill
-          >https://github.com/MansourMina/Karrieretag_diplomarbeit</v-chip
-        >
+        <v-chip disabled href="http://www.htlwienwest.at" color="blue" pill>{{
+          data.url
+        }}</v-chip>
       </v-col>
     </v-row>
     <v-row>
@@ -34,7 +48,9 @@
 
           <v-card-text>
             <v-chip-group active-class="red accent-4 white--text" column>
-              <v-chip disabled dark>{{ AnsprechpartnerTeilnahme }}</v-chip>
+              <v-chip disabled dark>{{
+                data.ansprechpartner_teilnahme_mail
+              }}</v-chip>
             </v-chip-group>
           </v-card-text>
         </v-col>
@@ -45,7 +61,9 @@
 
           <v-card-text>
             <v-chip-group active-class="red accent-4 white--text" column>
-              <v-chip disabled dark>{{ AnsprechpartnerAustellung }}</v-chip>
+              <v-chip disabled dark>{{
+                data.ansprechpartner_ausstellung_mail
+              }}</v-chip>
             </v-chip-group>
           </v-card-text>
         </v-col>
@@ -74,13 +92,13 @@
 
           <v-card-text>
             <v-chip-group
-              v-model="platz"
+              v-model="data.platz"
               active-class="red accent-4 white--text"
               column
             >
-              <v-chip disabled value="klasse">Klasse</v-chip>
+              <v-chip disabled value="Klasse">Klasse</v-chip>
 
-              <v-chip disabled value="gang">Am Gang</v-chip>
+              <v-chip disabled value="Gang">Am Gang</v-chip>
             </v-chip-group>
           </v-card-text>
         </v-col>
@@ -91,13 +109,13 @@
 
           <v-card-text>
             <v-chip-group
-              v-model="aufbauhilfe"
+              v-model="data.aufbauhilfe"
               active-class="red accent-4 white--text"
               column
             >
-              <v-chip disabled value="y">Ja</v-chip>
+              <v-chip disabled :value="true">Ja</v-chip>
 
-              <v-chip disabled value="n">Nein</v-chip>
+              <v-chip disabled :value="false">Nein</v-chip>
             </v-chip-group>
           </v-card-text>
         </v-col>
@@ -124,14 +142,22 @@
 
           <v-card-text>
             <v-chip-group
-              v-model="UnternehmenRichtung"
+              v-model="FachrichtungYesNo"
               active-class="red accent-4 white--text"
               column
             >
-              <v-chip disabled value="IT">Informationstechnologie</v-chip>
+              <v-chip disabled :value="data.fachrichtung.includes('IT')"
+                >Informationstechnologie</v-chip
+              >
 
-              <v-chip disabled value="E">Elektrotechnik/Elektronik</v-chip>
-              <v-chip disabled value="M">Maschinenbau</v-chip>
+              <v-chip disabled :value="data.fachrichtung.includes('E')"
+                >Elektrotechnik/Elektronik</v-chip
+              >
+              <v-chip
+                disabled
+                :value="data.fachrichtung.includes('Maschinenbau')"
+                >Maschinenbau</v-chip
+              >
             </v-chip-group>
           </v-card-text>
         </v-col>
@@ -139,33 +165,44 @@
 
         <v-col cols="12">
           <v-card-subtitle>
-            Vortrag ? Mit anwesenden Schüler/innen aus der
+            Möchten Sie einen Vortrag halten?
           </v-card-subtitle>
-
           <v-card-text>
             <v-chip-group
               v-model="VortragYesNo"
               active-class="red accent-4 white--text"
               column
             >
-              <v-chip disabled value="y">Ja</v-chip>
+              <v-chip disabled :value="true">Ja</v-chip>
 
-              <v-chip disabled value="n">Nein</v-chip>
+              <v-chip disabled :value="false">Nein</v-chip>
             </v-chip-group>
           </v-card-text>
+          <div v-if="VortragYesNo">
+            <v-card-subtitle>
+              Mit anwesenden Schüler/innen aus der
+            </v-card-subtitle>
+            <v-card-text>
+              <v-chip-group
+                v-model="VortragYesNo"
+                active-class="red accent-4 white--text"
+                column
+              >
+                <v-chip disabled :value="data.vortrag_auswahl.includes('IT')"
+                  >Informationstechnologie</v-chip
+                >
 
-          <v-card-text v-if="VortragYesNo == 'y'">
-            <v-chip-group
-              v-model="VortragRichtung"
-              active-class="red accent-4 white--text"
-              column
-            >
-              <v-chip disabled value="IT">Informationstechnologie</v-chip>
-
-              <v-chip disabled value="E">Elektrotechnik/Elektronik</v-chip>
-              <v-chip disabled value="M">Maschinenbau</v-chip>
-            </v-chip-group>
-          </v-card-text>
+                <v-chip disabled :value="data.vortrag_auswahl.includes('E')"
+                  >Elektrotechnik/Elektronik</v-chip
+                >
+                <v-chip
+                  disabled
+                  :value="data.vortrag_auswahl.includes('Maschinenbau')"
+                  >Maschinenbau</v-chip
+                >
+              </v-chip-group>
+            </v-card-text>
+          </div>
         </v-col>
         <v-divider class="mx-4"></v-divider>
 
@@ -179,37 +216,49 @@
               active-class="red accent-4 white--text"
               column
             >
-              <v-chip disabled value="y">Ja</v-chip>
+              <v-chip disabled :value="true">Ja</v-chip>
 
-              <v-chip disabled value="n">Nein</v-chip>
+              <v-chip disabled :value="false">Nein</v-chip>
             </v-chip-group>
           </v-card-text>
 
-          <div v-if="FerialYesNo == 'y'">
+          <div v-if="FerialYesNo == true">
             <v-card-subtitle>
               In folgenden Bereichen
             </v-card-subtitle>
             <v-card-text>
               <v-chip-group
-                v-model="FerialRichtung"
+                v-model="FerialYesNo"
                 active-class="red accent-4 white--text"
                 column
               >
-                <v-chip disabled value="IT">Informationstechnologie</v-chip>
+                <v-chip
+                  disabled
+                  :value="data.ferialpraktikum_auswahl.includes('IT')"
+                  >Informationstechnologie</v-chip
+                >
 
-                <v-chip disabled value="E">Elektrotechnik/Elektronik</v-chip>
-                <v-chip disabled value="M">Maschinenbau</v-chip>
+                <v-chip
+                  disabled
+                  :value="data.ferialpraktikum_auswahl.includes('E')"
+                  >Elektrotechnik/Elektronik</v-chip
+                >
+                <v-chip
+                  disabled
+                  :value="data.ferialpraktikum_auswahl.includes('Maschinenbau')"
+                  >Maschinenbau</v-chip
+                >
               </v-chip-group>
             </v-card-text>
           </div>
-          <div v-if="FerialYesNo == 'y'">
+          <div v-if="FerialYesNo == true">
             <v-card-subtitle>
               Ansprechpartner/in für Ferialpraxis
             </v-card-subtitle>
             <v-card-text>
               <v-chip-group active-class="red accent-4 white--text" column>
-                <v-chip disabled dark>{{ EmailFerial }}</v-chip>
-                <v-chip disabled dark>{{ TelFerial }}</v-chip>
+                <v-chip disabled dark>{{ data.mail_ferialpraktikum }}</v-chip>
+                <v-chip disabled dark>{{ data.tel_ferialpraktikum }}</v-chip>
               </v-chip-group>
             </v-card-text>
           </div>
@@ -236,13 +285,13 @@
           </v-card-subtitle>
           <v-card-text>
             <v-chip-group
-              v-model="SponsoringYesNo"
+              v-model="data.sponsoring_interessiert"
               active-class="red accent-4 white--text"
               column
             >
-              <v-chip disabled value="y">Ja</v-chip>
+              <v-chip disabled :value="true">Ja</v-chip>
 
-              <v-chip disabled value="n">Nein</v-chip>
+              <v-chip disabled :value="false">Nein</v-chip>
             </v-chip-group>
           </v-card-text>
         </v-col>
@@ -251,12 +300,8 @@
             Die exakte Rechnungsanschrift (bei Änderung bitte um Mitteilung!)
           </v-card-subtitle>
           <v-card-text>
-            <v-chip-group
-              v-model="platz"
-              active-class="red accent-4 white--text"
-              column
-            >
-              <v-chip disabled>Thaliastraße 125, 1160 Wien</v-chip>
+            <v-chip-group active-class="red accent-4 white--text" column>
+              <v-chip disabled>{{ data.rechnungsadresse }}</v-chip>
             </v-chip-group>
           </v-card-text>
         </v-col>
@@ -266,21 +311,47 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
+  methods: {
+    getUser() {
+      let user = JSON.parse(localStorage.getItem('user'));
+      if (user != null) {
+        this.user = user.user;
+        this.setParams();
+      } else localStorage.removeItem('user');
+    },
+    setParams() {
+      if (this.data.vortrag_auswahl != null) this.VortragYesNo = true;
+      else this.VortragYesNo = false;
+
+      if (this.data.ferialpraktikum_auswahl != null) this.FerialYesNo = true;
+      else this.FerialYesNo = false;
+      if (this.data.fachrichtung != null) this.FachrichtungYesNo = true;
+      else this.FachrichtungYesNo = false;
+    },
+    async getFirma() {
+      const { data } = await axios({
+        url: '/firma/' + this.user.firmen_id,
+        method: 'GET',
+      });
+      console.log(data);
+      this.data = data;
+    },
+  },
+  async created() {
+    this.getUser();
+    await this.getFirma();
+    this.setParams();
+  },
   data() {
     return {
-      FerialYesNo: 'n',
-      FerialRichtung: 'IT',
-      VortragYesNo: 'n',
-      VortragRichtung: 'E',
-      UnternehmenRichtung: 'M',
-      aufbauhilfe: 'y',
-      platz: 'gang',
-      AnsprechpartnerTeilnahme: 'Max Mustermann',
-      AnsprechpartnerAustellung: 'Sebi Sebistann',
-      EmailFerial: 'max.mustermann@gmail.com',
-      TelFerial: '0676053044035',
-      SponsoringYesNo: 'n',
+      FerialYesNo: '',
+      VortragYesNo: '',
+      FachrichtungYesNo: '',
+      user: {},
+      data: {},
+      formular_from_database: false,
     };
   },
 };

@@ -1,5 +1,5 @@
 <template>
-  <v-container style="height: 100%" class="mb-10">
+  <v-container style="height: 100%">
     <!-- @submit.prevent="login" -->
     <v-row align="center" justify="center">
       <v-col cols="12" md="6">
@@ -77,6 +77,14 @@
         </v-btn>
       </v-col>
     </v-row>
+    <v-dialog persistent v-model="showProgress" width="150">
+      <v-progress-linear
+        color="red darken-4"
+        indeterminate
+        rounded
+        height="6"
+      ></v-progress-linear>
+    </v-dialog>
   </v-container>
 </template>
 <script>
@@ -92,6 +100,7 @@ export default {
       message: '',
       angemeldetBleiben: false,
       loginData: {},
+      showProgress: false,
     };
   },
   created() {
@@ -102,6 +111,7 @@ export default {
   },
   methods: {
     async login() {
+      this.showProgress = true;
       try {
         let { data } = await axios({
           url: '/login',
@@ -116,6 +126,8 @@ export default {
         if (data.user.firmen_id != undefined) {
           await this.pushHistory(data);
         }
+        this.showProgress = false;
+
         localStorage.clear();
         localStorage.setItem('user', JSON.stringify(data));
         this.loginData = data;
@@ -137,6 +149,8 @@ export default {
         //   localStorage.setItem('loginBleiben', JSON.stringify({ login: true }));
         // }
       } catch (err) {
+        this.showProgress = false;
+
         this.message = 'Wrong User ID or password';
       }
     },

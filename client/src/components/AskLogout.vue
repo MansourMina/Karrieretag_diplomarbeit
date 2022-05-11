@@ -10,18 +10,11 @@
         <v-card-actions>
           <v-spacer></v-spacer>
 
-          <v-btn text @click="Askdialog()">
+          <v-btn text @click="Askdialog(false)">
             Nein
           </v-btn>
 
-          <v-btn
-            text
-            @click="
-              dialog = true;
-
-              Askdialog();
-            "
-          >
+          <v-btn text @click="Askdialog(true)">
             Ja
           </v-btn>
         </v-card-actions>
@@ -32,19 +25,14 @@
 
 <script>
 export default {
-  data() {
-    return {
-      dialog: false,
-    };
-  },
   props: {
     showDialog: {
       type: Boolean,
     },
   },
   methods: {
-    Askdialog() {
-      this.$emit('Askdialog', this.dialog);
+    Askdialog(logout) {
+      this.$emit('Askdialog',logout);
     },
   },
 };

@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <div class=" red darken-4 white--text text-center ma-10">
+    <div class=" red darken-4 white--text text-center mx-0 my-5 ma-lg-10">
       <v-row class="mt-2 pa-5 pb" align="center" text-center>
         <v-col cols="12" md="3">
           <span
@@ -36,6 +36,7 @@
                 v-bind="attrs"
                 v-on="on"
                 icon
+                @click="passData()"
                 :disabled="selected.length == 0"
               >
                 <v-icon color="white" x-large>mdi-email-plus</v-icon>
@@ -44,25 +45,31 @@
             <SendEmail
               :selectedEmails="selectedEmails"
               @closeDialog="closeDialog()"
-              @deSelectFirma="deSelectFirma"
             />
+            <!-- @deSelectFirma="deSelectFirma" -->
           </v-dialog>
         </v-col>
       </v-row>
     </div>
 
-    <v-card class="ma-10 " min-height="500" v-if="!loaded">
+    <v-card
+      class="mx-0 my-5 ma-lg-10 "
+      min-height="500"
+      v-if="!loaded"
+      elevation="0"
+    >
       <v-skeleton-loader
         class="mx-auto"
         type="table-tbody"
         :loading="loading"
         transition="fade-transition"
-        v-for="i in 2" :key="i"
+        v-for="i in 2"
+        :key="i"
       ></v-skeleton-loader>
     </v-card>
     <div v-else>
       <v-card
-        class="ma-10 center"
+        class="mx-0 my-5 ma-lg-10 center"
         min-height="500"
         v-if="filterAnträge.length == 0"
       >
@@ -70,7 +77,7 @@
           <p><i>No data available</i></p>
         </div>
       </v-card>
-      <v-card class="ma-10" min-height="500" v-else>
+      <v-card class="mx-0 my-5 ma-lg-10" min-height="500" v-else elevation="0" max>
         <v-simple-table class="ma-5 ">
           <template v-slot:default>
             <thead>
@@ -81,7 +88,7 @@
                     v-model="allSelected"
                   ></v-checkbox>
                 </th>
-                <th class="text-center">
+                <th align="left">
                   Name
                 </th>
                 <th class="text-center">
@@ -108,7 +115,7 @@
                       @click="allSelected = false"
                     ></v-checkbox>
                   </td>
-                  <td>{{ item.firmen_name }}</td>
+                  <td align="left">{{ item.firmen_name }}</td>
                   <td>{{ item.firmen_mail }}</td>
                   <td>{{ item.anfrage_zeitpunkt.substring(0, 10) }}</td>
                   <td v-if="item.status == 'Anfrage'">
@@ -136,7 +143,7 @@
                           selectedItem = item;
                         "
                       >
-                        <v-icon> mdi-forwardburger</v-icon>
+                        <v-icon> mdi-menu</v-icon>
                       </v-btn>
                     </div>
                     <div
@@ -182,7 +189,7 @@
           </template>
         </v-simple-table>
 
-        <v-dialog max-width="600px" v-model="dialogData">
+        <v-dialog v-model="dialogData" max-width="600px">
           <ShowData @close="dialogData = false" :user="selectedItem" />
         </v-dialog>
       </v-card>
@@ -200,6 +207,7 @@
 </template>
 
 <script>
+import { bus } from '../main';
 import axios from 'axios';
 import SendEmail from '@/components/SendEmail.vue';
 import ShowData from '@/components/ShowData.vue';
@@ -207,6 +215,11 @@ export default {
   components: {
     SendEmail,
     ShowData,
+  },
+  props: {
+    antraege: {
+      type: Array,
+    },
   },
   data() {
     return {
@@ -224,7 +237,6 @@ export default {
       allSelected: false,
       dialogData: false,
       selectedItem: {},
-      antraege: [],
       loaded: false,
       loading: true,
     };
@@ -262,8 +274,6 @@ export default {
     },
   },
   async created() {
-    await this.getAntraege();
-
     const readyHandler = () => {
       if (document.readyState == 'complete') {
         this.loading = false;
@@ -278,19 +288,9 @@ export default {
   },
 
   methods: {
-    async getAntraege() {
-      const { data } = await axios({
-        url: '/antraege',
-        method: 'GET',
-      });
-      this.antraege = data;
+    passData() {
+      bus.$emit('changeIt', this.selectedEmails);
     },
-    // getVerlauf() {
-    //   let verlauf = JSON.parse(localStorage.getItem('user'));
-    //   if (user != null) {
-    //     this.verlauf = verlauf;
-    //   }
-    // },
     async seen(item) {
       await axios({
         url: '/status/' + item.firmen_id,
@@ -320,7 +320,6 @@ export default {
           status: status,
         },
       });
-      this.snackbar = true;
       this.$emit('refreshAntraege');
 
       switch (status) {
@@ -361,6 +360,7 @@ export default {
           this.snackbarcolor = 'red';
           this.color = 'white';
       }
+      this.snackbar = true;
     },
 
     SelectAll() {
@@ -368,14 +368,12 @@ export default {
       if (this.allSelected) {
         for (const item of this.filterAnträge) {
           if (this.selected.find((el) => el == item) == null) {
-            this.selected.push(item);
+            this.selected.push(item.firmen_id);
           }
         }
       }
     },
-    deSelectFirma(item) {
-      this.selected = this.selected.filter((el) => el != item);
-    },
+
     closeDialog() {
       this.dialog = false;
       this.allSelected = false;

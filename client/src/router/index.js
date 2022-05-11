@@ -1,5 +1,8 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import Home from '../views/Home.vue';
+import Dashboard from '../views/Dashboard.vue';
+import Feedback from '../views/Feedback.vue';
 
 Vue.use(VueRouter);
 
@@ -7,20 +10,33 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: () =>
-      import(/* webpackChunkName: "group-foo" */ '../views/Home.vue'),
+    component: Home,
   },
   {
     path: '/dashboard',
     name: 'Dashboard',
+    component: Dashboard,
+  },
+  {
+    path: '/feedback',
+    name: 'Feedback',
+    component: Feedback,
+  },
+  {
+    path: '/overview',
+    name: 'Übersicht',
     component: () =>
-      import(/* webpackChunkName: "group-foo" */ '../views/Dashboard.vue'),
+      import(
+        /* webpackChunkName: "group-foo" */ '../components/PDFContent.vue'
+      ),
   },
   {
     path: '/pdf',
     name: 'PDF',
     component: () =>
-      import(/* webpackChunkName: "group-foo" */ '../components/PDFContent.vue'),
+      import(
+        /* webpackChunkName: "group-foo" */ '../components/PDFContent.vue'
+      ),
   },
   {
     path: '/requests',
@@ -36,6 +52,12 @@ const routes = [
       import(
         /* webpackChunkName: "group-foo" */ '../viewsAdmin/Aktivitäten.vue'
       ),
+  },
+  {
+    path: '/manage-feedback',
+    name: 'Feedback Admin',
+    component: () =>
+      import(/* webpackChunkName: "group-foo" */ '../viewsAdmin/Feedback.vue'),
   },
   {
     path: '/vortrag',
@@ -112,7 +134,7 @@ router.beforeEach(async (to, from, next) => {
     name: 'NotFound',
     params: { pathMatch: to.path.split('/').slice(1) },
   };
-  // Besucher
+  // Besucher darf nicht in
   if (
     (!isAuthenticated() || user == null) &&
     (to.name == 'Dashboard' ||
@@ -120,22 +142,25 @@ router.beforeEach(async (to, from, next) => {
       to.name == 'Aktivitäten' ||
       to.name == 'Daten' ||
       to.name == 'Anträge' ||
-      to.name == 'Formular')
+      to.name == 'Formular' ||
+      to.name == 'Feedback' ||
+      to.name == 'Übersicht')
   ) {
     next(notFound);
   }
-  // Admin
+  // Admin darf nicht in
   if (user != null && isAuthenticated()) {
     if (
       user.admin == true &&
       (to.name == 'Daten' ||
         to.name == 'Antrag' ||
         to.name == 'Login' ||
-        to.name == 'Formular')
+        to.name == 'Formular' ||
+        to.name == 'Feedback')
     ) {
       next(notFound);
     }
-    // Firma
+    // Firma darf nicht in
     if (
       user.admin == false &&
       (to.name == 'Antrag' ||
@@ -143,7 +168,8 @@ router.beforeEach(async (to, from, next) => {
         to.name == 'Dashboard' ||
         to.name == 'Vortrag' ||
         to.name == 'Aktivitäten' ||
-        to.name == 'Login')
+        to.name == 'Login' ||
+        to.name == 'Übersicht')
     ) {
       next(notFound);
     }

@@ -3,14 +3,17 @@
     <v-form class="mt-2 py-5" ref="form" v-model="valid" lazy-validation>
       <header class="text-center py-4 ">
         <h2 class="text-center text-uppercase font-weight-light ">
-          Formular ausfüllen
+          Interesse an dem Karrieretag teilzunehmen?
         </h2>
+        <h5 class="text-center text-uppercase font-weight-light grey--text ">
+          Dann füllen Sie das folgende Formular aus.
+        </h5>
       </header>
       <v-row>
         <v-col cols="12">
           <v-text-field
             color="red"
-            v-model="company"
+            v-model.trim="company"
             :rules="companyRules"
             id="company"
             required
@@ -33,7 +36,7 @@
             required
             label="First Name"
             background-color="blue-grey lighten-5"
-            v-model="firstname"
+            v-model.trim="firstname"
             solo
             prepend-inner-icon="mdi-account"
           ></v-text-field>
@@ -41,7 +44,7 @@
         <v-col cols="6">
           <v-text-field
             color="red"
-            v-model="lastname"
+            v-model.trim="lastname"
             :rules="nameRules"
             clearable
             required
@@ -60,20 +63,41 @@
             required
             color="red"
             background-color="blue-grey lighten-5"
-            v-model="email"
+            v-model.trim="email"
             solo
+            :error-messages="
+              emailNotExisting ? ['Email address not found'] : ''
+            "
             prepend-inner-icon="mdi-email"
           ></v-text-field>
         </v-col>
-        <v-col cols="12">
+        <v-col cols="4" md="2">
+          <v-select
+            v-model="selectedPrefix"
+            :items="prefixe.map((el) => el.name)"
+            menu-props="auto"
+            label="Prefix"
+            hide-details
+            background-color="red darken-4"
+            dark
+            rounded
+            solo
+            single-line
+          ></v-select>
+        </v-col>
+        <v-col cols="8" md="10">
           <v-text-field
             :rules="phoneRules"
             required
-            clearable
+            :prefix="
+              selectedPrefix
+                ? prefixe.find((el) => el.name == selectedPrefix).code
+                : '+43'
+            "
+            hide-spin-buttons
             color="red"
-            :counter="13"
             type="number"
-            v-model="phone"
+            v-model.trim="phone"
             id="phone"
             background-color="blue-grey lighten-5"
             label="Phone Number"
@@ -89,16 +113,15 @@
             v-model="checkbox"
             required="required"
             :rules="checkRules"
+            color="red darken-4"
           >
             <template v-slot:label>
               <div>
-                Ich bestätige und bin damit einverstanden, dass meine
-                <span
-                  ><span class="red--text" @click="goToImpressum('datenschutz')"
-                    >persönlichen Daten</span
-                  ></span
+                Ich habe die
+                <span class="red--text" @click="goToImpressum('datenschutz')"
+                  ><u>Datenschutzerklärung</u></span
                 >
-                verarbeitet werden
+                gelesen und nehme sie zur Kenntnis.
               </div>
             </template>
           </v-checkbox>
@@ -133,14 +156,24 @@
         </v-btn>
       </template>
     </v-snackbar>
+    <v-dialog persistent v-model="loaded" width="150">
+      <v-progress-linear
+        color="red darken-4"
+        indeterminate
+        rounded
+        height="6"
+      ></v-progress-linear>
+    </v-dialog>
   </v-container>
 </template>
 
 <script>
 import axios from 'axios';
+import { prefixe } from '../../prefix.js';
 export default {
   created() {
     this.verifyCaptcha;
+    this.prefixe = prefixe;
   },
   props: {
     antraege: {
@@ -148,6 +181,8 @@ export default {
     },
   },
   data: () => ({
+    selectedPrefix: 'Austria',
+    prefixe: [],
     recaptcha_response: '',
     recaptcha_message: '',
     snackbar: false,
@@ -157,10 +192,13 @@ export default {
     firstname: '',
     lastname: '',
     phone: '',
+    loaded: false,
+    emailNotExisting: false,
     showCompanyMessage: false,
     showPhoneMessage: false,
     newDate: new Date(),
     company: '',
+    emailMessage: '',
     companyRules: [(v) => !!v || 'Company name is required'],
     checkRules: [(v) => !!v || 'You have to agree!'],
     nameRules: [(v) => !!v || 'Name is required'],
@@ -171,7 +209,9 @@ export default {
     ],
     phoneRules: [
       (v) => !!v || 'Phone number is required',
-      (v) => v.length == 13 || 'Phone number must have 13 digits',
+      (v) =>
+        (v > 0 && v.toString().length >= 6 && v.toString().length <= 15) ||
+        'Phone number must be valid',
     ],
   }),
   methods: {
@@ -198,7 +238,9 @@ export default {
         !this.checkPhone
       ) {
         this.recaptcha_message = '';
-        await axios({
+        this.loaded = true;
+
+        const { data } = await axios({
           url: '/antrag',
           method: 'POST',
           contentType: 'application/json',
@@ -207,18 +249,25 @@ export default {
             firmen_mail: this.email,
             firstname: this.firstname,
             lastname: this.lastname,
-            phone: this.phone,
+            phone: this.getCodeofCountry + this.phone,
             zeitpunkt: new Date(),
           },
         });
-        this.$emit('sendmail', {
-          firmen_name: this.company,
-          email: this.email,
-          type: 'antrag',
-        });
+        this.loaded = false;
 
-        this.snackbar = true;
-        this.$refs.form.reset();
+        if (data.message != 'OK') {
+          this.emailNotExisting = true;
+        } else {
+          this.$emit('sendmail', {
+            firmen_name: this.company,
+            email: this.email,
+            type: 'antrag',
+          });
+          this.emailNotExisting = false;
+
+          this.snackbar = true;
+          this.$refs.form.reset();
+        }
       }
     },
     goToImpressum(id) {
@@ -226,17 +275,25 @@ export default {
     },
   },
   computed: {
+    getCodeofCountry() {
+      if (this.selectedPrefix) {
+        return this.prefixe
+          .find((el) => el.name == this.selectedPrefix)
+          .code.toString();
+      }
+      return '+43';
+    },
     checkCompanyName() {
       return this.antraege
-        .map((el) => el.firmen_name)
-        .find((el) => el == this.company)
+        .map((el) => el.firmen_name.toLowerCase())
+        .find((el) => el == this.company.toLowerCase())
         ? true
         : false;
     },
     checkPhone() {
       return this.antraege
         .map((el) => el.telefonnummer)
-        .find((el) => el == this.phone)
+        .find((el) => el == this.getCodeofCountry + this.phone)
         ? true
         : false;
     },

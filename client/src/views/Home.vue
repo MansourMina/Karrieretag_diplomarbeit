@@ -1,6 +1,31 @@
 <template>
   <v-container fluid>
-    <v-container fluid class="black--text " text-center>
+    <div v-if="!user.admin && user.user != null">
+      <v-banner class="mb-2" v-if="user.checkformular || user.user.formular">
+        <v-avatar slot="icon" color="green" size="40">
+          <v-icon icon="mdi-sticker-check" color="white">
+            mdi-sticker-check
+          </v-icon>
+        </v-avatar>
+
+        Teilnahmeprozess abgeschlossen.
+      </v-banner>
+      <v-banner class="mb-2" v-else>
+        <v-avatar slot="icon" color="black" size="40">
+          <v-icon icon="mdi-tag" color="white">
+            mdi-tag
+          </v-icon>
+        </v-avatar>
+
+        Bitte füllen Sie das
+        <router-link to="/anmeldeformular" class="red--text text--darken-4"
+          >Anmeldeformular</router-link
+        >
+        aus, um den Teilnahmeprozess abzuschließen.
+      </v-banner>
+    </div>
+
+    <v-container fluid class="black--text mt-10 " text-center>
       <!-- <h1 class="display-1 font-weight-light text-uppercase ">
         BIS ZUM KARRIERETAG <b>2022</b> der
         <span class="red--text text--darken-4 font-weight-bold">
@@ -14,10 +39,9 @@
         </span>
         IN
       </h1>
-      <v-divider dark></v-divider>
       <!-- <flip-countdown deadline="2022-03-22 " :showSeconds="false"></flip-countdown> -->
       <v-row class="display-1" style="font-size: 100px"
-        ><Countdown deadline="April 21, 2022" class="p-0 m-0"></Countdown
+        ><Countdown deadline="March 25, 2022" class="p-0 m-0"></Countdown
       ></v-row>
       <!-- <Countdown date="August 15, 2016"></Countdown> -->
     </v-container>

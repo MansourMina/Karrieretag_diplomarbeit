@@ -6,7 +6,7 @@
           <v-list-item-content>
             <v-list-item-title
               ><b>Anträge</b
-              ><v-icon class="ml-2" small
+              ><v-icon class="ml-2" style="padding-bottom: 3px"
                 >mdi-application-import</v-icon
               ></v-list-item-title
             >
@@ -23,11 +23,15 @@
         <v-card class="pa-5 ma-3">
           <v-list-item-content>
             <v-list-item-title
-              ><b>Formular ausgefüllt</b
-              ><v-icon class="ml-2" small color="green darken-4"
+              ><b>Formular ausgefüllt </b
+              ><v-icon
+                class="ml-2"
+                color="green darken-4"
+                style="padding-bottom: 3px"
                 >mdi-cloud-check</v-icon
               ></v-list-item-title
             >
+            <span style="font-size: 12px; position:absolute; margin-bottom: 40px" class="grey--text">(nur Teilnehmer)</span>
             <h4 class="mt-5 mb-2  font-weight-bold">
               {{ antraege.filter((el) => el.status == 'Teilnehmer').length }}/{{
                 antraege.filter(
@@ -45,8 +49,11 @@
         <v-card class="pa-5 ma-3">
           <v-list-item-content>
             <v-list-item-title
-              ><b>Antrag offen </b
-              ><v-icon class="ml-2" small color="blue darken-4"
+              ><b>Anträge offen </b
+              ><v-icon
+                class="ml-2"
+                color="blue darken-4"
+                style="padding-bottom: 3px"
                 >mdi-folder-open-outline</v-icon
               ></v-list-item-title
             >
@@ -66,7 +73,10 @@
           <v-list-item-content>
             <v-list-item-title
               ><b>Abgelehnt</b
-              ><v-icon class="ml-2" small color="red darken-4"
+              ><v-icon
+                class="ml-2"
+                color="red darken-4"
+                style="padding-bottom: 3px"
                 >mdi-minus-circle</v-icon
               ></v-list-item-title
             >

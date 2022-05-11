@@ -1,7 +1,12 @@
 <template>
   <div>
     <v-container
-      v-if="user.checkformular || checkformular || user.user.formular"
+      v-if="
+        user.checkformular ||
+          checkformular ||
+          user.user.formular ||
+          user.user.status == 'Teilnehmer'
+      "
       fill-height
       class="pa-16 centerBanner"
       style="height: 80vh"
@@ -9,7 +14,7 @@
       <v-row justify="center" align="center">
         <v-col cols="12">
           <v-alert border="top" colored-border type="success" elevation="2">
-            Sehr geehrte Firma<b>{{ user.firmen_name }}</b
+            Sehr geehrte <b>{{ user.user.firmen_name }}</b
             >, <br /><br />Ihre <b>Anmeldung</b> wurde <b>bestätigt</b>. Sie
             werden in Kürze die weiteren <b>Informationen</b> bezüglich des
             <b>Karrieretags</b> sowie Ihrem <b>Aufenthaltsort</b> in der Schule
@@ -19,6 +24,8 @@
             Vielen Dank für Ihre Zeit.<br /><br />
             Mit freundlichen Grüßen <br />
             Ihr Karrieretag Team
+            <br /><br />
+            Jetzt Daten anschauen
           </v-alert>
         </v-col>
       </v-row>
@@ -46,7 +53,7 @@
         <v-col cols="12" md="7">
           <v-text-field
             label="Name"
-            v-model="aussteller_homepage"
+            v-model.trim="aussteller_homepage"
             solo
             dense
             hint="Max Mustermann GmbH"
@@ -63,7 +70,7 @@
           <v-text-field
             label="URL"
             solo
-            v-model="url"
+            v-model.trim="url"
             hint="www.example.com"
             dense
           ></v-text-field>
@@ -86,7 +93,7 @@
             label="Tel."
             solo
             dense
-            v-model="telteilnehmer"
+            v-model.trim="telteilnehmer"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="5">
@@ -94,7 +101,7 @@
             label="Email"
             solo
             dense
-            v-model="mailteilnehmer"
+            v-model.trim="mailteilnehmer"
           ></v-text-field>
         </v-col>
       </v-row>
@@ -109,7 +116,7 @@
             label="Tel."
             solo
             dense
-            v-model="telaussteller"
+            v-model.trim="telaussteller"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="5">
@@ -117,7 +124,7 @@
             label="Email"
             solo
             dense
-            v-model="mailaussteller"
+            v-model.trim="mailaussteller"
           ></v-text-field>
         </v-col>
       </v-row>
@@ -254,7 +261,7 @@
         <v-col cols="12" md="4">
           <v-text-field
             label="Tel."
-            v-model="telpraktikum"
+            v-model.trim="telpraktikum"
             solo
             dense
           ></v-text-field>
@@ -262,7 +269,7 @@
         <v-col cols="12" md="5">
           <v-text-field
             label="Email"
-            v-model="mailpraktikum"
+            v-model.trim="mailpraktikum"
             solo
             dense
           ></v-text-field>
@@ -291,7 +298,7 @@
         <v-col cols="12" md="7">
           <v-text-field
             label="Adresse"
-            v-model="rechnungsadresse"
+            v-model.trim="rechnungsadresse"
             solo
             dense
           ></v-text-field>
@@ -396,6 +403,7 @@ export default {
         this.message = 'Anmeldeformular erfolgreich eingereicht!';
         this.checkformular = true;
         this.user.checkformular = true;
+        this.$emit('formularDone', this.user.checkformular);
         localStorage.setItem('user', JSON.stringify(this.user));
         await axios({
           url: '/status/' + this.user.user.firmen_id,

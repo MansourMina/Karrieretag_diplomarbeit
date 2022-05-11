@@ -2,53 +2,76 @@
   <v-card class="pa-5">
     <v-system-bar class="red darken-4"></v-system-bar>
     <v-row class="ma-0 pt-2 pb-0" align="center">
-      <v-col cols="2" md="1" class="pt-0 mt-0 ml-0 pl-0"><span>To</span></v-col>
-      <v-col class="pa-0 ma-0 mt-2">
-        <v-menu v-model="menu" style="display:inline-block" absolute>
-          <template v-slot:activator="{ on }">
-            <div class="d-flex flex-wrap">
-              <v-chip
-                pill
-                v-on="on"
-                v-for="s of limitEmail"
-                :key="s.firmen_id"
-                @click="currentMenu = s"
-                close
-                dark
-                @click:close="remove(s)"
-              >
-                {{ s.firmen_mail }}
-              </v-chip>
-              <span v-if="selectedEmails > 3">//////dasdasdas</span>
-            </div>
-          </template>
-          <v-card width="300">
-            <v-list dark>
-              <v-list-item>
-                <v-list-item-content>
-                  <v-list-item-title>{{
-                    currentMenu.firmen_name
-                  }}</v-list-item-title>
-                </v-list-item-content>
-                <v-list-item-action>
-                  <v-btn icon @click="menu = false">
-                    <v-icon>mdi-close-circle</v-icon>
+      <v-col cols="1" md="1" class="pt-0 mt-1 ml-0 pl-0 pb-0 mb-0 mr-0 pr-0"
+        ><span>To</span></v-col
+      >
+      <v-col class="ma-0 mt-2 pl-0 ml-0" cols="11" md="11">
+        <v-slide-group multiple show-arrows mobile-breakpoint>
+          <v-menu v-model="menu" absolute>
+            <template v-slot:activator="{ on }">
+              <v-slide-item v-for="s of filteredEmails" :key="s.firmen_id">
+                <v-chip
+                small
+                  pill
+                  v-on="on"
+                  class="mx-1"
+                  @click="currentMenu = s"
+                  close
+                  dark
+                  @click:close="remove(s)"
+                >
+                  {{ s.firmen_mail }}
+                </v-chip>
+              </v-slide-item>
+
+              <!-- <v-menu bottom offset-y v-if="filteredEmails.length > 3">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn icon v-bind="attrs" v-on="on">
+                    <v-icon>mdi-dots-horizontal</v-icon>
                   </v-btn>
-                </v-list-item-action>
-              </v-list-item>
-            </v-list>
-            <v-list>
-              <v-list-item @click="() => {}">
-                <v-list-item-action>
-                  <v-icon color="red darken-4">mdi-briefcase</v-icon>
-                </v-list-item-action>
-                <v-list-item-subtitle>{{
-                  currentMenu.firmen_mail
-                }}</v-list-item-subtitle>
-              </v-list-item>
-            </v-list>
-          </v-card>
-        </v-menu>
+                </template>
+                <v-list>
+                  <v-list-item
+                    v-on="on"
+                    v-for="s in leftEmail"
+                    :key="s.firmen_id"
+                    @click="currentMenu = s"
+                    @click:close="remove(s)"
+                  >
+                    <v-list-item-title>{{ s.firmen_mail }}</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu> -->
+            </template>
+
+            <v-card width="300">
+              <v-list dark>
+                <v-list-item>
+                  <v-list-item-content>
+                    <v-list-item-title>{{
+                      currentMenu.firmen_name
+                    }}</v-list-item-title>
+                  </v-list-item-content>
+                  <v-list-item-action>
+                    <v-btn icon @click="menu = false">
+                      <v-icon>mdi-close-circle</v-icon>
+                    </v-btn>
+                  </v-list-item-action>
+                </v-list-item>
+              </v-list>
+              <v-list>
+                <v-list-item @click="() => {}">
+                  <v-list-item-action>
+                    <v-icon color="red darken-4">mdi-briefcase</v-icon>
+                  </v-list-item-action>
+                  <v-list-item-subtitle>{{
+                    currentMenu.firmen_mail
+                  }}</v-list-item-subtitle>
+                </v-list-item>
+              </v-list>
+            </v-card>
+          </v-menu>
+        </v-slide-group>
       </v-col>
     </v-row>
 
@@ -98,6 +121,8 @@
 </template>
 
 <script>
+import { bus } from '../main';
+
 import axios from 'axios';
 export default {
   data() {
@@ -112,6 +137,8 @@ export default {
       text: false,
       showBold: true,
       limit: 3,
+      filteredEmails: [],
+      busEmails: [],
     };
   },
   mounted() {
@@ -124,6 +151,15 @@ export default {
       }
     });
   },
+  created() {
+    bus.$on('changeIt', async (data) => {
+      this.busCountry = data;
+      this.filterEmails(this.busCountry);
+    });
+    if (this.busCountry == null) {
+      this.filterEmails(this.selectedEmails);
+    }
+  },
 
   props: {
     selectedEmails: {
@@ -132,6 +168,12 @@ export default {
   },
 
   methods: {
+    filterEmails(selectedEmails) {
+      const ids = selectedEmails.map((el) => el.firmen_mail);
+      this.filteredEmails = selectedEmails.filter(
+        ({ firmen_mail }, index) => !ids.includes(firmen_mail, index + 1),
+      );
+    },
     textBold() {
       const boldedText = this.selectedText.bold();
       this.message = this.message.replace(this.selectedText, boldedText);
@@ -140,16 +182,16 @@ export default {
       this.selectedText = window.getSelection().toString();
     },
     remove(item) {
-      this.selectedEmails = this.selectedEmails.filter((el) => el != item);
-      if (this.selectedEmails.length == 0) {
-        this.$emit('deSelectFirma', item);
+      this.filteredEmails = this.filteredEmails.filter((el) => el != item);
+      if (this.filteredEmails.length == 0) {
+        // this.$emit('deSelectFirma', item.firmen_mail);
         this.$emit('closeDialog');
       } else {
-        this.$emit('deSelectFirma', item);
+        // this.$emit('deSelectFirma', item);
       }
     },
     entwurfLöschen() {
-      this.selectedEmails = [];
+      this.filteredEmails = [];
       this.message = '';
       this.$emit('closeDialog');
     },
@@ -163,7 +205,7 @@ export default {
       const emailstoSend = [];
       const finalMessage = this.message.replaceAll('\n', '<br/>\r\n');
 
-      this.selectedEmails.forEach((element) => {
+      this.filteredEmails.forEach((element) => {
         emailstoSend.push({
           name: element.firmen_name,
           email: element.firmen_mail,
@@ -187,9 +229,14 @@ export default {
   },
   computed: {
     limitEmail() {
-      return this.selectedEmails
-        ? this.selectedEmails.slice(0, this.limit)
-        : this.selectedEmails;
+      return this.filteredEmails
+        ? this.filteredEmails.slice(0, this.limit)
+        : this.filteredEmails;
+    },
+    leftEmail() {
+      return this.filteredEmails
+        ? this.filteredEmails.slice(3, this.filteredEmails.length)
+        : this.filteredEmails;
     },
   },
 };

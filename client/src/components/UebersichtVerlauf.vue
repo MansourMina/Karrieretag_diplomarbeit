@@ -2,7 +2,7 @@
   <!-- ${limitActivities.length == 0 ? 'display:flex; justify-content:center; align-items:center;':'none'} ` -->
   <v-card style="max-height:70vh; min-height:63vh; overflow:auto; ">
     <div class="d-flex ">
-      <v-card-title class="black--text">Activities</v-card-title>
+      <v-card-title class="black--text">Aktivitäten</v-card-title>
       <v-spacer></v-spacer>
       <v-btn icon color="black" to="/activities" class="ma-5">
         <v-icon>mdi-menu</v-icon>
@@ -46,14 +46,14 @@
     </div>
     <v-card-text class="pt-4 " style="position:absolute; bottom: 0 ">
       <div class="text-h6 font-weight-light mb-2">
-        Last company activities
+        Letzte Aktivitäten
       </div>
       <v-divider class="my-2"></v-divider>
       <v-icon class="mr-2" small>
         mdi-clock
       </v-icon>
       <span class="text-caption grey--text font-weight-light"
-        >last on {{ lastRequest }}</span
+        >Zuletzt am {{ lastRequest }}</span
       >
     </v-card-text>
   </v-card>

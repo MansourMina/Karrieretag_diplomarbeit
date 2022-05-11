@@ -1,9 +1,10 @@
 <template>
   <!-- eslint-disable -->
-  <v-container>
+
+  <v-container style="padding: 80px 80px 100px 80px">
     <section slot="pdf-content">
       <section class="pdf-item">
-        <v-row class="mb-15 pb-16">
+        <v-row class="mb-15 pb-16" v-if="toPdf">
           <v-col cols="7">
             <v-toolbar-title>
               <img
@@ -22,12 +23,12 @@
             www.htlwienwest.at<br />
           </v-col>
         </v-row>
-        <v-row class="mt-16" style="margin-top:100px">
+        <v-row :style="toPdf ? 'margin-top:100px' : ''">
           <v-col cols="7">
             <h3 class="font-weight-bold">Karrieretag 2022</h3>
-            <h5>HTL Wien West</h5>
+            <h5 class="font-weight-light">HTL Wien West</h5>
           </v-col>
-          <v-col cols="5">
+          <v-col cols="5" v-if="toPdf">
             <h6>
               Report erstellt<span style="margin-left: 10px ">
                 <b>{{ new Date().toString().substring(3, 15) }}</b></span
@@ -36,32 +37,47 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-data-table
-            calculate-widths
-            :headers="headers"
-            :items="nurTeilnehmer"
-            hide-default-footer
-            class="elevation-0 stripe my-10"
-          >
-            <template v-slot:item.aufbauhilfe="{ item }">
-              {{ booleanInString(item.aufbauhilfe) }}
-            </template>
-            <template v-slot:item.vortrag_auswahl="{ item }">
-              <span v-if="item.vortrag_auswahl != null"
-                ><b>{{
-                  item.vortrag_auswahl
-                    .replaceAll(',', '-')
-                    .replace('Maschinenbau', 'M')
-                }}</b>
-              </span>
-              <span v-else>Nein</span>
-            </template>
-            <template v-slot:item.platz="{ item }">
-              {{ item.platz == 'Gang' ? 'G' : 'K' }}
-            </template>
-          </v-data-table>
+          <section class="pdf-item">
+            <v-data-table
+              v-if="toPdf"
+              :headers="pdfHeaders"
+              :items="nurTeilnehmer"
+              hide-default-footer
+              class="elevation-0 "
+              style="margin-top: 20px"
+            ></v-data-table>
+            <v-data-table
+              v-else
+              :headers="headers"
+              :items="nurTeilnehmer"
+              hide-default-footer
+              class="elevation-0  my-10"
+              style="background-color: none"
+            >
+              <template v-slot:item.aufbauhilfe="{ item }">
+                {{ item.aufbauhilfe ? 'Ja' : 'Nein' }}
+              </template>
+              <template v-slot:item.sponsoring_interessiert="{ item }">
+                {{ item.sponsoring_interessiert ? 'Ja' : 'Nein' }}
+              </template>
+
+              <template v-slot:item.vortrag_auswahl="{ item }">
+                <span v-if="item.vortrag_auswahl != null"
+                  ><b>{{
+                    item.vortrag_auswahl
+                      .replaceAll(',', ' | ')
+                      .replace('Maschinenbau', 'M')
+                  }}</b>
+                </span>
+                <span v-else>Nein</span>
+              </template>
+              <template v-slot:item.platz="{ item }">
+                {{ item.platz == 'Gang' ? 'G' : 'K' }}
+              </template>
+            </v-data-table>
+          </section>
         </v-row>
-        <v-row style="margin-top: 50px; ">
+        <v-row style="margin-top: 50px;">
           <v-col style="text-align:right; padding-bottom: 0" cols="12"
             >Teilnehmende Firmen:
             <span class="ml-10" style="margin-left: 10px">{{
@@ -103,10 +119,71 @@ export default {
     antraege: {
       type: Array,
     },
+    toPdf: {
+      type: Boolean,
+    },
+    
   },
   data() {
     return {
+      count: 0,
       headers: [
+        {
+          text: 'Firmen Name',
+          align: 'start',
+          value: 'firmen_name',
+        },
+        {
+          text: 'Mail',
+          value: 'firmen_mail',
+        },
+        { text: 'Platz', value: 'platz' },
+
+        { text: 'Aufbauhilfe', value: 'aufbauhilfe' },
+
+        {
+          text: 'Fachrichtung/en',
+          value: 'fachrichtung',
+        },
+        {
+          text: 'Vortrag?',
+          value: 'vortrag_auswahl',
+        },
+        {
+          text: 'Teilnehmer-Tel',
+          value: 'ansprechpartner_teilnahme_tel',
+        },
+        {
+          text: 'Teilnehmer-Mail',
+          value: 'ansprechpartner_teilnahme_mail',
+        },
+
+        {
+          text: 'Austellung-Tel',
+          value: 'ansprechpartner_ausstellung_tel',
+        },
+        {
+          text: 'Austellung-Mail',
+          value: 'ansprechpartner_ausstellung_mail',
+        },
+        {
+          text: 'Praktikum-Tel',
+          value: 'tel_ferialpraktikum',
+        },
+        {
+          text: 'Praktikum-Mail',
+          value: 'mail_ferialpraktikum',
+        },
+        {
+          text: 'Rechnung',
+          value: 'rechnungsadresse',
+        },
+        {
+          text: 'Sponsoring',
+          value: 'sponsoring_interessiert',
+        },
+      ],
+      pdfHeaders: [
         {
           text: 'Firmen Name',
           align: 'start',
@@ -136,23 +213,12 @@ export default {
       );
     },
   },
-  methods: {
-    booleanInString(boolean) {
-      switch (boolean) {
-        case true:
-          return 'Ja';
-        case false:
-          return 'Nein';
-        default:
-          return 'ungültig';
-      }
-    },
-  },
 };
 </script>
 
-<style lang="scss" scoped>
-tr:nth-of-type(4n + 3) {
-  background-color: rgba(0, 0, 0, 0.05);
+<style lang="scss">
+.v-data-table-header th {
+  white-space: nowrap;
+  background-color: #eeeeee;
 }
 </style>

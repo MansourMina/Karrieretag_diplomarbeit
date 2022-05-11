@@ -8,6 +8,7 @@
         indeterminate
       ></v-progress-circular>
     </div> -->
+
     <div>
       <div id="progress-bar" class="red darken-4"></div>
       <div class="ma-5" id="up-circle" v-if="showUpButton">
@@ -16,8 +17,8 @@
         </v-btn>
       </div>
 
-      <div v-if="this.$route.name != 'NotFound'">
-        <v-app-bar app color="white" hide-on-scroll height="70">
+      <div v-if="$route.name != 'NotFound'">
+        <v-app-bar color="white" app hide-on-scroll height="70">
           <v-app-bar-nav-icon
             @click="drawer = !drawer"
             name="Navbar-Icon"
@@ -58,7 +59,7 @@
           </v-btn>
         </v-app-bar>
 
-        <v-navigation-drawer color="white" v-model="drawer" statless app>
+        <v-navigation-drawer v-model="drawer" statless app>
           <v-list nav>
             <v-list-item>
               <v-list-item-content v-if="user.user != null && !user.admin">
@@ -117,7 +118,7 @@
                 </v-list-item-icon>
 
                 <v-list-item-content>
-                  <v-list-item-title>Formular ausfüllen</v-list-item-title>
+                  <v-list-item-title>Teilnahme Formular</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
             </v-list>
@@ -185,12 +186,7 @@
                 <v-list-item-title>Report erstellen</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
-            <v-list-item
-              dense
-              link
-              :loading="dialog"
-              @click.stop="showDialog = true"
-            >
+            <v-list-item dense link @click.stop="showDialog = true">
               <v-list-item-icon>
                 <v-icon>mdi-account-multiple-remove</v-icon>
               </v-list-item-icon>
@@ -200,24 +196,19 @@
               </v-list-item-content>
             </v-list-item>
           </div>
-          <AskLogout :showDialog="showDialog" @Askdialog="showLoading" />
+          <AskLogout :showDialog="showDialog" @Askdialog="checkLogout" />
         </v-navigation-drawer>
       </div>
 
-      <div class="text-center">
-        <v-dialog v-model="dialog" persistent width="300">
-          <v-card color="red darken-4" dark>
-            <v-card-text>
-              Bitte warten...
-              <v-progress-linear
-                indeterminate
-                color="white"
-                class="mb-0"
-              ></v-progress-linear>
-            </v-card-text>
-          </v-card>
-        </v-dialog>
-      </div>
+      <v-dialog persistent v-model="dialog" width="150">
+        <v-progress-linear
+          color="red darken-4"
+          indeterminate
+          rounded
+          height="6"
+        ></v-progress-linear>
+      </v-dialog>
+
       <v-main hide-overlay id="main">
         <router-view
           @changeColor="changeColor"
@@ -235,22 +226,20 @@
     <VueHtml2pdf
       :show-layout="false"
       :float-layout="true"
-      :enable-download="true"
+      :enable-download="false"
       :preview-modal="true"
-      :paginate-elements-by-height="1400"
+      :paginate-elements-by-height="1100"
       filename="Karrieretag 2022 Liste"
       :pdf-quality="2"
-      :manual-pagination="ztue"
+      :manual-pagination="true"
       pdf-format="a4"
       pdf-orientation="portrait"
       pdf-content-width="100%"
       ref="html2Pdf"
+      @beforeDownload="beforeDownload($event)"
     >
       <section slot="pdf-content">
-        <PDFContent
-          style="padding: 100px 80px 100px 80px"
-          :antraege="antraege"
-        />
+        <PDFContent :antraege="antraege" :toPdf="true" />
       </section>
     </VueHtml2pdf>
   </v-app>
@@ -293,16 +282,6 @@ export default {
     //     console.info('This page is not reloaded');
     //   }
     // }
-  },
-  watch: {
-    dialog(val) {
-      if (!val) return;
-
-      setTimeout(
-        () => ((this.dialog = false), this.logout(), (this.drawer = false)),
-        2000,
-      );
-    },
   },
 
   data: () => ({
@@ -357,6 +336,11 @@ export default {
         icon: 'mdi-human-male-board',
         route: '/vortrag',
       },
+      {
+        title: 'Feedback Übersicht',
+        icon: 'mdi-thumbs-up-down',
+        route: '/manage-feedback',
+      },
     ],
     items: [
       { title: 'Home', icon: 'mdi-view-dashboard', route: '/' },
@@ -394,6 +378,36 @@ export default {
     // };
   },
   methods: {
+    async checkLogout(logout) {
+      this.showDialog = false;
+      if (logout) {
+        this.dialog = true;
+        await this.logout();
+        this.dialog = false;
+      }
+    },
+    async beforeDownload({ html2pdf, options, pdfContent }) {
+      await html2pdf()
+        .set(options)
+        .from(pdfContent)
+        .toPdf()
+        .get('pdf')
+        .then((pdf) => {
+          const totalPages = pdf.internal.getNumberOfPages();
+          for (let i = 1; i <= totalPages; i++) {
+            pdf.setPage(i);
+            pdf.setFontSize(10);
+            pdf.setTextColor(150);
+            pdf.text(
+              'Seite ' + i + ' von ' + totalPages,
+              pdf.internal.pageSize.getWidth() * 0.88,
+              pdf.internal.pageSize.getHeight() - 0.3,
+            );
+          }
+        })
+        .save();
+    },
+
     generateReport() {
       this.$refs.html2Pdf.generatePdf();
     },
@@ -458,7 +472,10 @@ export default {
         method: 'GET',
       });
       localStorage.clear();
-      await this.$router.push('/');
+      if (this.$route.name != 'Home') {
+        await this.$router.push('/');
+        this.$router.go();
+      }
       this.$router.go();
     },
     passId(id) {
@@ -477,10 +494,6 @@ export default {
       // document.getElementById(`${id}`).style.background = 'yellow';
     },
 
-    showLoading(dialog) {
-      this.showDialog = false;
-      this.dialog = dialog;
-    },
     async getActivities() {
       const { data } = await axios({
         url: '/activities',
@@ -493,7 +506,7 @@ export default {
 </script>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Titillium+Web:wght@200;400;800&display=swap');
 
 html * {
   font-family: 'Titillium Web', sans-serif;

@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
-    <div class=" primary white--text text-center ma-10">
-      <v-row class="mt-2 pa-5 pb" align="center" text-center>
+    <div class=" primary white--text text-center mx-0 my-5 ma-lg-10">
+      <v-row class="mt-2 pa-5 pb " align="center" text-center>
         <v-col cols="12" md="3">
           <span
             style="font-size: 1.25rem;font-weight: 500;letter-spacing: 0.0125em;"
@@ -31,7 +31,7 @@
         </v-col>
       </v-row>
     </div>
-    <v-card class="ma-10 " min-height="500" v-if="!loaded">
+    <v-card class="mx-0 my-5 ma-lg-10" min-height="500" v-if="!loaded" elevation="0">
       <v-skeleton-loader
         width="40%"
         type="list-item-avatar-two-line"
@@ -43,7 +43,7 @@
     </v-card>
     <div v-else>
       <v-card
-        class="ma-10 center"
+        class="mx-0 my-5 ma-lg-10 center"
         min-height="500"
         v-if="filterActivities.length == 0"
       >
@@ -52,7 +52,7 @@
         </div>
       </v-card>
 
-      <v-card class="ma-10" v-else min-height="500">
+      <v-card class="mx-0 my-5 ma-lg-10" v-else min-height="500" elevation="0">
         <v-list
           v-for="(h, index) in filterActivities"
           :key="h.history_id"
@@ -98,7 +98,7 @@
             </v-list-item-action>
           </v-list-item>
           <v-divider
-            v-if="index < activities.length - 1"
+            v-if="index < filterActivities.length - 1"
             inset
             class="my-0"
           ></v-divider>
@@ -112,7 +112,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 import ShowData from '@/components/ShowData.vue';
 
 export default {
@@ -120,18 +119,12 @@ export default {
     ShowData,
   },
 
-  methods: {
-    async getActivities() {
-      const { data } = await axios({
-        url: '/activities',
-        method: 'GET',
-      });
-      this.activities = data;
+  props: {
+    activities: {
+      type: Array,
     },
   },
   async created() {
-    await this.getActivities();
-
     const readyHandler = () => {
       if (document.readyState == 'complete') {
         this.loading = false;

@@ -6,7 +6,7 @@
     >
       Hallo Test
     </v-container>
-    <v-container class="pa-15 pt-0" fluid v-else>
+    <v-container class="pa-md-15 pt-0" fluid v-else>
       <v-card elevation="0">
         <v-card-text class="d-flex justify-content-center mt-5">
           <v-chip-group
@@ -43,8 +43,8 @@
           </h3>
         </v-card-text>
         <!-- Diagramme -->
-        <div v-show="selectedType == 'alle' || selectedType == 'diagramme'">
-          <v-card-title class=" ml-0 pl-0 pt-0">
+        <div v-show="selectedType == 'alle' || selectedType == 'diagramme'" >
+          <v-card-title class=" ml-0 pl-0 pt-0 ">
             <v-row class="mb-0">
               <v-col cols="1">
                 <v-icon large color="black">
@@ -56,7 +56,7 @@
               </v-col>
             </v-row>
           </v-card-title>
-          <v-row class="pt-0 mt-0 justify-content-center text-center ma-md-10 ">
+          <v-row class="pt-0 mt-5 justify-content-center text-center ma-md-10 ">
             <v-row class="pt-0 mt-0">
               <v-card class="d-flex flex-wrap pa-5 ">
                 <v-col cols="12" sm="6" md="3" class="pa-0">

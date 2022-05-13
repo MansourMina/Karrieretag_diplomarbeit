@@ -6,7 +6,7 @@
     >
       Hallo Test
     </v-container>
-    <v-container class="pa-15" fluid v-else>
+    <v-container class="pa-15 pt-0" fluid v-else>
       <v-card elevation="0">
         <v-card-text class="d-flex justify-content-center mt-5">
           <v-chip-group
@@ -33,6 +33,15 @@
             </v-chip>
           </v-chip-group>
         </v-card-text>
+
+        <v-card-text class="text-center pb-0 mb-0">
+          <h3>
+            <b
+              >{{ feedbacks.length }}
+              {{ feedbacks.length == 1 ? 'Feedback' : 'Feedbacks' }}</b
+            >
+          </h3>
+        </v-card-text>
         <!-- Diagramme -->
         <div v-show="selectedType == 'alle' || selectedType == 'diagramme'">
           <v-card-title class=" ml-0 pl-0 pt-0">
@@ -47,23 +56,176 @@
               </v-col>
             </v-row>
           </v-card-title>
-          <v-row class="mt-5 justify-content-center text-center">
-            <v-col cols="12" lg="6"
-              ><v-card class="pa-10" min-height="510" max-height="510">
+          <v-row class="pt-0 mt-0 justify-content-center text-center ma-md-10 ">
+            <v-row class="pt-0 mt-0">
+              <v-card class="d-flex flex-wrap pa-5 ">
+                <v-col cols="12" sm="6" md="3" class="pa-0">
+                  <v-sheet
+                    class="v-sheet--offset mx-auto"
+                    color="red darken-4"
+                    elevation="12"
+                    max-width="calc(100% - 32px)"
+                  >
+                    <v-sparkline
+                      :labels="labels"
+                      :value="value"
+                      color="white"
+                      line-width="2"
+                      padding="16"
+                    ></v-sparkline>
+                  </v-sheet>
+
+                  <v-card-text class="pt-0">
+                    <div class="text-h6 font-weight-light mb-2">
+                      User Registrations
+                    </div>
+                    <div class="subheading font-weight-light grey--text">
+                      Last Campaign Performance
+                    </div>
+                    <v-divider class="my-2"></v-divider>
+                    <v-icon class="mr-2" small>
+                      mdi-clock
+                    </v-icon>
+                    <span class="text-caption grey--text font-weight-light"
+                      >last registration 26 minutes ago</span
+                    >
+                  </v-card-text>
+                </v-col>
+                <v-col cols="12" sm="6" md="3" class="pa-0">
+                  <v-sheet
+                    class="v-sheet--offset mx-auto"
+                    color="red darken-4"
+                    elevation="12"
+                    max-width="calc(100% - 32px)"
+                  >
+                    <v-sparkline
+                      :labels="labels"
+                      :value="value"
+                      color="white"
+                      line-width="2"
+                      padding="16"
+                    ></v-sparkline>
+                  </v-sheet>
+
+                  <v-card-text class="pt-0">
+                    <div class="text-h6 font-weight-light mb-2">
+                      User Registrations
+                    </div>
+                    <div class="subheading font-weight-light grey--text">
+                      Last Campaign Performance
+                    </div>
+                    <v-divider class="my-2"></v-divider>
+                    <v-icon class="mr-2" small>
+                      mdi-clock
+                    </v-icon>
+                    <span class="text-caption grey--text font-weight-light"
+                      >last registration 26 minutes ago</span
+                    >
+                  </v-card-text>
+                </v-col>
+                <v-col cols="12" sm="6" md="3" class="pa-0">
+                  <v-sheet
+                    class="v-sheet--offset mx-auto"
+                    color="red darken-4"
+                    elevation="12"
+                    max-width="calc(100% - 32px)"
+                  >
+                    <v-sparkline
+                      :labels="labels"
+                      :value="value"
+                      color="white"
+                      line-width="2"
+                      padding="16"
+                    ></v-sparkline>
+                  </v-sheet>
+
+                  <v-card-text class="pt-0">
+                    <div class="text-h6 font-weight-light mb-2">
+                      User Registrations
+                    </div>
+                    <div class="subheading font-weight-light grey--text">
+                      Last Campaign Performance
+                    </div>
+                    <v-divider class="my-2"></v-divider>
+                    <v-icon class="mr-2" small>
+                      mdi-clock
+                    </v-icon>
+                    <span class="text-caption grey--text font-weight-light"
+                      >last registration 26 minutes ago</span
+                    >
+                  </v-card-text>
+                </v-col>
+                <v-col cols="12" sm="6" md="3" class="pa-0">
+                  <v-sheet
+                    class="v-sheet--offset mx-auto"
+                    color="red darken-4"
+                    elevation="12"
+                    max-width="calc(100% - 32px)"
+                  >
+                    <v-sparkline
+                      :labels="labels"
+                      :value="value"
+                      color="white"
+                      line-width="2"
+                      padding="16"
+                    ></v-sparkline>
+                  </v-sheet>
+
+                  <v-card-text class="pt-0">
+                    <div class="text-h6 font-weight-light mb-2">
+                      User Registrations
+                    </div>
+                    <div class="subheading font-weight-light grey--text">
+                      Last Campaign Performance
+                    </div>
+                    <v-divider class="my-2"></v-divider>
+                    <v-icon class="mr-2" small>
+                      mdi-clock
+                    </v-icon>
+                    <span class="text-caption grey--text font-weight-light"
+                      >last registration 26 minutes ago</span
+                    >
+                  </v-card-text>
+                </v-col>
+              </v-card>
+            </v-row>
+            <v-col cols="12" md="7"
+              ><v-card
+                class="pa-md-10 pa-5  "
+                min-height="510"
+                max-height="510"
+              >
                 <p class="text-body-1">
                   Teilnahme Prozess der Veranstaltung
                   <b>({{ getYear }} Feedback)</b>
                 </p>
                 <BarChart /> </v-card
             ></v-col>
-            <v-col cols="12" lg="5"
-              ><v-card class="pa-10" min-height="510" max-height="510">
+            <v-col cols="12" md="5"
+              ><v-card class="pa-md-10 pa-5" min-height="510" max-height="510">
                 <p class="text-body-1">
                   Erneute Teilnahme <b>({{ getYear }} Feedback)</b>
                 </p>
 
                 <v-container class="d-flex justify-content-center">
                   <PieChart /> </v-container></v-card
+            ></v-col>
+            <v-col cols="12" md="6"
+              ><v-card class="pa-md-10 pa-5" min-height="510" max-height="510">
+                <p class="text-body-1">
+                  Dauer der Veranstaltung <b>({{ getYear }} Feedback)</b>
+                </p>
+
+                <v-container class="d-flex justify-content-center">
+                  <DonutChart /> </v-container></v-card
+            ></v-col>
+            <v-col cols="12" md="6"
+              ><v-card class="pa-md-10 pa-5" min-height="510" max-height="510">
+                <p class="text-body-1">
+                  Organisation der Veranstaltung
+                  <b>({{ getYear }} Feedback)</b>
+                </p>
+                <LineChart /> </v-card
             ></v-col>
           </v-row>
         </div>
@@ -87,12 +249,12 @@
               hide-details
             ></v-text-field>
           </v-card-title>
-          <div v-if="filterFeedbacks.length != 0" class="pa-10">
+          <div v-if="filterFeedbacks.length != 0" class="pa-md-10 ">
             <v-expansion-panels focusable popout>
               <v-expansion-panel
                 v-for="f of filterFeedbacks"
                 :key="f.feedback_id"
-                class="ma-2"
+                class="ma-2 "
               >
                 <v-expansion-panel-header
                   expand-icon="mdi-thumbs-up-down-outline"
@@ -212,10 +374,14 @@
 import axios from 'axios';
 import BarChart from '@/components/BarChart.vue';
 import PieChart from '@/components/PieChart.vue';
+import DonutChart from '@/components/DonutChart.vue';
+import LineChart from '@/components/LineChart.vue';
 export default {
   components: {
     BarChart,
     PieChart,
+    DonutChart,
+    LineChart,
   },
   props: {
     karrieretagDaten: {
@@ -262,6 +428,15 @@ export default {
     selectedType: 'alle',
     feedbacks: [],
     search: '',
+    labels: ['12am', '3am', '6am', '9am', '12pm', '3pm', '6pm', '9pm'],
+    value: [200, 675, 410, 390, 310, 460, 250, 240],
   }),
 };
 </script>
+
+<style>
+.v-sheet--offset {
+  top: -40px;
+  position: relative;
+}
+</style>

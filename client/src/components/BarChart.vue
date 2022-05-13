@@ -1,6 +1,16 @@
 <template>
-  <div style="max-width: 100vw; max-height: 100vh;" v-if="loaded">
-    <Bar :chart-data="chartData" :width="100" :height="50" :styles="myStyles" />
+  <div v-if="loaded">
+    <Bar
+      :chart-options="chartOptions"
+      :chart-data="chartData"
+      :chart-id="chartId"
+      :dataset-id-key="datasetIdKey"
+      :plugins="plugins"
+      :css-classes="cssClasses"
+      :styles="styles"
+      :width="width"
+      :height="height"
+    />
   </div>
 </template>
 
@@ -57,14 +67,38 @@ export default {
       },
       chartOptions: {
         responsive: true,
+        maintainAspectRatio: false,
       },
     };
   },
-  computed: {
-    myStyles() {
-      return {
-        position: 'relative',
-      };
+  props: {
+    chartId: {
+      type: String,
+      default: 'bar-chart',
+    },
+    datasetIdKey: {
+      type: String,
+      default: 'label',
+    },
+    width: {
+      type: Number,
+      default: 400,
+    },
+    height: {
+      type: Number,
+      default: 400,
+    },
+    cssClasses: {
+      default: '',
+      type: String,
+    },
+    styles: {
+      type: Object,
+      default: () => {},
+    },
+    plugins: {
+      type: Array,
+      default: () => [],
     },
   },
 

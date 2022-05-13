@@ -1,6 +1,6 @@
 <template>
-  <div v-if="loaded">
-    <Pie
+  <div >
+    <Doughnut
       :chart-options="chartOptions"
       :chart-data="chartData"
       :chart-id="chartId"
@@ -15,8 +15,7 @@
 </template>
 
 <script>
-import axios from 'axios';
-import { Pie } from 'vue-chartjs/legacy';
+import { Doughnut } from 'vue-chartjs/legacy';
 
 import {
   Chart as ChartJS,
@@ -30,14 +29,14 @@ import {
 ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale);
 
 export default {
-  name: 'PieChart',
+  name: 'DoughnutChart',
   components: {
-    Pie,
+    Doughnut,
   },
   props: {
     chartId: {
       type: String,
-      default: 'pie-chart',
+      default: 'doughnut-chart',
     },
     datasetIdKey: {
       type: String,
@@ -45,11 +44,11 @@ export default {
     },
     width: {
       type: Number,
-      default: 450,
+      default: 350,
     },
     height: {
       type: Number,
-      default: 310,
+      default: 350,
     },
     cssClasses: {
       default: '',
@@ -64,34 +63,26 @@ export default {
       default: () => [],
     },
   },
-  methods: {
-    async getFeedbackData() {
-      const { data } = await axios({
-        url: '/feedbackdata',
-        method: 'GET',
-      });
-      data[2].forEach((el) =>
-        el.erneute_teilnahme == false
-          ? (this.chartData.datasets[0].data[0] = el.erneute_teilnahme_count)
-          : (this.chartData.datasets[0].data[1] = el.erneute_teilnahme_count),
-      );
-    },
-  },
-  async created() {
-    await this.getFeedbackData();
-
-    // Ansonsten lädt die Chart nicht. Man müsste dann immer auf die Chart drücken oder das Fenster kleiner machen, um es sich anzuzeigen.
-    this.loaded = true;
-  },
   data() {
     return {
-      loaded: false,
       chartData: {
-        labels: ['Ja', 'Nein'],
+        labels: [
+          'Viel zu lang',
+          'Zu lang',
+          'Ungefähr richtig',
+          'Zu kurz',
+          'Viel zu kurz',
+        ],
         datasets: [
           {
-            backgroundColor: ['#00C853', '#B71C1C'],
-            data: [0, 0],
+            backgroundColor: [
+              '#D50000',
+              '#66BB6A',
+              '#00C853',
+              '#C8E6C9',
+              '#F44336',
+            ],
+            data: [40, 20, 80, 10, 20],
           },
         ],
       },
@@ -99,7 +90,6 @@ export default {
         responsive: true,
         maintainAspectRatio: false,
       },
-      erneuteTeilnahmeFeedbackData: [],
     };
   },
 };

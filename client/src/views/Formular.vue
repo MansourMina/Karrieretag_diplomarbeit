@@ -396,7 +396,7 @@ export default {
             status: 'Teilnehmer',
           },
         });
-        console.log(data);
+        data;
         this.pushHistory();
         this.snackbar = true;
         this.snackbarcolor = 'green';

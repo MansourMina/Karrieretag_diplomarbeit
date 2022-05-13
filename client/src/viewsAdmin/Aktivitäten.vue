@@ -31,7 +31,12 @@
         </v-col>
       </v-row>
     </div>
-    <v-card class="mx-0 my-5 ma-lg-10" min-height="500" v-if="!loaded" elevation="0">
+    <v-card
+      class="mx-0 my-5 ma-lg-10"
+      min-height="500"
+      v-if="!loaded"
+      elevation="0"
+    >
       <v-skeleton-loader
         width="40%"
         type="list-item-avatar-two-line"
@@ -66,7 +71,15 @@
                 dark
                 >mdi-clipboard-text</v-icon
               >
-              <v-icon v-else class="blue" dark>mdi-gesture-tap-button</v-icon>
+              <v-icon
+                v-else-if="h.type == 'login' || h.type == 'Login'"
+                class="blue"
+                dark
+                >mdi-gesture-tap-button</v-icon
+              >
+              <v-icon v-else class="green" dark
+                >mdi-thumbs-up-down-outline</v-icon
+              >
             </v-list-item-avatar>
 
             <v-list-item-content>
@@ -76,17 +89,21 @@
                 v-if="h.type == 'login' || h.type == 'Login'"
                 >das erste Mal angemeldet
               </v-list-item-subtitle>
-              <v-list-item-subtitle v-else
+              <v-list-item-subtitle
+                v-else-if="h.type == 'formular' || h.type == 'Formular'"
                 >Formualar ausgefüllt</v-list-item-subtitle
+              >
+              <v-list-item-subtitle v-else
+                >Feedback gegeben</v-list-item-subtitle
               >
             </v-list-item-content>
 
             <v-list-item-action>
               <v-list-item-subtitle
-                v-text="h.time.substring(0, 10)"
+                v-text="new Date(h.time.substring(0, 10)).toLocaleDateString()"
               ></v-list-item-subtitle>
               <v-btn
-                class="mt-1 plain "
+                class="mt-1 plain pr-0 mr-0 "
                 text
                 @click="
                   dialogData = true;
@@ -197,7 +214,7 @@ export default {
     //   },
     // ],
     search: '',
-    statuse: ['Formular', 'Login'],
+    statuse: ['Formular', 'Login', 'Feedback'],
     status: '',
     dialogData: false,
     loading: true,

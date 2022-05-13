@@ -19,7 +19,7 @@
           </v-carousel>
 
           <v-card-title>
-            <span id="karrieretag">Karrieretag 2022</span>
+            <span id="karrieretag">Karrieretag</span>
           </v-card-title>
 
           <v-card-text class="text--primary" style="font-size:15px">
@@ -32,13 +32,15 @@
             >. Zentrales Element ist eine Ausstellung von Unternehmen und
             Ausbildungsinstituten, die sich für unsere Absolventinnen und
             Absolventen interessieren. Wir laden Sie herzlich ein, aktiv mit
-            einem Stand an unserem Karrieretag teilzunehmen.<br /><br />
+            einem Stand an unserem Karrieretag teilzunehmen. <br />
+            <!--<br />
             Der nächste Karrieretag findet Mittwoch, den <b>9.3.2022</b> von
-            <b>8:00 bis 14:00</b> in der HTL Wien West statt.<br /><br />
+            <b>8:00 bis 14:00</b> in der HTL Wien West statt.<br /><br /> -->
             <div v-if="user.user == null">
               <b>Bei Interesse füllen Sie das </b>
               <router-link to="/antrag" class="red--text text--darken-1"
-                >Formular</router-link>
+                >Formular</router-link
+              >
               <b> aus</b>.
               <br />
             </div>
@@ -172,16 +174,16 @@
         <v-col cols="12">
           <v-card elevation="0">
             <v-card-title class="pl-0">
-              <span id="rekord">Rückblick Karrieretag 2020</span>
+              <span id="rekord">Rückblick Karrieretag 2022</span>
             </v-card-title>
             <p>
               Großes Interesse an unseren Schülerinnen und Schülern gab es am
-              alljährlichen <b>Karrieretag</b> an der HTL Wien West!
-              <br /><br />
-              <b>55 Unternehmen/Ausbildungseinrichtungen</b> nutzten die
-              Gelegenheit und kamen an unsere Schule, um sich zu präsentieren.
-              Das ist neuer Rekord! Einige reisten dabei extra aus Deutschland
-              an. Parallel zur Messe fanden über 20 Vorträge statt.
+              alljährlichen <b>Karrieretag</b> an der HTL Wien West! <b>Knapp 60
+              Unternehmen/Ausbildungseinrichtungen</b> nutzten die Gelegenheit und
+              kamen an unsere Schule, um sich zu präsentieren. <b>Herzlichen Dank
+              an alle Teilnehmer</b> für die super Stimmung und das große Interesse
+              an unseren Schülerinnen und Schülern. Sowie an alle Helfer, die
+              den Karrieretag ermöglicht haben.
             </p>
             <v-img
               class="white--text align-end"

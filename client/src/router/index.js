@@ -3,6 +3,7 @@ import VueRouter from 'vue-router';
 import Home from '../views/Home.vue';
 import Dashboard from '../views/Dashboard.vue';
 import Feedback from '../views/Feedback.vue';
+import axios from 'axios';
 
 Vue.use(VueRouter);
 
@@ -25,14 +26,6 @@ const routes = [
   {
     path: '/overview',
     name: 'Übersicht',
-    component: () =>
-      import(
-        /* webpackChunkName: "group-foo" */ '../components/PDFContent.vue'
-      ),
-  },
-  {
-    path: '/pdf',
-    name: 'PDF',
     component: () =>
       import(
         /* webpackChunkName: "group-foo" */ '../components/PDFContent.vue'
@@ -65,7 +58,6 @@ const routes = [
     component: () =>
       import(/* webpackChunkName: "group-foo" */ '../views/Vorträge.vue'),
   },
-
   {
     path: '/infos',
     props: true,
@@ -130,6 +122,7 @@ const router = new VueRouter({
 
 router.beforeEach(async (to, from, next) => {
   const user = JSON.parse(localStorage.getItem('user'));
+  const karrieretagDate = await getKarrieretagData();
   const notFound = {
     name: 'NotFound',
     params: { pathMatch: to.path.split('/').slice(1) },
@@ -144,7 +137,8 @@ router.beforeEach(async (to, from, next) => {
       to.name == 'Anträge' ||
       to.name == 'Formular' ||
       to.name == 'Feedback' ||
-      to.name == 'Übersicht')
+      to.name == 'Übersicht' ||
+      to.name == 'Feedback Admin')
   ) {
     next(notFound);
   }
@@ -169,7 +163,9 @@ router.beforeEach(async (to, from, next) => {
         to.name == 'Vortrag' ||
         to.name == 'Aktivitäten' ||
         to.name == 'Login' ||
-        to.name == 'Übersicht')
+        to.name == 'Übersicht' ||
+        to.name == 'Feedback Admin' ||
+        (to.name == 'Feedback' && !isToday(new Date(karrieretagDate))))
     ) {
       next(notFound);
     }
@@ -181,6 +177,15 @@ router.beforeEach(async (to, from, next) => {
 function isAuthenticated() {
   if (Vue.$cookies.get('sid')) return true;
   else return false;
+}
+
+function isToday(karrieretag) {
+  return Date.now() > karrieretag;
+}
+
+async function getKarrieretagData() {
+  const { data } = await axios.get('/karrieretagdata');
+  return data.datum;
 }
 
 export default router;

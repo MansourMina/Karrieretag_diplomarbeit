@@ -293,7 +293,7 @@
         </v-row>
       </v-container>
     </div>
-    <div v-else  style="height: 80vh; " class="center text-center">
+    <div v-else style="height: 80vh; " class="center text-center">
       <v-banner two-lines align="center" outlined>
         <v-icon slot="icon" color="red darken-4" size="36">
           mdi-wifi-strength-alert-outline
@@ -340,7 +340,7 @@ export default {
         url: '/firma/' + this.user.firmen_id,
         method: 'GET',
       });
-      console.log(data);
+      data;
       this.data = data;
     },
   },

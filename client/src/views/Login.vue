@@ -122,7 +122,7 @@ export default {
             passwort: this.passwort,
           },
         });
-        console.log(data);
+        data;
         if (data.user.firmen_id != undefined) {
           await this.pushHistory(data);
         }

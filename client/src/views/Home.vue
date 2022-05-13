@@ -39,11 +39,13 @@
         </span>
         IN
       </h1>
-      <!-- <flip-countdown deadline="2022-03-22 " :showSeconds="false"></flip-countdown> -->
       <v-row class="display-1" style="font-size: 100px"
-        ><Countdown deadline="March 25, 2022" class="p-0 m-0"></Countdown
+        ><Countdown
+          id="countdown"
+          deadline="2022-08-21"
+          class="p-0 m-0"
+        ></Countdown
       ></v-row>
-      <!-- <Countdown date="August 15, 2016"></Countdown> -->
     </v-container>
     <v-container justify-center text-center>
       <v-row>
@@ -216,7 +218,7 @@
         <v-col cols="12" md="6" class="pr-10">
           <div>
             <p style="font-size:26px">
-              2020 Rekord
+              Rückblick 2022
             </p>
             <p>
               55 Unternehmen/Ausbildungseinrichtungen nutzten die Gelegenheit
@@ -259,9 +261,8 @@
 </template>
 
 <script>
-// import FlipCountdown from 'vue2-flip-countdown';
 import Countdown from 'vuejs-countdown';
-// import Countdown from '@/components/Countdown.vue';
+import axios from 'axios';
 
 export default {
   props: {
@@ -271,8 +272,14 @@ export default {
   },
   created() {
     this.getUser();
+    this.getKarrieretagDaten();
+  },
+  mounted() {
+    // document.querySelector('#countdown').__vue__.end= '2022-05-22'
   },
   data: () => ({
+    countdown: null,
+    karrieretagDaten: [],
     c1: [
       {
         image: 'images/KT2020-0.jpg',
@@ -338,6 +345,13 @@ export default {
       if (user != null) {
         this.user = user;
       }
+    },
+    async getKarrieretagDaten() {
+      const { data } = await axios({
+        url: '/karrieretagdata',
+        method: 'get',
+      });
+      this.karrieretagDaten = data;
     },
   },
 

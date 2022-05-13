@@ -117,7 +117,7 @@
                   </td>
                   <td align="left">{{ item.firmen_name }}</td>
                   <td>{{ item.firmen_mail }}</td>
-                  <td>{{ item.anfrage_zeitpunkt.substring(0, 10) }}</td>
+                  <td>{{ new Date(item.anfrage_zeitpunkt.substring(0, 10)).toLocaleDateString() }}</td>
                   <td v-if="item.status == 'Anfrage'">
                     <v-chip color="primary" dark small>{{
                       item.status

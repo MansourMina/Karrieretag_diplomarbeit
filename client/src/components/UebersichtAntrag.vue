@@ -55,7 +55,7 @@
         mdi-clock
       </v-icon>
       <span class="text-caption grey--text font-weight-light"
-        >Zuletzt am {{ lastRequest }}</span
+        >Zuletzt am {{ new Date(lastRequest).toLocaleDateString() }}</span
       >
     </v-card-text>
   </v-card>

@@ -4,79 +4,173 @@
       <h2 class="text-center text-uppercase font-weight-light ">
         Tragen Sie einen Vortrag ein
       </h2>
+      <v-btn
+        @click="eintragDialog = true"
+        class="mt-5 red--text text--darken-4"
+        outlined
+        >Neuer Vortrag</v-btn
+      >
     </header>
-    <v-form>
-      <div class="container">
-        <v-row>
-          <v-col cols="12" md="3">
-            <v-select
-              label="Firmen auswahl"
-              :items="Firmen.map((el) => el.firmen_name)"
-              v-model="firma"
-              required
-              prepend-inner-icon="mdi-domain"
-            ></v-select>
-          </v-col>
-          <v-col cols="12" md="3">
-            <v-text-field
-              v-model="vortragender"
-              label="Name des Vortragenden"
-              prepend-inner-icon="mdi-account-tie-voice"
-            >
-            </v-text-field>
-          </v-col>
-          <v-col cols="12" md="3">
-            <v-select
-              label="Fachrichtung"
-              :items="[
-                Firmen.filter((el) => el.firmen_name == firma)[0].fachrichtung,
-              ]"
-              v-model="fachrichtung"
-              required
-              prepend-inner-icon="mdi-lan"
-            ></v-select>
-          </v-col>
-
-          <v-col cols="12" md="3">
-            <v-select
-              v-if="fachrichtung != 'Maschinenbau'"
-              v-model="uhrzeit"
-              :items="uhrzeitAuswahlITE"
-              label="Uhrzeit"
-              prepend-inner-icon="mdi-alarm"
-            ></v-select>
-            <v-select
-              v-if="fachrichtung == 'Maschinenbau'"
-              v-model="uhrzeit"
-              :items="uhrzeitAuswahlM"
-              label="Uhrzeit"
-              prepend-inner-icon="mdi-alarm"
-            ></v-select>
-          </v-col>
-        </v-row>
-        <v-btn @click="postVortrag()" outlined>Eintragen</v-btn>
-      </div>
-    </v-form>
     <div class="text-center">
-      <v-row class="fill-height">
-        <v-col>
-          <v-sheet>
-            <v-calendar
-              ref="calendar"
-              first-interval="23"
-              interval-count="20"
-              interval-minutes="20"
-              v-model="value"
-              :events="events"
-              :value="today"
-              :event-color="getEventColor"
-              color="warning"
-              type="day"
+      <v-dialog v-model="eintragDialog" width="500">
+        <v-card>
+          <v-card-title class="red darken-4 white--text font-weight-medium"
+            >Vortrags Daten</v-card-title
+          >
+          <v-form ref="form" v-model="valid">
+            <div class="container">
+              <v-select
+                label="Firmen auswahl"
+                :items="
+                  this.alleFirmen
+                    .filter(
+                      (el) =>
+                        !this.alleVorträge
+                          .map((element) => element.firmen_id)
+                          .includes(el.firmen_id),
+                    )
+                    .map((el) => el.firmen_name)
+                "
+                v-model="firma"
+                required
+                :rules="requiredRule"
+                prepend-inner-icon="mdi-domain"
+              ></v-select>
+
+              <v-select
+                required
+                prepend-inner-icon="mdi-lan"
+                :items="
+                  firma.length > 0
+                    ? alleFirmen
+                        .find((el) => el.firmen_name == firma)
+                        .fachrichtung.split(',')
+                    : []
+                "
+                v-model="fachrichtung"
+                :rules="requiredRule"
+                label="Fachrichtung"
+              >
+              </v-select>
+
+              <v-select
+                v-model="uhrzeit"
+                :items="uhrzeitAuswahl"
+                label="Uhrzeit"
+                :rules="requiredRule"
+                prepend-inner-icon="mdi-alarm"
+              ></v-select>
+              <v-card-actions class="text-center">
+                <v-btn
+                  class="mx-auto red darken-4 white--text"
+                  @click="postVortrag()"
+                  :disabled="!valid"
+                  >Eintragen</v-btn
+                >
+              </v-card-actions>
+            </div>
+          </v-form>
+        </v-card>
+      </v-dialog>
+    </div>
+    <div class="text-center wegdamit">
+      <v-calendar
+        ref="calendar"
+        first-interval="23"
+        interval-count="20"
+        interval-minutes="20"
+        v-model="value"
+        :events="events"
+        interval-height="50"
+        :event-height="25"
+        :value="today"
+        :event-color="getEventColor"
+        @contextmenu:event="showEvent"
+        color="warning"
+        type="day"
+        class="wegdamit"
+      >
+        <template v-slot:day-body="{ date }">
+          <div
+            class="v-current-time"
+            :class="{ first: date === date }"
+            :style="{ top: nowY }"
+            v-if="date < nowY"
+          ></div>
+        </template>
+        <template v-slot:event="{ event }">
+          <div>
+            {{ event.name }}{{ event.start.substring(11, 16) }} -
+            {{ event.end.substring(11, 16) }}
+          </div>
+        </template>
+      </v-calendar>
+      <v-menu
+        v-model="showMenu"
+        :position-x="x"
+        :position-y="y"
+        absolute
+        offset-y
+        style="max-width: 600px"
+      >
+        <v-list>
+          <v-list-item @click="editDialog = true">
+            <v-list-item-title>
+              <v-icon>mdi-pencil</v-icon> Vortrag bearbeiten</v-list-item-title
             >
-            </v-calendar>
-          </v-sheet>
-        </v-col>
-      </v-row>
+          </v-list-item>
+          <v-list-item @click="deleteItem">
+            <v-list-item-title>
+              <v-icon>mdi-delete</v-icon> Vortrag löschen</v-list-item-title
+            >
+          </v-list-item>
+        </v-list>
+      </v-menu>
+      <v-dialog max-width="500" v-model="editDialog">
+        <template v-slot:default="dialog">
+          <v-card>
+            <v-row class="pa-0 ma-0">
+              <v-toolbar color="red darken-4" dark class="text-h6">{{
+                selectedItem.name.split(' | ')[0]
+              }}</v-toolbar>
+              <v-col cols="12">
+                <v-card-title>
+                  Aktuelle Zeit: {{ selectedItem.start.substring(10, 16) }} Uhr
+                  - {{ selectedItem.end.substring(10, 16) }} Uhr
+                </v-card-title>
+              </v-col>
+
+              <v-col cols="12">
+                <v-select
+                  label="Neue Vortrags Zeit"
+                  class="container"
+                  v-model="neueVortragszeit"
+                  :items="uhrzeitAuswahl"
+                ></v-select>
+              </v-col>
+              <v-card-actions class="justify-end">
+                <v-btn
+                  medium
+                  text
+                  color="teal"
+                  class="ml-3"
+                  @click="(dialog.value = false), patchUhrzeit(selectedItem)"
+                  >Speichern</v-btn
+                >
+                <v-spacer></v-spacer>
+                <v-btn
+                  medium
+                  text
+                  color="red darken-4"
+                  class="mr-3"
+                  @click="dialog.value = false"
+                  >Close</v-btn
+                >
+              </v-card-actions>
+            </v-row>
+          </v-card>
+        </template>
+      </v-dialog>
     </div>
   </v-container>
 </template>
@@ -85,16 +179,18 @@
 import axios from 'axios';
 export default {
   data: () => ({
+    editDialog: false,
+    ready: false,
+    selectedItem: '',
+    eintragDialog: false,
+    valid: true,
     value: '',
-    firma: 'Topicblab',
-    dieFachrichtung: [],
-    alleVortraege: [],
-    vortragender: '',
+    firma: '',
     today: new Date().toISOString().slice(0, 10),
-    anfang: '08:00',
+    anfang: '',
     ende: '',
-    uhrzeit: '08:00 - 08:10',
-    uhrzeitAuswahlITE: [
+    uhrzeit: '',
+    uhrzeitAuswahl: [
       '08:00 - 08:10',
       '08:10 - 08:20',
       '08:20 - 08:30',
@@ -103,81 +199,109 @@ export default {
       '08:50 - 09:00',
       '09:00 - 09:10',
       '09:10 - 09:20',
+      '09:20 - 09:30',
       '09:30 - 09:40',
+      '09:40 - 09:50',
       '09:50 - 10:00',
       '10:00 - 10:10',
+      '10:10 - 10:20',
       '10:20 - 10:30',
       '10:30 - 10:40',
       '10:40 - 10:50',
       '10:50 - 11:00',
       '11:00 - 11:10',
+      '11:10 - 11:20',
       '11:20 - 11:30',
       '11:30 - 11:40',
       '11:40 - 11:50',
       '11:50 - 12:00',
       '12:00 - 12:10',
+      '12:10 - 12:20',
       '12:20 - 12:30',
       '12:30 - 12:40',
       '12:40 - 12:50',
       '12:50 - 13:00',
       '13:00 - 13:10',
+      '13:10 - 13:20',
       '13:20 - 13:30',
       '13:30 - 13:40',
       '13:40 - 13:50',
       '13:50 - 14:00',
     ],
-    uhrzeitAuswahlM: [
-      '08:00 - 08:15',
-      '08:15 - 08:30',
-      '08:30 - 08:45',
-      '08:45 - 09:00',
-      '09:00 - 09:15',
-      '09:15 - 09:30',
-      '09:30 - 09:45',
-      '10:00 - 10:15',
-      '10:15 - 10:30',
-      '10:30 - 10:45',
-      '10:45 - 11:00',
-      '11:00 - 11:15',
-      '11:15 - 11:30',
-      '11:30 - 11:45',
-      '11:45 - 12:00',
-      '12:00 - 12:15',
-      '12:15 - 12:30',
-      '12:30 - 12:45',
-      '12:45 - 12:00',
-      '13:00 - 13:15',
-      '13:15 - 13:30',
-      '13:30 - 13:45',
-      '13:45 - 14:00',
-    ],
+    neueVortragszeit: '',
     events: [],
     fachrichtung: '',
-    Firmen: [],
+    alleFirmen: [],
     alleVorträge: [],
+    neuerAnfang: [],
+    neuesEnde: [],
+    selects: [],
+    clickedEvent: null,
+    showMenu: false,
+    x: 0,
+    y: 0,
+    requiredRule: [(v) => !!v || 'This field is required.'],
   }),
+
   async created() {
-    await this.fetchData();
+    this.sortUhrzeiten();
     await this.getFirmenNamen();
-    console.log('CREATED', this.events);
+    await this.fetchData();
+  },
+  mounted() {
+    this.ready = true;
+    this.scrollToTime();
+    this.updateTime();
   },
 
   methods: {
+    sortUhrzeiten() {
+      this.uhrzeitAuswahl.sort();
+    },
+    showEvent({ nativeEvent, event }) {
+      nativeEvent.preventDefault();
+      this.showMenu = false;
+      this.x = nativeEvent.clientX;
+      this.y = nativeEvent.clientY;
+      this.clickedEvent = event;
+      this.selectedItem = this.clickedEvent;
+      this.$nextTick(() => {
+        this.showMenu = true;
+      });
+    },
+
+    async deleteItem() {
+      const alteUhrzeit = `${this.clickedEvent.start.substring(
+        11,
+        16,
+      )} - ${this.clickedEvent.end.substring(11, 16)}`;
+      await axios({
+        url: '/vortrag/' + this.clickedEvent.vortrag_id,
+        method: 'DELETE',
+      });
+      this.uhrzeitAuswahl.push(alteUhrzeit);
+      this.sortUhrzeiten();
+      this.fetchData();
+    },
     toTimestamp(strDate) {
       var datum = Date.parse(strDate);
       return datum / 1000;
     },
 
     getEventColor(event) {
-      switch (event.fachrichtung) {
-        case 'Informationstechnologie':
-          return 'red';
-        case 'Elektrotechnik':
-          return 'indigo darken-1';
-        case 'Maschinenbau':
-          return 'teal';
-        default:
-          break;
+      if (event.end.substring(11, 19) < this.getHoursandMinutes) {
+        return 'grey darken-3 ';
+      } else {
+        switch (event.fachrichtung) {
+          case 'IT':
+            return 'red';
+          case 'E/ET':
+            return 'indigo darken-1';
+          case 'Maschinenbau':
+            return 'teal';
+          default:
+            break;
+        }
       }
     },
 
@@ -186,9 +310,7 @@ export default {
         url: '/firma',
         method: 'GET',
       });
-      this.firma = data[0].firmen_name;
-
-      this.Firmen = data;
+      this.alleFirmen = data;
     },
 
     async fetchData() {
@@ -196,41 +318,38 @@ export default {
         url: '/vortrag',
         method: 'GET',
       });
+      this.alleVorträge = [];
+
       data.forEach((el) =>
         this.alleVorträge.push({
           uhrzeit: `${el.anfangvortrag.substring(
             0,
             5,
           )} - ${el.endevortrag.substring(0, 5)}`,
-          vortragender: el.vortragender,
           fachrichtung: el.fachrichtung,
-          firma: el.firmen_id,
+          firmen_id: el.firmen_id,
           vortrag_id: el.vortrag_id,
         }),
       );
 
-      data.forEach((el) =>
+      this.events = [];
+
+      data.forEach((element) =>
         this.events.push({
           name:
             'Firmen Name: ' +
-            el.firmen_id +
-            ' Fachrichtung: ' +
-            el.fachrichtung +
-            ' ein Vortrag von: ' +
-            el.vortragender,
-          fachrichtung: el.fachrichtung,
-          start: `${this.today} ${el.anfangvortrag}`,
-          end: `${this.today} ${el.endevortrag}`,
+            this.alleFirmen.find((el) => el.firmen_id == element.firmen_id)
+              .firmen_name +
+            ' | Fachrichtung: ' +
+            element.fachrichtung +
+            ' | ',
+          fachrichtung: element.fachrichtung,
+          start: `${this.today} ${element.anfangvortrag}`,
+          end: `${this.today} ${element.endevortrag}`,
+          vortrag_id: element.vortrag_id,
         }),
       );
-
-      console.log(this.events);
-
-      this.uhrzeitAuswahlITE = this.uhrzeitAuswahlITE.filter(
-        (el) => !this.alleVorträge.map((el) => el.uhrzeit).includes(el),
-      );
-
-      this.uhrzeitAuswahlM = this.uhrzeitAuswahlM.filter(
+      this.uhrzeitAuswahl = this.uhrzeitAuswahl.filter(
         (el) => !this.alleVorträge.map((el) => el.uhrzeit).includes(el),
       );
     },
@@ -238,66 +357,100 @@ export default {
     async postVortrag() {
       this.anfang = this.uhrzeit.substr(0, 5);
       this.ende = this.uhrzeit.substr(8, 10);
-      const firmen_id = this.Firmen.filter(
-        (el) => (el.firmen_name = this.firma),
-      )[0].firmen_id;
       await axios({
         url: '/vortrag',
         method: 'POST',
         data: {
           anfangvortrag: this.anfang,
-          vortragender: this.vortragender,
-          firmen_id: firmen_id,
+          firmen_id: this.alleFirmen.find((el) => el.firmen_name == this.firma)
+            .firmen_id,
           fachrichtung: this.fachrichtung,
           endevortrag: this.ende,
         },
       });
-
+      this.fetchData();
+      this.eintragDialog = false;
       (this.anfang = ''),
-        (this.vortragender = ''),
         (this.fachrichtung = ''),
         (this.ende = ''),
-        (this.uhrzeit = '');
+        (this.uhrzeit = ''),
+        (this.firma = '');
+      this.$refs.form.resetValidation();
+    },
+
+    async patchUhrzeit(element) {
+      const alteUhrzeit = `${element.start.substring(
+        11,
+        16,
+      )} - ${element.end.substring(11, 16)}`;
+      await axios({
+        url: '/vortrag/' + element.vortrag_id,
+        method: 'patch',
+        contentType: 'application/json',
+        data: {
+          anfangvortrag: this.neueVortragszeit.substring(0, 5),
+          endevortrag: this.neueVortragszeit.substring(8, 13),
+        },
+      });
+      this.uhrzeitAuswahl.push(alteUhrzeit);
+      this.sortUhrzeiten();
       this.fetchData();
+    },
+    getCurrentTime() {
+      return this.cal
+        ? this.cal.times.now.hour * 60 + this.cal.times.now.minute
+        : 0;
+    },
+    scrollToTime() {
+      const time = this.getCurrentTime();
+      const first = Math.max(0, time - (time % 30) - 30);
+
+      this.cal.scrollToTime(first);
+    },
+    updateTime() {
+      setInterval(() => this.cal.updateTimes(), 60 * 1000);
+    },
+  },
+  computed: {
+    cal() {
+      return this.ready ? this.$refs.calendar : null;
+    },
+    nowY() {
+      return this.cal ? this.cal.timeToY(this.cal.times.now) + 'px' : '-10px';
+    },
+    getHoursandMinutes() {
+      var today = new Date();
+      return (
+        today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds()
+      );
     },
   },
 };
 </script>
 
-//
 <style lang="scss" scoped>
-.v-event-draggable {
-  padding-left: 6px;
-}
-
-.v-event-timed {
-  user-select: none;
-  -webkit-user-select: none;
-}
-
-.v-event-drag-bottom {
+.v-current-time {
+  height: 2px;
+  background-color: black;
   position: absolute;
-  left: 0;
+  left: -1px;
   right: 0;
-  bottom: 4px;
-  height: 4px;
-  cursor: ns-resize;
-
-  &::after {
-    display: none;
-    position: absolute;
-    left: 50%;
-    height: 4px;
-    border-top: 1px solid white;
-    border-bottom: 1px solid white;
-    width: 16px;
-    margin-left: -8px;
-    opacity: 0.8;
+  pointer-events: none;
+  &.first::before {
     content: '';
+    position: absolute;
+    background-color: #8b0000;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-top: -5px;
+    margin-left: -6.5px;
   }
+}
 
-  &:hover::after {
-    display: block;
-  }
+.wegdamit {
+  overflow: hidden;
+  overflow-y: hidden;
+  overflow-x: hidden;
 }
 </style>

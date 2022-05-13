@@ -25,7 +25,7 @@
         </v-row>
         <v-row :style="toPdf ? 'margin-top:100px' : ''">
           <v-col cols="7">
-            <h3 class="font-weight-bold">Karrieretag 2022</h3>
+            <h3 class="font-weight-bold">Karrieretag {{ getYear }}</h3>
             <h5 class="font-weight-light">HTL Wien West</h5>
           </v-col>
           <v-col cols="5" v-if="toPdf">
@@ -122,7 +122,9 @@ export default {
     toPdf: {
       type: Boolean,
     },
-    
+    karrieretagDaten: {
+      type: Object,
+    },
   },
   data() {
     return {
@@ -197,6 +199,13 @@ export default {
     };
   },
   computed: {
+    getYear() {
+      if (this.karrieretagDaten) {
+        const date = new Date(this.karrieretagDaten.datum);
+        return `${date.getFullYear()}`;
+      }
+      return 'N/A'
+    },
     nurTeilnehmer() {
       return this.antraege.filter(
         (el) => el.status == 'Teilnehmer' || el.status == 'teilnehmer',

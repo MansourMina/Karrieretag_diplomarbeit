@@ -43,7 +43,7 @@
           <v-subheader class="px-0">Event Title</v-subheader>
         </v-col>
         <v-col cols="10">
-          <v-text-field solo readonly v-model="eventTitle"></v-text-field>
+          <v-text-field solo readonly v-model="getYear"></v-text-field>
         </v-col>
       </v-row>
       <v-row class="mt-0">
@@ -51,12 +51,7 @@
           <v-subheader class="px-0">Date of Event</v-subheader>
         </v-col>
         <v-col cols="8" md="3">
-          <v-text-field
-            solo
-            dense
-            readonly
-            v-model="dateOfEvent"
-          ></v-text-field>
+          <v-text-field solo dense readonly v-model="getDatum"></v-text-field>
         </v-col>
         <v-col cols="4" offset-md="1" md="2" style="margin-right: -60px">
           <v-subheader class="px-0">Event Location</v-subheader>
@@ -312,6 +307,12 @@ export default {
   created() {
     this.getUser();
   },
+  props: {
+    karrieretagDaten: {
+      type: Object,
+    },
+  },
+
   methods: {
     getUser() {
       let user = JSON.parse(localStorage.getItem('user'));
@@ -319,6 +320,18 @@ export default {
         this.user = user;
         this.firmen_id = user.user.firmen_id;
       }
+    },
+    async pushHistory() {
+      await axios({
+        url: '/activities',
+        method: 'POST',
+        contentType: 'application/json',
+        data: {
+          type: 'Feedback',
+          time: new Date(),
+          firmen_id: this.firmen_id,
+        },
+      });
     },
     async absenden() {
       if (this.getProgress == 100) {
@@ -345,10 +358,35 @@ export default {
         this.checkFeedback = true;
         this.user.checkFeedback = true;
         localStorage.setItem('user', JSON.stringify(this.user));
+        this.pushHistory();
       }
     },
   },
   computed: {
+    getDatum() {
+      const months = [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December',
+      ];
+      const date = new Date(this.karrieretagDaten.datum);
+      return `${
+        months[date.getMonth()]
+      } ${date.getDate()}, ${date.getFullYear()}`;
+    },
+    getYear() {
+      const date = new Date(this.karrieretagDaten.datum);
+      return this.eventTitle + `${date.getFullYear()}`;
+    },
     getProgress() {
       const toBeFilled = [
         this.dauer,
@@ -394,8 +432,8 @@ export default {
       organisiert: '',
       kommunikation: '',
       number: 0,
-      eventTitle: 'Karrieretag der HTL Wien West 2022',
-      dateOfEvent: 'April 21, 2022',
+      eventTitle: 'Karrieretag der HTL Wien West ',
+      dateEvent: '',
       eventLocation: 'Thaliastraße 125, 1160 Wien',
       satisfactionEmojis: ['😁', '😃', '🙂', '😕', '🙁'],
       slider: 45,

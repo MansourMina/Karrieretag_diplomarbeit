@@ -169,23 +169,55 @@
             </v-list>
             <v-divider dark></v-divider>
 
-            <v-list-item
-              v-if="user.admin"
-              dense
-              link
-              @click="generateReport"
-              :disabled="
-                antraege.filter((el) => el.status == 'Teilnehmer').length == 0
-              "
-            >
-              <v-list-item-icon>
-                <v-icon>mdi-chart-timeline</v-icon>
-              </v-list-item-icon>
+            <div v-if="user.admin">
+              <v-list nav dense>
+                <v-list-item
+                  dense
+                  link
+                  active-class="red darken-4 white--text"
+                  to="/overview"
+                  :disabled="
+                    antraege.filter((el) => el.status == 'Teilnehmer').length ==
+                      0
+                  "
+                >
+                  <v-list-item-icon>
+                    <v-icon>mdi-inbox-full</v-icon>
+                  </v-list-item-icon>
 
-              <v-list-item-content>
-                <v-list-item-title>Report erstellen</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
+                  <v-list-item-content>
+                    <v-list-item-title>Teilnehmer Übersicht</v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list>
+              <v-list-item
+                dense
+                link
+                exact
+                @click="generateReport"
+                :disabled="
+                  antraege.filter((el) => el.status == 'Teilnehmer').length == 0
+                "
+              >
+                <v-list-item-icon>
+                  <v-icon>mdi-chart-timeline</v-icon>
+                </v-list-item-icon>
+
+                <v-list-item-content>
+                  <v-list-item-title>Report erstellen</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+
+              <v-list-item dense link @click="dialogKarrieretagEintrag = true">
+                <v-list-item-icon>
+                  <v-icon>mdi-autorenew</v-icon>
+                </v-list-item-icon>
+
+                <v-list-item-content>
+                  <v-list-item-title>Neuen Karrieretag</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </div>
             <v-list-item dense link @click.stop="showDialog = true">
               <v-list-item-icon>
                 <v-icon>mdi-account-multiple-remove</v-icon>
@@ -208,6 +240,10 @@
           height="6"
         ></v-progress-linear>
       </v-dialog>
+      <NeuerKarrieretagEintrag
+        :dialog="dialogKarrieretagEintrag"
+        @closeDialog="dialogKarrieretagEintrag = false"
+      />
 
       <v-main hide-overlay id="main">
         <router-view
@@ -219,6 +255,7 @@
           :antraege="antraege"
           :activities="activities"
           @sendmail="sendmail"
+          :karrieretagDaten="karrieretagDaten"
         />
         <Footer />
       </v-main>
@@ -239,7 +276,11 @@
       @beforeDownload="beforeDownload($event)"
     >
       <section slot="pdf-content">
-        <PDFContent :antraege="antraege" :toPdf="true" />
+        <PDFContent
+          :antraege="antraege"
+          :toPdf="true"
+          :karrieretagDaten="karrieretagDaten"
+        />
       </section>
     </VueHtml2pdf>
   </v-app>
@@ -247,6 +288,7 @@
 
 <script>
 import AskLogout from '@/components/AskLogout.vue';
+import NeuerKarrieretagEintrag from '@/components/NeuerKarrieretagEintrag.vue';
 import PDFContent from '@/components/PDFContent.vue';
 import Footer from '@/components/Footer.vue';
 import VueHtml2pdf from 'vue-html2pdf';
@@ -259,13 +301,15 @@ export default {
     Footer,
     VueHtml2pdf,
     PDFContent,
+    NeuerKarrieretagEintrag,
   },
   created() {
+    this.getUser();
     this.getAntraege();
     this.getActivities();
     window.addEventListener('scroll', this.animateProgressBar);
 
-    this.getUser();
+    this.getKarrieretagData();
     // const storageLogin = JSON.parse(localStorage.getItem('loginBleiben'));
 
     // if (performance.navigation.type == performance.navigation.TYPE_RELOAD) {
@@ -294,6 +338,7 @@ export default {
     value: 0,
     query: false,
     show: true,
+    karrieretagDaten: {},
     formular: true,
     interval: 0,
     infoId: '',
@@ -303,6 +348,7 @@ export default {
     showDialog: false,
     antraege: [],
     activities: [],
+    dialogKarrieretagEintrag: false,
     extraItems: [
       {
         name: 'Formular',
@@ -500,6 +546,11 @@ export default {
         method: 'GET',
       });
       this.activities = data;
+    },
+
+    async getKarrieretagData() {
+      const { data } = await axios.get('/karrieretagdata');
+      this.karrieretagDaten = data;
     },
   },
 };

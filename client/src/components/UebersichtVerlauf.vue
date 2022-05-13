@@ -26,7 +26,15 @@
               dark
               >mdi-clipboard-text</v-icon
             >
-            <v-icon v-else class="blue" dark>mdi-gesture-tap-button</v-icon>
+            <v-icon
+              v-else-if="h.type == 'login' || h.type == 'Login'"
+              class="blue"
+              dark
+              >mdi-gesture-tap-button</v-icon
+            >
+            <v-icon v-else class="green" dark
+              >mdi-thumbs-up-down-outline</v-icon
+            >
           </v-list-item-avatar>
 
           <v-list-item-content>
@@ -35,11 +43,13 @@
 
           <v-list-item-action>
             <v-list-item-subtitle v-if="h.type == 'login' || h.type == 'Login'"
-              >Das erste Mal Angemeldet</v-list-item-subtitle
+              >das erste Mal angemeldet
+            </v-list-item-subtitle>
+            <v-list-item-subtitle
+              v-else-if="h.type == 'formular' || h.type == 'Formular'"
+              >Formualar ausgefüllt</v-list-item-subtitle
             >
-            <v-list-item-subtitle v-else
-              >Formular ausgefüllt</v-list-item-subtitle
-            >
+            <v-list-item-subtitle v-else>Feedback gegeben</v-list-item-subtitle>
           </v-list-item-action>
         </v-list-item>
       </v-list>
@@ -53,7 +63,7 @@
         mdi-clock
       </v-icon>
       <span class="text-caption grey--text font-weight-light"
-        >Zuletzt am {{ lastRequest }}</span
+        >Zuletzt am {{ new Date(lastRequest).toLocaleDateString() }}</span
       >
     </v-card-text>
   </v-card>

@@ -44,10 +44,10 @@
                   firma.length > 0
                     ? alleFirmen
                         .find((el) => el.firmen_name == firma)
-                        .fachrichtung.split(',')
+                        .vortrag_auswahl.split(',')
                     : []
                 "
-                v-model="fachrichtung"
+                v-model="vortrag_auswahl"
                 :rules="requiredRule"
                 label="Fachrichtung"
               >
@@ -79,7 +79,7 @@
         first-interval="23"
         interval-count="20"
         interval-minutes="20"
-        v-model="value"
+        v-model="today"
         :events="events"
         interval-height="50"
         :event-height="25"
@@ -88,7 +88,6 @@
         @contextmenu:event="showEvent"
         color="warning"
         type="day"
-        class="wegdamit"
       >
         <template v-slot:day-body="{ date }">
           <div
@@ -186,7 +185,6 @@ export default {
     valid: true,
     value: '',
     firma: '',
-    today: new Date().toISOString().slice(0, 10),
     anfang: '',
     ende: '',
     uhrzeit: '',
@@ -230,12 +228,13 @@ export default {
     ],
     neueVortragszeit: '',
     events: [],
-    fachrichtung: '',
+    vortrag_auswahl: '',
     alleFirmen: [],
     alleVorträge: [],
     neuerAnfang: [],
     neuesEnde: [],
     selects: [],
+
     clickedEvent: null,
     showMenu: false,
     x: 0,
@@ -253,7 +252,11 @@ export default {
     this.scrollToTime();
     this.updateTime();
   },
-
+  props: {
+    karrieretagDaten: {
+      type: Object,
+    },
+  },
   methods: {
     sortUhrzeiten() {
       this.uhrzeitAuswahl.sort();
@@ -289,16 +292,21 @@ export default {
     },
 
     getEventColor(event) {
-      if (event.end.substring(11, 19) < this.getHoursandMinutes) {
-        return 'grey darken-3 ';
+      if (
+        new Date().toLocaleDateString() ==
+        new Date(this.karrieretagDaten.datum).toLocaleDateString()
+      ) {
+        if (event.end.substring(11, 19) < this.getHoursandMinutes) {
+          return 'grey darken-3 ';
+        }
       } else {
-        switch (event.fachrichtung) {
+        switch (event.vortrag_auswahl) {
           case 'IT':
-            return 'red';
+            return 'red darken-4';
           case 'E/ET':
-            return 'indigo darken-1';
+            return 'indigo darken-4';
           case 'Maschinenbau':
-            return 'teal';
+            return 'teal darken-4';
           default:
             break;
         }
@@ -326,7 +334,7 @@ export default {
             0,
             5,
           )} - ${el.endevortrag.substring(0, 5)}`,
-          fachrichtung: el.fachrichtung,
+          vortrag_auswahl: el.fachrichtung,
           firmen_id: el.firmen_id,
           vortrag_id: el.vortrag_id,
         }),
@@ -341,9 +349,9 @@ export default {
             this.alleFirmen.find((el) => el.firmen_id == element.firmen_id)
               .firmen_name +
             ' | Fachrichtung: ' +
-            element.fachrichtung +
+            element.vortrag_auswahl +
             ' | ',
-          fachrichtung: element.fachrichtung,
+          vortrag_auswahl: element.vortrag_auswahl,
           start: `${this.today} ${element.anfangvortrag}`,
           end: `${this.today} ${element.endevortrag}`,
           vortrag_id: element.vortrag_id,
@@ -364,14 +372,14 @@ export default {
           anfangvortrag: this.anfang,
           firmen_id: this.alleFirmen.find((el) => el.firmen_name == this.firma)
             .firmen_id,
-          fachrichtung: this.fachrichtung,
+          fachrichtung: this.vortrag_auswahl,
           endevortrag: this.ende,
         },
       });
       this.fetchData();
       this.eintragDialog = false;
       (this.anfang = ''),
-        (this.fachrichtung = ''),
+        (this.vortrag_auswahl = ''),
         (this.ende = ''),
         (this.uhrzeit = ''),
         (this.firma = '');
@@ -412,6 +420,13 @@ export default {
     },
   },
   computed: {
+    today: {
+      get() {
+        return new Date(this.karrieretagDaten.datum).toISOString().slice(0, 10);
+      },
+      set() {},
+    },
+
     cal() {
       return this.ready ? this.$refs.calendar : null;
     },
@@ -446,11 +461,5 @@ export default {
     margin-top: -5px;
     margin-left: -6.5px;
   }
-}
-
-.wegdamit {
-  overflow: hidden;
-  overflow-y: hidden;
-  overflow-x: hidden;
 }
 </style>

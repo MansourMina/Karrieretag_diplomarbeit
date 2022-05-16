@@ -128,27 +128,30 @@ router.beforeEach(async (to, from, next) => {
     params: { pathMatch: to.path.split('/').slice(1) },
   };
   // Besucher darf nicht in
-  if (
-    (!isAuthenticated() || user == null) &&
-    (to.name == 'Dashboard' ||
+  if (!isAuthenticated() || user == null) {
+    if (
+      to.name == 'Dashboard' ||
       to.name == 'Vortrag' ||
       to.name == 'Aktivitäten' ||
       to.name == 'Daten' ||
       to.name == 'Anträge' ||
       to.name == 'Formular' ||
-      to.name == 'Feedback' ||
       to.name == 'Übersicht' ||
-      to.name == 'Feedback Admin')
-  ) {
-    next(notFound);
+      to.name == 'Feedback Admin'
+    ) {
+      next(notFound);
+    } else if (to.name == 'Feedback') {
+      if (isToday(new Date(karrieretagDate))) next({ name: 'Login' });
+      else next(notFound);
+    }
   }
-  // Admin darf nicht in
+
   if (user != null && isAuthenticated()) {
+    // Admin darf nicht in
     if (
       user.admin == true &&
       (to.name == 'Daten' ||
         to.name == 'Antrag' ||
-        to.name == 'Login' ||
         to.name == 'Formular' ||
         to.name == 'Feedback')
     ) {
@@ -162,12 +165,13 @@ router.beforeEach(async (to, from, next) => {
         to.name == 'Dashboard' ||
         to.name == 'Vortrag' ||
         to.name == 'Aktivitäten' ||
-        to.name == 'Login' ||
         to.name == 'Übersicht' ||
         to.name == 'Feedback Admin' ||
         (to.name == 'Feedback' && !isToday(new Date(karrieretagDate))))
     ) {
       next(notFound);
+    } else if (to.name == 'Login') {
+      next({ name: 'Home' });
     }
     next();
   }

@@ -1,5 +1,5 @@
 <template>
-  <div >
+  <div v-if="loaded">
     <Doughnut
       :chart-options="chartOptions"
       :chart-data="chartData"
@@ -16,7 +16,7 @@
 
 <script>
 import { Doughnut } from 'vue-chartjs/legacy';
-
+import axios from 'axios';
 import {
   Chart as ChartJS,
   Title,
@@ -48,7 +48,7 @@ export default {
     },
     height: {
       type: Number,
-      default: 350,
+      default: 290,
     },
     cssClasses: {
       default: '',
@@ -63,8 +63,25 @@ export default {
       default: () => [],
     },
   },
+  async created() {
+    await this.getFeedbackData();
+    this.loaded = true;
+  },
+  methods: {
+    async getFeedbackData() {
+      const { data } = await axios({
+        url: '/feedbackdata',
+        method: 'GET',
+      });
+      data.dauer.forEach((el) => {
+        const labelIndex = this.chartData.labels.indexOf(el.dauer);
+        this.chartData.datasets[0].data[labelIndex] = Number(el.dauer_count);
+      });
+    },
+  },
   data() {
     return {
+      loaded: false,
       chartData: {
         labels: [
           'Viel zu lang',
@@ -82,7 +99,7 @@ export default {
               '#C8E6C9',
               '#F44336',
             ],
-            data: [40, 20, 80, 10, 20],
+            data: [0, 0, 0, 0, 0],
           },
         ],
       },

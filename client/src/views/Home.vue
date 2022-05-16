@@ -129,7 +129,7 @@
         <v-col cols="12" md="6" class="pr-10">
           <div>
             <p style="font-size:26px">
-              Karrieretag 2022
+              Karrieretag
             </p>
             <p>
               Die HTL Wien West veranstaltet einmal im Jahr einen Karrieretag
@@ -221,7 +221,7 @@
               Rückblick 2022
             </p>
             <p>
-              55 Unternehmen/Ausbildungseinrichtungen nutzten die Gelegenheit
+              60 Unternehmen/Ausbildungseinrichtungen nutzten die Gelegenheit
               und kamen an unsere Schule, um sich zu präsentieren. Das ist neuer
               Rekord!
             </p>

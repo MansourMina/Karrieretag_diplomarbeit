@@ -260,6 +260,7 @@
         <Footer />
       </v-main>
     </div>
+
     <VueHtml2pdf
       :show-layout="false"
       :float-layout="true"
@@ -337,6 +338,7 @@ export default {
     createPdf: false,
     value: 0,
     query: false,
+    pdf: null,
     show: true,
     karrieretagDaten: {},
     formular: true,
@@ -438,7 +440,7 @@ export default {
         .from(pdfContent)
         .toPdf()
         .get('pdf')
-        .then((pdf) => {
+        .then(async (pdf) => {
           const totalPages = pdf.internal.getNumberOfPages();
           for (let i = 1; i <= totalPages; i++) {
             pdf.setPage(i);

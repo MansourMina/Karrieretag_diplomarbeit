@@ -45,11 +45,11 @@ export default {
     },
     width: {
       type: Number,
-      default: 450,
+      default: 350,
     },
     height: {
       type: Number,
-      default: 310,
+      default: 190,
     },
     cssClasses: {
       default: '',
@@ -70,11 +70,14 @@ export default {
         url: '/feedbackdata',
         method: 'GET',
       });
-      data[2].forEach((el) =>
-        el.erneute_teilnahme == false
-          ? (this.chartData.datasets[0].data[0] = el.erneute_teilnahme_count)
-          : (this.chartData.datasets[0].data[1] = el.erneute_teilnahme_count),
-      );
+      data.erneuteTeilnahme.forEach((el) => {
+        const labelIndex = this.chartData.labels.indexOf(
+          el.erneute_teilnahme ? 'Ja' : 'Nein',
+        );
+        this.chartData.datasets[0].data[labelIndex] = Number(
+          el.erneute_teilnahme_count,
+        );
+      });
     },
   },
   async created() {

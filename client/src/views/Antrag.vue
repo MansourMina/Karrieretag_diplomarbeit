@@ -127,9 +127,10 @@
           </v-checkbox>
         </v-col>
       </v-row>
+
       <div
         class="g-recaptcha mt-5"
-        data-sitekey="6LfwE6QeAAAAAIuGxscEWSaOBmKb1wou8TY9_R6E"
+        :data-sitekey="dataSitekey"
         data-callback="verifyCaptcha"
       ></div>
       <span class="caption red--text font-weight-light">{{
@@ -137,7 +138,7 @@
       }}</span>
       <v-container class=" my-0 py-0" text-center justify-center>
         <h5 class="text--secondary mb-3">
-          <span @click="goToImpressum('datenschutz')">Datenschutz</span>
+          <a @click="goToImpressum('datenschutz')">Datenschutz</a>
         </h5>
         <v-btn
           rounded
@@ -186,6 +187,7 @@ export default {
     recaptcha_response: '',
     recaptcha_message: '',
     snackbar: false,
+    dataSitekey: process.env.VUE_APP_DATA_SITEKEY,
     checkbox: false,
     timeout: 5000,
     valid: false,

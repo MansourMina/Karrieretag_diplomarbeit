@@ -44,13 +44,14 @@ export default {
       loaded: false,
       teilnahmeProzessFeedback: [],
       kommunikationFeedback: [],
+      organisiertFeedback: [],
       chartData: {
         labels: [
-          '1 - Sehr gut',
-          '2 - Gut',
-          '3 - Zufriedenstellend',
-          '4 - Nicht gut',
-          '5 - Gar nicht gut',
+          'Sehr gut',
+          'Gut',
+          'Zufriedenstellend',
+          'Nicht gut',
+          'Gar nicht gut',
         ],
         datasets: [
           {
@@ -61,6 +62,11 @@ export default {
           {
             label: 'Teilnahme Prozess ',
             backgroundColor: '#0D47A1',
+            data: [0, 0, 0, 0, 0],
+          },
+          {
+            label: 'Organisation der Veranstaltung',
+            backgroundColor: '#1B5E20',
             data: [0, 0, 0, 0, 0],
           },
         ],
@@ -82,11 +88,11 @@ export default {
     },
     width: {
       type: Number,
-      default: 400,
+      default: 550,
     },
     height: {
       type: Number,
-      default: 400,
+      default: 550,
     },
     cssClasses: {
       default: '',
@@ -117,16 +123,29 @@ export default {
       const teilnahmeProzess = this.chartData.datasets
         .filter((el) => el.label.includes('Teilnahme'))
         .map((el) => el.data)[0];
+      const organisiert = this.chartData.datasets
+        .filter((el) => el.label.includes('Organisation'))
+        .map((el) => el.data)[0];
 
       this.kommunikationFeedback.forEach((el) => {
-        kommunikation[Number(el.kommunikation) - 1] = Number(
-          el.kommunikation_count,
+        const labelIndex = this.chartData.labels.indexOf(
+          this.convertLikeLabel(el.kommunikation),
         );
+
+        kommunikation[labelIndex] = Number(el.kommunikation_count);
       });
       this.teilnahmeProzessFeedback.forEach((el) => {
-        teilnahmeProzess[Number(el.teilnahme_prozess) - 1] = Number(
-          el.teilnahme_prozess_count,
+        const labelIndex = this.chartData.labels.indexOf(
+          this.convertLikeLabel(el.teilnahme_prozess),
         );
+
+        teilnahmeProzess[labelIndex] = Number(el.teilnahme_prozess_count);
+      });
+      this.organisiertFeedback.forEach((el) => {
+        const labelIndex = this.chartData.labels.indexOf(
+          this.convertLikeLabel(el.organisiert),
+        );
+        organisiert[labelIndex] = Number(el.organisiert_count);
       });
     },
     async getFeedbackData() {
@@ -134,8 +153,30 @@ export default {
         url: '/feedbackdata',
         method: 'GET',
       });
-      this.kommunikationFeedback = data[0];
-      this.teilnahmeProzessFeedback = data[1];
+      this.kommunikationFeedback = data.kommunikation;
+      this.teilnahmeProzessFeedback = data.teilnahmeProzess;
+      this.organisiertFeedback = data.organisiert;
+    },
+    convertLikeLabel(kategorie) {
+      switch (kategorie) {
+        case 1:
+        case 'Sehr gut organisiert':
+          return 'Sehr gut';
+        case 2:
+        case 'Sehr organisiert':
+          return 'Gut';
+        case 3:
+        case 'Etwas organisiert':
+          return 'Zufriedenstellend';
+        case 4:
+        case 'Nicht so organisiert':
+          return 'Nicht gut';
+        case 5:
+        case 'Überhaupt nicht organisiert':
+          return 'Gar nicht gut';
+        default:
+          return 'diesdas';
+      }
     },
   },
 };

@@ -77,7 +77,13 @@
           <p><i>No data available</i></p>
         </div>
       </v-card>
-      <v-card class="mx-0 my-5 ma-lg-10" min-height="500" v-else elevation="0" max>
+      <v-card
+        class="mx-0 my-5 ma-lg-10"
+        min-height="500"
+        v-else
+        elevation="0"
+        max
+      >
         <v-simple-table class="ma-5 ">
           <template v-slot:default>
             <thead>
@@ -117,7 +123,13 @@
                   </td>
                   <td align="left">{{ item.firmen_name }}</td>
                   <td>{{ item.firmen_mail }}</td>
-                  <td>{{ new Date(item.anfrage_zeitpunkt.substring(0, 10)).toLocaleDateString() }}</td>
+                  <td>
+                    {{
+                      new Date(
+                        item.anfrage_zeitpunkt.substring(0, 10),
+                      ).toLocaleDateString()
+                    }}
+                  </td>
                   <td v-if="item.status == 'Anfrage'">
                     <v-chip color="primary" dark small>{{
                       item.status
@@ -136,15 +148,37 @@
                   </td>
                   <td class="px-5">
                     <div v-if="item.status == 'Teilnehmer'">
-                      <v-btn
-                        icon
-                        @click="
-                          dialogData = true;
-                          selectedItem = item;
-                        "
-                      >
-                        <v-icon> mdi-menu</v-icon>
-                      </v-btn>
+                      <v-tooltip top>
+                        <template v-slot:activator="{ on }">
+                          <v-btn
+                            icon
+                            v-on="on"
+                            @click="
+                              dialogData = true;
+                              selectedItem = item;
+                            "
+                          >
+                            <v-icon> mdi-menu</v-icon>
+                          </v-btn>
+                        </template>
+                        <span>Details</span>
+                      </v-tooltip>
+                      <v-tooltip top v-if="item.buchhaltung_gesendet != true">
+                        <template v-slot:activator="{ on }">
+                          <v-btn
+                            icon
+                            class="ml-3"
+                            v-on="on"
+                            @click="
+                              firma = item;
+                              generateReport();
+                            "
+                          >
+                            <v-icon> mdi-book-open</v-icon>
+                          </v-btn>
+                        </template>
+                        <span>Buchhaltung senden</span>
+                      </v-tooltip>
                     </div>
                     <div
                       v-if="
@@ -153,37 +187,50 @@
                           item.status != 'Daten erhalten'
                       "
                     >
-                      <v-btn icon @click="seen(item)" v-if="!item.gesehen"
-                        ><v-icon color="black" dark small
-                          >mdi-eye</v-icon
-                        ></v-btn
-                      >
-                      <v-btn icon @click="changeStatus('Abgelehnt', item)">
-                        <v-icon color="red darken-4" small
-                          >mdi-archive-remove-outline</v-icon
-                        ></v-btn
-                      >
-                      <v-btn icon @click="changeStatus('Daten erhalten', item)"
-                        ><v-icon color="primary" dark small
-                          >mdi-email-check-outline</v-icon
-                        ></v-btn
-                      >
+                      <v-tooltip top>
+                        <template v-slot:activator="{ on }">
+                          <v-btn
+                            icon
+                            @click="seen(item)"
+                            v-if="!item.gesehen"
+                            v-on="on"
+                            ><v-icon color="black" dark small
+                              >mdi-eye</v-icon
+                            ></v-btn
+                          >
+                        </template>
+                        <span>Bestätigen</span>
+                      </v-tooltip>
+                      <v-tooltip top>
+                        <template v-slot:activator="{ on }">
+                          <v-btn
+                            v-on="on"
+                            icon
+                            @click="changeStatus('Abgelehnt', item)"
+                          >
+                            <v-icon color="red darken-4" small
+                              >mdi-archive-remove-outline</v-icon
+                            ></v-btn
+                          >
+                        </template>
+                        <span>Ablehnen</span>
+                      </v-tooltip>
+                      <v-tooltip top>
+                        <template v-slot:activator="{ on }">
+                          <v-btn
+                            v-on="on"
+                            icon
+                            @click="changeStatus('Daten erhalten', item)"
+                            ><v-icon color="primary" dark small
+                              >mdi-email-check-outline</v-icon
+                            ></v-btn
+                          >
+                        </template>
+                        <span>Annehmen</span>
+                      </v-tooltip>
                     </div>
                   </td>
                 </tr>
-                <!-- <tr
-                  v-if="opened.includes(item.firmen_id)"
-                  :key="item.firmen_id"
-                  class="pa-10"
-                >
-                  <td>Lorem Ipsum</td>
-                  <td>Lorem Ipsum!</td>
-                  <td>Lorem Ipsum!</td>
-                  <td>Lorem Ipsum!</td>
-                  <td>Lorem Ipsum!</td>
-                  <td>Lorem Ipsum!</td>
-                  <v-divider dark></v-divider>
-                </tr> -->
               </template>
             </tbody>
           </template>
@@ -203,11 +250,32 @@
         </v-btn>
       </template>
     </v-snackbar>
+    <VueHtml2pdf
+      :show-layout="false"
+      :float-layout="true"
+      :enable-download="false"
+      :preview-modal="true"
+      :paginate-elements-by-height="1100"
+      filename="Karrieretag 2022 Liste"
+      :pdf-quality="2"
+      :manual-pagination="true"
+      pdf-format="a4"
+      pdf-orientation="portrait"
+      pdf-content-width="100%"
+      ref="html2Pdf"
+      @hasDownloaded="hasDownloaded($event)"
+    >
+      <section slot="pdf-content">
+        <Contact />
+      </section>
+    </VueHtml2pdf>
   </v-container>
 </template>
 
 <script>
 import { bus } from '../main';
+import VueHtml2pdf from 'vue-html2pdf';
+import Contact from '@/views/Contact.vue';
 import axios from 'axios';
 import SendEmail from '@/components/SendEmail.vue';
 import ShowData from '@/components/ShowData.vue';
@@ -215,6 +283,8 @@ export default {
   components: {
     SendEmail,
     ShowData,
+    VueHtml2pdf,
+    Contact,
   },
   props: {
     antraege: {
@@ -239,6 +309,8 @@ export default {
       selectedItem: {},
       loaded: false,
       loading: true,
+      base64: null,
+      firma: {},
     };
   },
 
@@ -288,8 +360,43 @@ export default {
   },
 
   methods: {
+    async hasDownloaded(event) {
+      this.base64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(event);
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = (error) => reject(error);
+      });
+
+      this.sendEmailBuchhaltung();
+    },
+    generateReport() {
+      this.$refs.html2Pdf.generatePdf();
+    },
     passData() {
       bus.$emit('changeIt', this.selectedEmails);
+    },
+    async sendEmailBuchhaltung() {
+      await axios({
+        url: '/buchaltung',
+        method: 'POST',
+        contentType: 'application/json',
+        data: {
+          firma: this.firma,
+          file: `Karrieretag Rechnungsanschrift ${this.firma.firmen_name}`,
+          base64: this.base64,
+        },
+      });
+
+      this.message = `PDF der Rechnungsanschrift von Firma ${this.firma.firmen_name} gesendet`;
+      this.snackbarcolor = 'red darken-4';
+      this.color = 'white';
+      this.snackbar = true;
+
+      // weil das VueHtml2pdf ziemlich lange braucht
+      setTimeout(() => {
+        this.$emit('refreshAntraege');
+      }, 500);
     },
     async seen(item) {
       await axios({

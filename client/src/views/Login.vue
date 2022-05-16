@@ -122,7 +122,6 @@ export default {
             passwort: this.passwort,
           },
         });
-        data;
         if (data.user.firmen_id != undefined) {
           await this.pushHistory(data);
         }
@@ -133,6 +132,8 @@ export default {
         this.loginData = data;
         await this.$router.push('/');
         this.$router.go();
+
+        // Eingeloggt bleiben oder nicht
 
         // if (
         //   this.angemeldetBleiben == 'false' ||
@@ -150,7 +151,6 @@ export default {
         // }
       } catch (err) {
         this.showProgress = false;
-
         this.message = 'Wrong User ID or password';
       }
     },

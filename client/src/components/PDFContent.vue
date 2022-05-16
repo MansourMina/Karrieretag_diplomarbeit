@@ -1,7 +1,10 @@
 <template>
   <!-- eslint-disable -->
 
-  <v-container style="padding: 80px 80px 100px 80px">
+  <v-container
+    :style="toPdf ? 'padding: 80px 80px 100px 80px' : ''"
+    :class="!toPdf ? 'pa-md-16' : ''"
+  >
     <section slot="pdf-content">
       <section class="pdf-item">
         <v-row class="mb-15 pb-16" v-if="toPdf">
@@ -25,7 +28,7 @@
         </v-row>
         <v-row :style="toPdf ? 'margin-top:100px' : ''">
           <v-col cols="7">
-            <h3 class="font-weight-bold">Karrieretag {{ getYear }}</h3>
+            <h3 class="font-weight-bold">Karrieretag Teilnehmer</h3>
             <h5 class="font-weight-light">HTL Wien West</h5>
           </v-col>
           <v-col cols="5" v-if="toPdf">
@@ -45,7 +48,11 @@
               hide-default-footer
               class="elevation-0 "
               style="margin-top: 20px"
-            ></v-data-table>
+            >
+              <template v-slot:item.aufbauhilfe="{ item }">
+                {{ item.aufbauhilfe ? 'Ja' : 'Nein' }}
+              </template>
+            </v-data-table>
             <v-data-table
               v-else
               :headers="headers"
@@ -79,30 +86,38 @@
         </v-row>
         <v-row style="margin-top: 50px;">
           <v-col style="text-align:right; padding-bottom: 0" cols="12"
-            >Teilnehmende Firmen:
-            <span class="ml-10" style="margin-left: 10px">{{
+            ><b>Teilnehmende Firmen:</b>
+            <span class="ml-10" style="margin-left: 10px; font-weight:bold">{{
               nurTeilnehmer.length
             }}</span
             ><br
           /></v-col>
+
           <v-col style="text-align:right; padding-bottom: 0" cols="12"
             >Abgelehnte Firmen:
-            <span class="ml-10" style="margin-left: 10px">{{
+            <span class="ml-10" style="margin-left: 10px; font-weight:bold">{{
               nurAbgelehnt.length
             }}</span
             ><br
           /></v-col>
-          <v-col style="text-align:right;" cols="12"
+          <v-col style="text-align:right; padding-bottom: 0" cols="12"
             >Noch offen:
-            <span class="ml-10" style="margin-left: 10px">{{
+            <span class="ml-10" style="margin-left: 10px; font-weight:bold">{{
               nurOffen.length
+            }}</span
+            ><br
+          /></v-col>
+          <v-col style="text-align:right; " cols="12"
+            >Daten bereits erhalten:
+            <span class="ml-10" style="margin-left: 10px; font-weight:bold">{{
+              nurDatenErhalten.length
             }}</span
             ><br
           /></v-col>
           <v-divider dark></v-divider>
           <v-col style="text-align:right; padding-top: 1px" cols="12"
             ><b>Anfragen Gesamt:</b>
-            <span class="ml-10" style="margin-left: 10px">{{
+            <span class="ml-10" style="margin-left: 10px; font-weight:bold">{{
               antraege.length
             }}</span
             ><br
@@ -138,6 +153,7 @@ export default {
         {
           text: 'Mail',
           value: 'firmen_mail',
+          sortable: false,
         },
         { text: 'Platz', value: 'platz' },
 
@@ -154,31 +170,38 @@ export default {
         {
           text: 'Teilnehmer-Tel',
           value: 'ansprechpartner_teilnahme_tel',
+          sortable: false,
         },
         {
           text: 'Teilnehmer-Mail',
           value: 'ansprechpartner_teilnahme_mail',
+          sortable: false,
         },
 
         {
           text: 'Austellung-Tel',
           value: 'ansprechpartner_ausstellung_tel',
+          sortable: false,
         },
         {
           text: 'Austellung-Mail',
           value: 'ansprechpartner_ausstellung_mail',
+          sortable: false,
         },
         {
           text: 'Praktikum-Tel',
           value: 'tel_ferialpraktikum',
+          sortable: false,
         },
         {
           text: 'Praktikum-Mail',
           value: 'mail_ferialpraktikum',
+          sortable: false,
         },
         {
           text: 'Rechnung',
           value: 'rechnungsadresse',
+          sortable: false,
         },
         {
           text: 'Sponsoring',
@@ -204,7 +227,7 @@ export default {
         const date = new Date(this.karrieretagDaten.datum);
         return `${date.getFullYear()}`;
       }
-      return 'N/A'
+      return 'N/A';
     },
     nurTeilnehmer() {
       return this.antraege.filter(
@@ -219,6 +242,11 @@ export default {
     nurOffen() {
       return this.antraege.filter(
         (el) => el.status == 'Anfrage' || el.status == 'anfrage',
+      );
+    },
+    nurDatenErhalten() {
+      return this.antraege.filter(
+        (el) => el.status == 'Daten erhalten' || el.status == 'daten erhalten',
       );
     },
   },

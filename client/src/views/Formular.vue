@@ -25,7 +25,9 @@
             Mit freundlichen Grüßen <br />
             Ihr Karrieretag Team
             <br /><br />
-            Jetzt Daten anschauen
+            <a @click="$router.push('/daten')" class="red--text"
+              >Jetzt Daten anschauen</a
+            >
           </v-alert>
         </v-col>
       </v-row>
@@ -42,8 +44,9 @@
       <p>
         Hiermit melden wir uns verbindlich zum
         <b>HTL Wien West Karrieretag</b> an, welcher am
-        <b>Donnerstag den 21.04.2022</b> stattfinden wird. <br />Für die
-        Teilnahme wird eine Aufwandspauschale von <b>290€</b> berechnet.
+        <b>{{ new Date(karrieretagDaten.datum).toLocaleDateString() }}</b>
+        stattfinden wird. <br />Für die Teilnahme wird eine Aufwandspauschale
+        von <b>290€</b> berechnet.
       </p>
       <v-row class="mt-3">
         <v-col cols="12" md="5"
@@ -357,7 +360,11 @@ export default {
       comment: '',
     };
   },
-
+  props: {
+    karrieretagDaten: {
+      type: Object,
+    },
+  },
   created() {
     this.getUser();
   },

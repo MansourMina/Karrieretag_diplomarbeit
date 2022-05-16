@@ -209,7 +209,7 @@
           <v-list-group no-action color="red darken-4">
             <template v-slot:activator>
               <v-list-item-content>
-                <v-list-item-title>Login Prozess</v-list-item-title>
+                <v-list-item-title>Aktivitäten</v-list-item-title>
               </v-list-item-content>
             </template>
 
@@ -242,6 +242,20 @@
                   user.formular
                     ? 'Formular ausgefüllt'
                     : 'Formular nicht ausgefüllt'
+                }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item>
+              <v-icon
+                small
+                class="mr-5 mt-1"
+                :color="user.feedback ? 'green' : 'red'"
+                >mdi-form-select</v-icon
+              >
+
+              <v-list-item-content>
+                <v-list-item-title>{{
+                  user.feedback ? 'Feedback gegeben' : 'Kein Feedback gegeben'
                 }}</v-list-item-title>
               </v-list-item-content>
             </v-list-item>

@@ -82,11 +82,11 @@
                   :rotate="360"
                   :size="170"
                   :width="20"
-                  :value="feedbacks.length"
+                  :value="(feedbacks.length / 40) * 100"
                   color="red darken-4"
                 >
                   <h3>
-                    {{ feedbacks.length }}/25
+                    {{ feedbacks.length }}/{{ nurTeilnehmer.length }}
                     <!-- {{
                       antraege.filter((el) => el.status == 'Teilnehmer').length
                     }} -->
@@ -420,10 +420,10 @@
           <span class="text-h5">Firmen Feedbacks </span>
           <v-spacer></v-spacer>
           <v-select
-            v-model="value"
+            v-model="zufriedenheit"
             :items="['😁', '😃', '🙂', '😕', '🙁']"
             chips
-            label="Chips"
+            label="Zufriedenheit"
             multiple
             solo
             hide-details
@@ -648,10 +648,23 @@ export default {
     this.getAvgVotes();
   },
   computed: {
-    filterFeedbacks() {
-      return this.feedbacks.filter((el) =>
-        el.firmen_name.toLowerCase().includes(this.search.toLowerCase()),
+    nurTeilnehmer() {
+      return this.antraege.filter(
+        (el) => el.status == 'Teilnehmer' || el.status == 'teilnehmer',
       );
+    },
+    filterFeedbacks() {
+      if (this.zufriedenheit.length > 0) {
+        return this.feedbacks.filter(
+          (el) =>
+            el.firmen_name.toLowerCase().includes(this.search.toLowerCase()) &&
+            this.zufriedenheit.includes(el.gesamt_zufriedenheit),
+        );
+      } else {
+        return this.feedbacks.filter((el) =>
+          el.firmen_name.toLowerCase().includes(this.search.toLowerCase()),
+        );
+      }
     },
   },
   data: () => ({
@@ -664,6 +677,7 @@ export default {
     search: '',
     labels: ['12am', '3am', '6am', '9am', '12pm', '3pm', '6pm', '9pm'],
     value: [200, 675, 410, 390, 310, 460, 250, 240],
+    zufriedenheit: '',
   }),
 };
 </script>

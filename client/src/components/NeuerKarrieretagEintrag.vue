@@ -139,7 +139,7 @@ export default {
   },
   data() {
     return {
-      loading:false,
+      loading: false,
       activePicker: null,
       date: null,
       menu: false,
@@ -168,6 +168,13 @@ export default {
       this.message = `Neuer Karrieretag: ${data[0].datum}`;
       this.snackbar = true;
       this.$emit('closeDialog');
+    },
+    async deleteDataFromDatabase() {
+      const { data } = await axios({
+        url: '/firmen',
+        method: 'DELETE',
+      });
+      console.log(data);
     },
     save(date) {
       this.$refs.menu.save(date);

@@ -4,9 +4,15 @@
       <v-row>
         <v-col cols="12" md="1">Ihre URL:</v-col>
         <v-col cols="12" md="11">
-          <v-chip disabled href="http://www.htlwienwest.at" color="blue" pill>{{
-            data.url
-          }}</v-chip>
+          <a
+            :href="
+              data.url.includes('https://') || data.url.includes('http://')
+                ? data.url
+                : `http://${data.url}`
+            " target="_blank"
+          >
+            <v-chip disabled color="blue" pill>{{ data.url }}</v-chip>
+          </a>
         </v-col>
       </v-row>
       <v-row>
@@ -24,7 +30,7 @@
 
       <v-container class="py-0">
         <v-row class="mt-0">
-          <v-col cols="12" md="4">
+          <v-col cols="12" lg="4" md="6">
             <v-card-subtitle>
               Teilnahme
             </v-card-subtitle>
@@ -34,10 +40,13 @@
                 <v-chip disabled dark>{{
                   data.ansprechpartner_teilnahme_mail
                 }}</v-chip>
+                <v-chip disabled dark>{{
+                  data.ansprechpartner_teilnahme_tel
+                }}</v-chip>
               </v-chip-group>
             </v-card-text>
           </v-col>
-          <v-col cols="12" md="8">
+          <v-col cols="12" lg="8" md="6">
             <v-card-subtitle>
               Ausstellung
             </v-card-subtitle>
@@ -46,6 +55,9 @@
               <v-chip-group active-class="red accent-4 white--text" column>
                 <v-chip disabled dark>{{
                   data.ansprechpartner_ausstellung_mail
+                }}</v-chip>
+                <v-chip disabled dark>{{
+                  data.ansprechpartner_ausstellung_tel
                 }}</v-chip>
               </v-chip-group>
             </v-card-text>
@@ -175,7 +187,9 @@
                     >Informationstechnologie</v-chip
                   >
 
-                  <v-chip disabled :value="data.vortrag_auswahl.includes('E')"
+                  <v-chip
+                    disabled
+                    :value="data.vortrag_auswahl.includes('E/ET')"
                     >Elektrotechnik/Elektronik</v-chip
                   >
                   <v-chip
@@ -327,12 +341,18 @@ export default {
       } else localStorage.removeItem('user');
     },
     setParams() {
-      if (this.data.vortrag_auswahl != null) this.VortragYesNo = true;
+      if (this.data.vortrag_auswahl != null && this.data.vortrag_auswahl != '')
+        this.VortragYesNo = true;
       else this.VortragYesNo = false;
 
-      if (this.data.ferialpraktikum_auswahl != null) this.FerialYesNo = true;
+      if (
+        this.data.ferialpraktikum_auswahl != null &&
+        this.data.ferialpraktikum_auswahl != ''
+      )
+        this.FerialYesNo = true;
       else this.FerialYesNo = false;
-      if (this.data.fachrichtung != null) this.FachrichtungYesNo = true;
+      if (this.data.fachrichtung != null && this.data.fachrichtung != '')
+        this.FachrichtungYesNo = true;
       else this.FachrichtungYesNo = false;
     },
     async getFirma() {

@@ -443,6 +443,7 @@ export default {
         .then(async (pdf) => {
           const totalPages = pdf.internal.getNumberOfPages();
           for (let i = 1; i <= totalPages; i++) {
+            console.log(pdf)
             pdf.setPage(i);
             pdf.setFontSize(10);
             pdf.setTextColor(150);

@@ -82,7 +82,7 @@
           <v-row class="mt-5">
             <v-col cols="12"
               ><span
-                >1 Insgesamt war Ihre Zufriedenheit mit dem Karrieretag...
+                >Insgesamt war Ihre Zufriedenheit mit dem Karrieretag...
               </span></v-col
             >
             <v-col cols="12" md="6" class="mt-4">
@@ -107,7 +107,7 @@
         <li>
           <v-row class="mt-5">
             <v-col cols="12"
-              ><span>2 Was hat Ihnen am Karrieretag gefallen?</span></v-col
+              ><span>Was hat Ihnen am Karrieretag gefallen?</span></v-col
             >
             <v-col cols="12" md="6">
               <v-textarea
@@ -122,7 +122,7 @@
           <v-row class="mt-5">
             <v-col cols="12"
               ><span
-                >3 Was hat Ihnen am Karrieretag <b>nicht</b> gefallen?</span
+                >Was hat Ihnen am Karrieretag <b>nicht</b> gefallen?</span
               ></v-col
             >
             <v-col cols="12" md="6">
@@ -138,7 +138,7 @@
           <v-row class="mt-5">
             <v-col cols="12"
               ><span
-                >4 Wie fanden Sie die Organisation der Veranstaltung?
+                >Wie fanden Sie die Organisation der Veranstaltung?
               </span></v-col
             >
             <v-col cols="6">
@@ -158,7 +158,7 @@
           <v-row class="mt-5 mb-8">
             <v-col cols="12"
               ><span
-                >5 Wie fanden Sie die Kommunikation mit dem Organisator?
+                >Wie fanden Sie die Kommunikation mit dem Organisator?
               </span></v-col
             >
             <div class="mt-5">
@@ -200,7 +200,7 @@
           <v-row class="mt-5 mb-8">
             <v-col cols="12"
               ><span
-                >6 Wie fanden sie den Teilnahme Prozess der Veranstaltung?
+                >Wie fanden sie den Teilnahme Prozess der Veranstaltung?
               </span></v-col
             >
             <div class="mt-5">
@@ -233,7 +233,7 @@
           <v-row class="mt-5">
             <v-col cols="12"
               ><span
-                >7 War die Dauer der Veranstaltung zu lang, zu kurz oder
+                >War die Dauer der Veranstaltung zu lang, zu kurz oder
                 ungefähr richtig?
               </span></v-col
             >
@@ -254,7 +254,7 @@
           <v-row class="mt-5">
             <v-col cols="12"
               ><span
-                >8 Würden Sie erneut an dem Karrieretag teilnehmen? *
+                >Würden Sie erneut an dem Karrieretag teilnehmen?
               </span></v-col
             >
             <v-col cols="6">
@@ -277,7 +277,7 @@
           <v-row class="mt-5">
             <v-col cols="12"
               ><span
-                >9 Hat Ihnen etwas gefehlt?
+                >Hat Ihnen etwas gefehlt?
                 <span class="text--secondary">(optional)</span>
               </span></v-col
             >
@@ -311,6 +311,7 @@ export default {
     karrieretagDaten: {
       type: Object,
     },
+
   },
 
   methods: {

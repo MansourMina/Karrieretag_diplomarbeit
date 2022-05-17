@@ -22,10 +22,10 @@
               <v-select
                 label="Firmen auswahl"
                 :items="
-                  this.alleFirmen
+                  alleFirmen
                     .filter(
                       (el) =>
-                        !this.alleVorträge
+                        !alleVorträge
                           .map((element) => element.firmen_id)
                           .includes(el.firmen_id),
                     )
@@ -36,7 +36,6 @@
                 :rules="requiredRule"
                 prepend-inner-icon="mdi-domain"
               ></v-select>
-
               <v-select
                 required
                 prepend-inner-icon="mdi-lan"
@@ -73,7 +72,7 @@
         </v-card>
       </v-dialog>
     </div>
-    <div class="text-center wegdamit">
+    <div class="text-center">
       <v-calendar
         ref="calendar"
         first-interval="23"
@@ -134,8 +133,9 @@
               }}</v-toolbar>
               <v-col cols="12">
                 <v-card-title>
-                  Aktuelle Zeit: {{ selectedItem.start.substring(10, 16) }} Uhr
-                  - {{ selectedItem.end.substring(10, 16) }} Uhr
+                  Aktuelle Zeit:
+                  {{ selectedItem.start.substring(10, 16) }} Uhr -
+                  {{ selectedItem.end.substring(10, 16) }} Uhr
                 </v-card-title>
               </v-col>
 
@@ -292,6 +292,7 @@ export default {
     },
 
     getEventColor(event) {
+      console.log(event)
       if (
         new Date().toLocaleDateString() ==
         new Date(this.karrieretagDaten.datum).toLocaleDateString()
@@ -327,6 +328,7 @@ export default {
         method: 'GET',
       });
       this.alleVorträge = [];
+      console.log(data)
 
       data.forEach((el) =>
         this.alleVorträge.push({
@@ -334,7 +336,7 @@ export default {
             0,
             5,
           )} - ${el.endevortrag.substring(0, 5)}`,
-          vortrag_auswahl: el.fachrichtung,
+          vortrag_auswahl: el.vortrag_fachrichtung,
           firmen_id: el.firmen_id,
           vortrag_id: el.vortrag_id,
         }),
@@ -346,12 +348,11 @@ export default {
         this.events.push({
           name:
             'Firmen Name: ' +
-            this.alleFirmen.find((el) => el.firmen_id == element.firmen_id)
-              .firmen_name +
+            element.firmen_name +
             ' | Fachrichtung: ' +
-            element.vortrag_auswahl +
+            element.vortrag_fachrichtung +
             ' | ',
-          vortrag_auswahl: element.vortrag_auswahl,
+          vortrag_auswahl: element.vortrag_fachrichtung,
           start: `${this.today} ${element.anfangvortrag}`,
           end: `${this.today} ${element.endevortrag}`,
           vortrag_id: element.vortrag_id,
@@ -363,27 +364,32 @@ export default {
     },
 
     async postVortrag() {
-      this.anfang = this.uhrzeit.substr(0, 5);
-      this.ende = this.uhrzeit.substr(8, 10);
-      await axios({
-        url: '/vortrag',
-        method: 'POST',
-        data: {
-          anfangvortrag: this.anfang,
-          firmen_id: this.alleFirmen.find((el) => el.firmen_name == this.firma)
-            .firmen_id,
-          fachrichtung: this.vortrag_auswahl,
-          endevortrag: this.ende,
-        },
-      });
-      this.fetchData();
-      this.eintragDialog = false;
-      (this.anfang = ''),
-        (this.vortrag_auswahl = ''),
-        (this.ende = ''),
-        (this.uhrzeit = ''),
-        (this.firma = '');
-      this.$refs.form.resetValidation();
+      try {
+        this.anfang = this.uhrzeit.substr(0, 5);
+        this.ende = this.uhrzeit.substr(8, 10);
+        await axios({
+          url: '/vortrag',
+          method: 'POST',
+          data: {
+            anfangvortrag: this.anfang,
+            firmen_id: this.alleFirmen.find(
+              (el) => el.firmen_name == this.firma,
+            ).firmen_id,
+            fachrichtung: this.vortrag_auswahl,
+            endevortrag: this.ende,
+          },
+        });
+        this.fetchData();
+        this.eintragDialog = false;
+        (this.anfang = ''),
+          (this.vortrag_auswahl = ''),
+          (this.ende = ''),
+          (this.uhrzeit = ''),
+          (this.firma = '');
+        this.$refs.form.resetValidation();
+      } catch (err) {
+        console.log('ERROR ---- ' + err);
+      }
     },
 
     async patchUhrzeit(element) {

@@ -71,6 +71,7 @@
       <v-card
         class="mx-0 my-5 ma-lg-10 center"
         min-height="500"
+        elevation="0"
         v-if="filterAnträge.length == 0"
       >
         <div>
@@ -266,7 +267,7 @@
       @hasDownloaded="hasDownloaded($event)"
     >
       <section slot="pdf-content">
-        <Contact />
+        <Buchhaltung :firma="firma" :antraege="antraege" />
       </section>
     </VueHtml2pdf>
   </v-container>
@@ -275,7 +276,7 @@
 <script>
 import { bus } from '../main';
 import VueHtml2pdf from 'vue-html2pdf';
-import Contact from '@/views/Contact.vue';
+import Buchhaltung from '@/components/Buchhaltung.vue';
 import axios from 'axios';
 import SendEmail from '@/components/SendEmail.vue';
 import ShowData from '@/components/ShowData.vue';
@@ -284,7 +285,7 @@ export default {
     SendEmail,
     ShowData,
     VueHtml2pdf,
-    Contact,
+    Buchhaltung,
   },
   props: {
     antraege: {
@@ -361,14 +362,14 @@ export default {
 
   methods: {
     async hasDownloaded(event) {
-      this.base64 = await new Promise((resolve, reject) => {
+      await new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(event);
-        reader.onload = () => resolve(reader.result.split(',')[1]);
+
+        reader.onload = () =>
+          this.sendEmailBuchhaltung(resolve(reader.result.split(',')[1]));
         reader.onerror = (error) => reject(error);
       });
-
-      this.sendEmailBuchhaltung();
     },
     generateReport() {
       this.$refs.html2Pdf.generatePdf();
@@ -376,7 +377,7 @@ export default {
     passData() {
       bus.$emit('changeIt', this.selectedEmails);
     },
-    async sendEmailBuchhaltung() {
+    async sendEmailBuchhaltung(base64) {
       await axios({
         url: '/buchaltung',
         method: 'POST',
@@ -384,7 +385,7 @@ export default {
         data: {
           firma: this.firma,
           file: `Karrieretag Rechnungsanschrift ${this.firma.firmen_name}`,
-          base64: this.base64,
+          base64: base64,
         },
       });
 
@@ -393,10 +394,10 @@ export default {
       this.color = 'white';
       this.snackbar = true;
 
-      // weil das VueHtml2pdf ziemlich lange braucht
+      // weil das VueHtml2pdf ziemlich lange braucht und es ansonsten nicht aktualisiert wird
       setTimeout(() => {
         this.$emit('refreshAntraege');
-      }, 500);
+      }, 1000);
     },
     async seen(item) {
       await axios({

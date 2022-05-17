@@ -1,8 +1,21 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Home from '../views/Home.vue';
-import Dashboard from '../views/Dashboard.vue';
+import Dashboard from '../viewsAdmin/Dashboard.vue';
 import Feedback from '../views/Feedback.vue';
+import Informationen from '../views/Informationen.vue';
+import Impressum from '../views/Impressum.vue';
+import NotFound from '../views/NotFound.vue';
+import Formular from '../views/Formular.vue';
+import Antrag from '../views/Antrag.vue';
+import Daten from '../views/Daten.vue';
+import Login from '../views/Login.vue';
+import Contact from '../views/Contact.vue';
+import Übersicht from '../components/PDFContent.vue';
+import Anträge from '../viewsAdmin/Anträge.vue';
+import Aktivitäten from '../viewsAdmin/Aktivitäten.vue';
+import AdminFeedback from '../viewsAdmin/Feedback.vue';
+import Vorträge from '../viewsAdmin/Vorträge.vue';
 import axios from 'axios';
 
 Vue.use(VueRouter);
@@ -26,91 +39,74 @@ const routes = [
   {
     path: '/overview',
     name: 'Übersicht',
-    component: () =>
-      import(
-        /* webpackChunkName: "group-foo" */ '../components/PDFContent.vue'
-      ),
+    component: Übersicht,
   },
   {
     path: '/requests',
     name: 'Anträge',
 
-    component: () =>
-      import(/* webpackChunkName: "group-foo" */ '../viewsAdmin/Anträge.vue'),
+    component: Anträge,
   },
   {
     path: '/activities',
     name: 'Aktivitäten',
-    component: () =>
-      import(
-        /* webpackChunkName: "group-foo" */ '../viewsAdmin/Aktivitäten.vue'
-      ),
+    component: Aktivitäten,
   },
   {
     path: '/manage-feedback',
     name: 'Feedback Admin',
-    component: () =>
-      import(/* webpackChunkName: "group-foo" */ '../viewsAdmin/Feedback.vue'),
+    component: AdminFeedback,
   },
   {
     path: '/vortrag',
     name: 'Vortrag',
-    component: () =>
-      import(/* webpackChunkName: "group-foo" */ '../views/Vorträge.vue'),
+    component: Vorträge,
   },
   {
     path: '/infos',
     props: true,
     name: 'Informationen',
-    component: () =>
-      import(/* webpackChunkName: "group-foo" */ '../views/Informationen.vue'),
+    component: Informationen,
   },
   {
     path: '/contact',
     name: 'Contact',
-    component: () =>
-      import(/* webpackChunkName: "group-foo" */ '../views/Contact.vue'),
+    component: Contact,
   },
   {
     path: '/login',
     name: 'Login',
-    component: () =>
-      import(/* webpackChunkName: "group-foo" */ '../views/Login.vue'),
+    component: Login,
   },
   {
     path: '/daten',
     name: 'Daten',
-    component: () =>
-      import(/* webpackChunkName: "group-foo" */ '../views/Daten.vue'),
+    component: Daten,
   },
   {
     path: '/antrag',
     name: 'Antrag',
-    component: () =>
-      import(/* webpackChunkName: "group-foo" */ '../views/Antrag.vue'),
+    component: Antrag,
   },
   {
     path: '/anmeldeformular',
     name: 'Formular',
-    component: () =>
-      import(/* webpackChunkName: "group-foo" */ '../views/Formular.vue'),
+    component: Formular,
   },
   {
     path: '/impress',
     name: 'Impressum',
-    component: () =>
-      import(/* webpackChunkName: "group-foo" */ '../views/Impressum.vue'),
+    component: Impressum,
   },
+
   {
     path: '*',
-    component: () =>
-      import(/* webpackChunkName: "group-foo" */ '../views/NotFound.vue'),
+    component: NotFound,
   },
   {
     path: '/:pathMatch(.*)*',
     name: 'NotFound',
-    component: () =>
-      import(/* webpackChunkName: "group-foo" */ '../views/NotFound.vue'),
+    component: NotFound,
   },
 ];
 

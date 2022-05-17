@@ -50,6 +50,7 @@
       <v-card
         class="mx-0 my-5 ma-lg-10 center"
         min-height="500"
+        elevation="0"
         v-if="filterActivities.length == 0"
       >
         <div>
